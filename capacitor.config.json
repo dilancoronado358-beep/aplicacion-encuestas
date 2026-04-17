@@ -1,0 +1,6 @@
+{
+  "appId": "com.robles2026.encuesta",
+  "appName": "Robles 2026",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
