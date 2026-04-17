@@ -28,8 +28,10 @@ jobs:
       - name: Setup Capacitor and Android Platform
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
-          npx cap init "Robles 2026" com.robles2026.encuesta --web-dir dist
-          npx cap add android || echo "Android folder already exists or added"
+          # No ejecutamos 'npx cap init' porque el archivo ya está en el repositorio
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
           npx cap sync android
 
       - name: Setup Java
