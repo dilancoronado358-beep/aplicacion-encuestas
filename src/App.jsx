@@ -242,8 +242,8 @@ function SetupScreen({ onDone }) {
 function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateConfig, darkMode, onToggleDark }) {
   const [tab,  setTab]  = useState('resumen');
   const [confirmClear, setConfirmClear] = useState(false);
-  const [eName, setEName] = useState(config.name);
-  const [eGoal, setEGoal] = useState(String(config.goal));
+  const [eName, setEName] = useState(config?.name || '');
+  const [eGoal, setEGoal] = useState(String(config?.goal || 20));
   const t = useT();
 
   const BASE_TOTAL = 228;
