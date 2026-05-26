@@ -358,8 +358,8 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
             </div>
 
             {/* Last survey */}
-            {total > 0 && (() => {
-              const last = surveys[total-1];
+            {surveys.length > 0 && (() => {
+              const last = surveys[surveys.length-1];
               return (
                 <div style={{ background:t.bgSurface, border:`1.5px solid ${t.border}`, borderRadius:14, padding:'12px 16px', marginBottom:14 }}>
                   <p style={{ fontSize:'0.66rem', fontWeight:700, color:t.textMuted, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:4 }}>Última encuesta</p>
