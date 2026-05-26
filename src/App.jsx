@@ -18,6 +18,7 @@ const PARROQUIAS = [
   { name: "Fernández Salvador",         emoji: "🌿" },
   { name: "La Paz",                     emoji: "☮️" },
   { name: "Piartal",                    emoji: "🏔️" },
+  { name: "Otra (Especificar)",         emoji: "✍️" },
 ];
 const CANDIDATOS = [
   { name: "ING. Nancy Goyes", color: "#ef4444" },
@@ -32,7 +33,7 @@ const CANDIDATOS = [
   { name: "Jesica Flores", color: "#f43f5e" }
 ];
 const TOTAL_STEPS = 2;
-const BLANK = { nombre:'', whatsapp:'', parroquia:'', candidato:'' };
+const BLANK = { nombre:'', whatsapp:'', parroquia:'', parroquiaInput:'', candidato:'' };
 
 /* ════════════════════════════════════════════════════════════════════
    THEME
@@ -462,7 +463,10 @@ function App() {
       );
     }
     if (navigator.vibrate) navigator.vibrate([80,40,140]);
-    const updated = [...surveys, { ...formData, encuestador:config?.name||'', ...(coords||{}), ts:new Date().toISOString() }];
+    const finalParroquia = formData.parroquia === 'Otra (Especificar)' ? (formData.parroquiaInput.trim() || 'Otra') : formData.parroquia;
+    const finalForm = { ...formData, parroquia: finalParroquia };
+    delete finalForm.parroquiaInput;
+    const updated = [...surveys, { ...finalForm, encuestador:config?.name||'', ...(coords||{}), ts:new Date().toISOString() }];
     persistSurveys(updated);
     setSaving(false);
     setStep(3);
@@ -614,8 +618,16 @@ function App() {
               </motion.div>
             ))}
           </motion.div>
+          <AnimatePresence>
+            {formData.parroquia === 'Otra (Especificar)' && (
+              <motion.div initial={{opacity:0, height:0, marginTop:0}} animate={{opacity:1, height:'auto', marginTop:10}} exit={{opacity:0, height:0, marginTop:0}}>
+                <input autoFocus style={{...S.input, background:t.bgSurface, border:`2px solid #ef4444`, color:t.text, padding:'0 18px', height:48}}
+                  placeholder="Escribe la parroquia o sector..." value={formData.parroquiaInput} onChange={e=>setField('parroquiaInput',e.target.value)}/>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div style={{flex:1}}/>
-          <button disabled={!formData.parroquia||!formData.nombre} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
+          <button disabled={!formData.parroquia||!formData.nombre||(formData.parroquia==='Otra (Especificar)'&&!formData.parroquiaInput?.trim())} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
             Siguiente <ChevronRight size={18} strokeWidth={2.5}/>
           </button>
         </motion.div>
@@ -844,7 +856,7 @@ const S = {
 };
 
 const P = {
-  overlay:    { position:'fixed', inset:0, background:'rgba(15,23,42,0.52)', backdropFilter:'blur(10px)', zIndex:200, display:'flex', alignItems:'flex-end' },
+  overlay:    { position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(10px)', zIndex:200, display:'flex', alignItems:'flex-end' },
   sheet:      { width:'100%', maxWidth:480, margin:'0 auto', borderRadius:'28px 28px 0 0', padding:'0 20px 30px', boxShadow:'0 -20px 60px rgba(0,0,0,0.22)', maxHeight:'92vh', overflowY:'auto' },
   actionBtn:  { display:'flex', alignItems:'center', justifyContent:'center', gap:9, width:'100%', height:50, borderRadius:99, border:'none', color:'#fff', fontWeight:700, fontSize:'0.9rem', cursor:'pointer', transition:'all 0.22s ease', marginBottom:10 },
 };
