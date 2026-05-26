@@ -19,22 +19,20 @@ const PARROQUIAS = [
   { name: "La Paz",                     emoji: "☮️" },
   { name: "Piartal",                    emoji: "🏔️" },
 ];
-const EDADES = [
-  { label: "16-18", sub: "Joven" },
-  { label: "19-35", sub: "Adulto Joven" },
-  { label: "36-55", sub: "Adulto" },
-  { label: "55+",   sub: "Mayor" },
+const CANDIDATOS = [
+  { name: "ING. Nancy Goyes", color: "#ef4444" },
+  { name: "Lic. Luz Álvarez", color: "#3b82f6" },
+  { name: "Lic. Jesenia Pinchao", color: "#10b981" },
+  { name: "Sr. Bayardo Moreno", color: "#f59e0b" },
+  { name: "ING. Verónica Taramuel", color: "#8b5cf6" },
+  { name: "srta. Vanesa Chunes", color: "#ec4899" },
+  { name: "Sr. Luis Ceron", color: "#06b6d4" },
+  { name: "Sr. Juan Figueroa", color: "#84cc16" },
+  { name: "Made Luna", color: "#64748b" },
+  { name: "Jesica Flores", color: "#f43f5e" }
 ];
-const PROBLEMAS = [
-  { label: "Seguridad Ciudadana",  icon: Shield,    color: "#3b82f6" },
-  { label: "Apoyo al Sector Agro", icon: Tractor,   color: "#10b981" },
-  { label: "Vialidad y Caminos",   icon: Navigation, color: "#f59e0b" },
-  { label: "Salud y Medicinas",    icon: Heart,     color: "#ef4444" },
-  { label: "Empleo Joven",         icon: Briefcase, color: "#8b5cf6" },
-  { label: "Otro",                 icon: HelpCircle, color: "#64748b" },
-];
-const TOTAL_STEPS = 5;
-const BLANK = { parroquia:'', edad:'', conoceCandidato:'', votoProbabilidad:0, problemaPrincipal:'', comentario:'', nombre:'', whatsapp:'' };
+const TOTAL_STEPS = 2;
+const BLANK = { nombre:'', whatsapp:'', parroquia:'', candidato:'' };
 
 /* ════════════════════════════════════════════════════════════════════
    THEME
@@ -63,10 +61,6 @@ const useT = () => useContext(ThemeCtx);
 ════════════════════════════════════════════════════════════════════ */
 const todayKey = () => new Date().toISOString().slice(0, 10);
 const countToday = list => list.filter(s => s.ts?.startsWith(todayKey())).length;
-const avgRating  = list => {
-  const w = list.filter(s => s.conoceCandidato === 'Sí' && s.votoProbabilidad > 0);
-  return w.length ? (w.reduce((a,s) => a + s.votoProbabilidad, 0) / w.length).toFixed(1) : '—';
-};
 const makeChart = (list, key, opts) => {
   const c = {}; opts.forEach(o => c[o] = 0);
   list.forEach(s => { if (s[key] && c[s[key]] !== undefined) c[s[key]]++; });
@@ -203,7 +197,7 @@ function SetupScreen({ onDone }) {
           ¡Hola, Encuestador!
         </h1>
         <p style={{ fontSize:'0.9rem', color:t.textSec, lineHeight:1.65, maxWidth:290, margin:'0 auto' }}>
-          Configura tu perfil para organizar el trabajo de campo de la campaña Robles 2026.
+          Configura tu perfil para organizar el trabajo de campo del Sondeo Electoral 2026.
         </p>
       </div>
 
@@ -248,13 +242,8 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
 
   const today   = countToday(surveys);
   const total   = surveys.length;
-  const avg     = avgRating(surveys);
-  const pctGoal = Math.min(100, Math.round((today/(config.goal||20))*100));
-
   const parqData = makeChart(surveys, 'parroquia', PARROQUIAS.map(p=>p.name));
-  const probData = makeChart(surveys, 'problemaPrincipal', PROBLEMAS.map(p=>p.label));
-  const edadData = makeChart(surveys, 'edad', EDADES.map(e=>e.label));
-  const conoceData = makeChart(surveys, 'conoceCandidato', ['Sí','No']);
+  const candData = makeChart(surveys, 'candidato', CANDIDATOS.map(c=>c.name));
 
   const TABS = [
     { id:'resumen',  label:'Resumen',  Icon:ClipboardList },
@@ -281,7 +270,7 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
             </div>
             <div>
               <p style={{ fontWeight:800, fontSize:'1rem', color:t.text, margin:0 }}>Panel del Encuestador</p>
-              <p style={{ fontSize:'0.73rem', color:t.textMuted, margin:0 }}>{config.name} · Robles 2026</p>
+              <p style={{ fontSize:'0.73rem', color:t.textMuted, margin:0 }}>{config.name} · Sondeo 2026</p>
             </div>
           </div>
           <button onClick={onClose} style={{ width:36, height:36, borderRadius:'50%', border:'none', background:t.bgSurface, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:t.textSec }}>
@@ -328,7 +317,7 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
               {[
                 { Icon:ClipboardList, val:today, lbl:'Hoy',    color:'#ef4444' },
                 { Icon:BarChart3,     val:total, lbl:'Total',  color:'#3b82f6' },
-                { Icon:Star,         val:avg,   lbl:'Apoyo ★', color:'#f59e0b' },
+                { Icon:Users,         val:surveys.filter(s=>s.candidato).length, lbl:'Votos', color:'#10b981' },
               ].map(({ Icon, val, lbl, color }) => (
                 <div key={lbl} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5, padding:'14px 8px', background:t.statCardBg, borderRadius:18, border:`1.5px solid ${t.border}` }}>
                   <Icon size={18} color={color}/>
@@ -372,28 +361,16 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
               </div>
             ) : (
               <>
-                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Por parroquia</p>
-                {parqData.filter(d=>d.val>0).sort((a,b)=>b.val-a.val).map(d=>(
-                  <HBar key={d.label} {...d} color="#ef4444" total={total}/>
-                ))}
-
-                <div style={{ height:1, background:t.border, margin:'16px 0' }}/>
-                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Problemas urgentes</p>
-                {probData.filter(d=>d.val>0).sort((a,b)=>b.val-a.val).map(d=>{
-                  const prob = PROBLEMAS.find(p=>p.label===d.label);
-                  return <HBar key={d.label} {...d} color={prob?.color||'#64748b'} total={total}/>;
+                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Intención de Voto (Candidatos)</p>
+                {candData.filter(d=>d.val>0).sort((a,b)=>b.val-a.val).map(d=>{
+                  const cInfo = CANDIDATOS.find(c=>c.name===d.label);
+                  return <HBar key={d.label} {...d} color={cInfo?.color||'#8b5cf6'} total={total}/>;
                 })}
 
                 <div style={{ height:1, background:t.border, margin:'16px 0' }}/>
-                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Rango de edad</p>
-                {edadData.filter(d=>d.val>0).map(d=>(
-                  <HBar key={d.label} {...d} color="#8b5cf6" total={total}/>
-                ))}
-
-                <div style={{ height:1, background:t.border, margin:'16px 0' }}/>
-                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>¿Conoce al candidato?</p>
-                {conoceData.map(d=>(
-                  <HBar key={d.label} {...d} color={d.label==='Sí'?'#10b981':'#f59e0b'} total={total}/>
+                <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Por parroquia</p>
+                {parqData.filter(d=>d.val>0).sort((a,b)=>b.val-a.val).map(d=>(
+                  <HBar key={d.label} {...d} color="#ef4444" total={total}/>
                 ))}
               </>
             )}
@@ -488,7 +465,7 @@ function App() {
     const updated = [...surveys, { ...formData, encuestador:config?.name||'', ...(coords||{}), ts:new Date().toISOString() }];
     persistSurveys(updated);
     setSaving(false);
-    setStep(6);
+    setStep(3);
   };
 
   const nextSurvey = ()=>{ setFormData(BLANK); setStep(1); };
@@ -503,7 +480,7 @@ function App() {
     const csv= [hs.join(','),...surveys.map(r=>hs.map(h=>JSON.stringify(r[h]??'')).join(','))].join('\n');
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-    a.download=`encuestas_robles_${new Date().toISOString().slice(0,10)}.csv`;
+    a.download=`encuestas_sondeo_${new Date().toISOString().slice(0,10)}.csv`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   };
 
@@ -557,19 +534,18 @@ function App() {
 
           <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible" style={S.photoWrap}>
             <div style={S.photoGlow}/>
-            <img src="https://res.cloudinary.com/dtmqftcsr/image/upload/q_auto/f_auto/v1776302644/WhatsApp_Image_2026-04-15_at_11.28.42_AM_ieuo0z.jpg"
-              style={S.photo} alt="Dr. Fabián Robles"/>
-            <div style={S.photoBadge}><Award size={12} color="#ef4444"/><span>Candidato 2026</span></div>
+            <div style={{width:130, height:130, borderRadius:30, border:'4px solid white', boxShadow:'0 18px 42px -10px rgba(0,0,0,0.2),0 0 0 6px rgba(239,68,68,0.07)', position:'relative', zIndex:1, display:'flex', alignItems:'center', justifyContent:'center', background:'#fff', fontSize:54}}>📊</div>
+            <div style={S.photoBadge}><Award size={12} color="#ef4444"/><span>Sondeo 2026</span></div>
           </motion.div>
 
           <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible" style={{...S.nameTag,color:t.textSec}}>
-            Dr. Fabián Robles
+            San Gabriel · Piartal
           </motion.div>
           <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate="visible" style={{...S.heroTitle,color:t.text}}>
-            Transformación<br/><span style={S.gradientRed}>Para Montúfar</span>
+            Encuesta<br/><span style={S.gradientRed}>Electoral 2026</span>
           </motion.h1>
           <motion.p custom={3} variants={fadeUp} initial="hidden" animate="visible" style={{...S.heroSub,color:t.textSec}}>
-            Tu voz impulsa el cambio.<br/>Únete a la consulta ciudadana 2026.
+            Tu opinión es importante.<br/>Participa en la consulta ciudadana.
           </motion.p>
 
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" style={{width:'100%',zIndex:1}}>
@@ -596,15 +572,31 @@ function App() {
         </motion.div>
       );
 
-      /* PASO 1 · ZONA */
+      /* PASO 1 · CONTACTO Y ZONA */
       case 1: return (
         <motion.div key="s1" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{...S.page,background:t.bgApp}}>
           <div style={S.pageHeader}>
-            <div style={{...S.stepIcon,background:'rgba(239,68,68,0.1)'}}><MapPin size={20} color="#ef4444"/></div>
-            <h2 style={{...S.pageTitle,color:t.text}}>Zona y Edad</h2>
+            <div style={{...S.stepIcon,background:'rgba(239,68,68,0.1)'}}><User size={20} color="#ef4444"/></div>
+            <h2 style={{...S.pageTitle,color:t.text}}>Datos Personales</h2>
+          </div>
+          <p style={{...S.label,color:t.textMuted}}>Datos del encuestado</p>
+          <div style={S.inputWrap}>
+            <User size={15} color={t.textMuted} style={S.inputIcon}/>
+            <input style={{...S.input,background:t.bgSurface,border:`2px solid ${t.border}`,color:t.text}}
+              placeholder="Nombre completo (Requerido)" value={formData.nombre} onChange={e=>setField('nombre',e.target.value)}/>
+          </div>
+          <div style={{...S.inputWrap,marginTop:13,marginBottom:22}}>
+            <Phone size={15} color={t.textMuted} style={S.inputIcon}/>
+            <input type="tel" style={{...S.input,background:t.bgSurface,border:`2px solid ${t.border}`,color:t.text}}
+              placeholder="Número de celular (Opcional)" value={formData.whatsapp} onChange={e=>setField('whatsapp',e.target.value)}/>
+          </div>
+
+          <div style={S.pageHeader}>
+            <div style={{...S.stepIcon,background:'rgba(59,130,246,0.1)'}}><MapPin size={20} color="#3b82f6"/></div>
+            <h2 style={{...S.pageTitle,color:t.text}}>Zona</h2>
           </div>
           <p style={{...S.label,color:t.textMuted}}>¿Parroquia de residencia?</p>
-          <motion.div variants={stagger} initial="hidden" animate="visible" style={S.scrollList} className="custom-scrollbar">
+          <motion.div variants={stagger} initial="hidden" animate="visible" style={{...S.scrollList, maxHeight:200}} className="custom-scrollbar">
             {PARROQUIAS.map(({name,emoji})=>(
               <motion.div key={name} variants={itemV}
                 onClick={()=>setField('parroquia',name)}
@@ -622,84 +614,35 @@ function App() {
               </motion.div>
             ))}
           </motion.div>
-          <p style={{...S.label,color:t.textMuted,marginTop:18}}>Rango de edad</p>
-          <div style={S.ageGrid}>
-            {EDADES.map(({label:age,sub})=>(
-              <button key={age} onClick={()=>setField('edad',age)}
-                style={{...S.ageChip, background:formData.edad===age?'#0f172a':t.bg,
-                  border:`2px solid ${formData.edad===age?'#0f172a':t.border}`,
-                  color:formData.edad===age?'#fff':t.textSec,
-                  boxShadow:formData.edad===age?'0 8px 20px -6px rgba(15,23,42,0.36)':'none'}}
-                className="age-chip-hover">
-                <span style={{fontSize:'1.05rem',fontWeight:800}}>{age}</span>
-                <span style={{fontSize:'0.68rem',opacity:0.7}}>{sub}</span>
-              </button>
-            ))}
-          </div>
-          <button disabled={!formData.parroquia||!formData.edad} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
+          <div style={{flex:1}}/>
+          <button disabled={!formData.parroquia||!formData.nombre} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
             Siguiente <ChevronRight size={18} strokeWidth={2.5}/>
           </button>
         </motion.div>
       );
 
-      /* PASO 2 · CANDIDATO */
+      /* PASO 2 · CANDIDATOS */
       case 2: return (
         <motion.div key="s2" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{...S.page,background:t.bgApp}}>
           <div style={S.pageHeader}>
-            <div style={{...S.stepIcon,background:'rgba(59,130,246,0.1)'}}><User size={20} color="#3b82f6"/></div>
-            <h2 style={{...S.pageTitle,color:t.text}}>Candidato</h2>
+            <div style={{...S.stepIcon,background:'rgba(16,185,129,0.1)'}}><Award size={20} color="#10b981"/></div>
+            <h2 style={{...S.pageTitle,color:t.text}}>Elección</h2>
           </div>
-          <p style={{...S.label,color:t.textMuted}}>¿Conoce al Dr. Fabián Robles?</p>
-          <motion.div variants={stagger} initial="hidden" animate="visible" style={S.grid2}>
-            {[['Sí','👍','Sí lo conozco'],['No','🔍','Aún no lo conozco']].map(([val,emoji,txt])=>(
-              <motion.div key={val} variants={itemV}
-                onClick={()=>setField('conoceCandidato',val)}
-                style={{...S.optionCard, background:formData.conoceCandidato===val?'rgba(239,68,68,0.06)':t.bg,
-                  border:`2px solid ${formData.conoceCandidato===val?'#ef4444':t.border}`}}
-                className="option-card-hover" whileTap={{scale:0.95}}>
-                <span style={{fontSize:36}}>{emoji}</span>
-                <span style={{fontSize:'0.88rem',fontWeight:700,marginTop:10,color:formData.conoceCandidato===val?'#ef4444':t.text}}>{txt}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-          <AnimatePresence>
-            {formData.conoceCandidato==='Sí' && (
-              <motion.div initial={{opacity:0,y:14,height:0}} animate={{opacity:1,y:0,height:'auto'}} exit={{opacity:0,height:0}} style={{overflow:'hidden',marginBottom:4}}>
-                <div style={{...S.ratingCard,background:t.ratingBg,border:`1.5px solid ${t.ratingBd}`}}>
-                  <p style={{...S.label,color:t.textMuted,textAlign:'center',marginBottom:14}}>¿Cuánto lo apoyaría en las urnas?</p>
-                  <StarRating value={formData.votoProbabilidad} onChange={v=>setField('votoProbabilidad',v)}/>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <button disabled={!formData.conoceCandidato} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
-            Siguiente <ChevronRight size={18} strokeWidth={2.5}/>
-          </button>
-        </motion.div>
-      );
-
-      /* PASO 3 · PRIORIDADES */
-      case 3: return (
-        <motion.div key="s3" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{...S.page,background:t.bgApp}}>
-          <div style={S.pageHeader}>
-            <div style={{...S.stepIcon,background:'rgba(16,185,129,0.1)'}}><BarChart3 size={20} color="#10b981"/></div>
-            <h2 style={{...S.pageTitle,color:t.text}}>Prioridades</h2>
-          </div>
-          <p style={{...S.label,color:t.textMuted}}>¿Cuál es el problema más urgente del cantón?</p>
+          <p style={{...S.label,color:t.textMuted}}>¿Por qué candidato votaría?</p>
           <motion.div variants={stagger} initial="hidden" animate="visible"
             style={{flex:1,overflowY:'auto',marginBottom:14,display:'flex',flexDirection:'column',gap:8}} className="custom-scrollbar">
-            {PROBLEMAS.map(({label:prob,icon:Icon,color})=>(
-              <motion.div key={prob} variants={itemV}
-                onClick={()=>setField('problemaPrincipal',prob)}
+            {CANDIDATOS.map(({name:cName,color})=>(
+              <motion.div key={cName} variants={itemV}
+                onClick={()=>setField('candidato',cName)}
                 style={{...S.optionProb,
-                  background:formData.problemaPrincipal===prob?`${color}0d`:t.bg,
-                  border:`2px solid ${formData.problemaPrincipal===prob?color:t.border}`}}
+                  background:formData.candidato===cName?`${color}0d`:t.bg,
+                  border:`2px solid ${formData.candidato===cName?color:t.border}`}}
                 className="option-hover">
                 <div style={{...S.probIcon,background:`${color}18`,border:`1.5px solid ${color}35`}}>
-                  <Icon size={18} color={color}/>
+                  <User size={18} color={color}/>
                 </div>
-                <span style={{flex:1,fontWeight:600,color:formData.problemaPrincipal===prob?color:t.text}}>{prob}</span>
-                {formData.problemaPrincipal===prob && (
+                <span style={{flex:1,fontWeight:600,color:formData.candidato===cName?color:t.text}}>{cName}</span>
+                {formData.candidato===cName && (
                   <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:'spring',stiffness:420}}>
                     <CheckCircle2 size={19} color={color}/>
                   </motion.div>
@@ -707,72 +650,17 @@ function App() {
               </motion.div>
             ))}
           </motion.div>
-          <button disabled={!formData.problemaPrincipal} onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
-            Siguiente <ChevronRight size={18} strokeWidth={2.5}/>
-          </button>
-        </motion.div>
-      );
-
-      /* PASO 4 · SUGERENCIAS */
-      case 4: return (
-        <motion.div key="s4" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{...S.page,background:t.bgApp}}>
-          <div style={S.pageHeader}>
-            <div style={{...S.stepIcon,background:'rgba(99,102,241,0.1)'}}><MessageSquare size={20} color="#6366f1"/></div>
-            <h2 style={{...S.pageTitle,color:t.text}}>Tu Voz</h2>
-          </div>
-          <p style={{...S.label,color:t.textMuted}}>Mensaje para el Dr. Robles (opcional)</p>
-          <div style={S.textareaWrap}>
-            <textarea maxLength={300} style={{...S.textarea,background:t.bgSurface,border:`2px solid ${t.border}`,color:t.text}}
-              placeholder="Ideas, inquietudes o propuestas…"
-              value={formData.comentario} onChange={e=>setField('comentario',e.target.value)}/>
-            <div style={{...S.charCount,color:t.textMuted}}>{formData.comentario.length}/300</div>
-          </div>
-          <div style={{...S.tipBox,background:t.tipBg,border:`1.5px solid ${t.tipBd}`}}>
-            <span style={{fontSize:18}}>💡</span>
-            <p style={{fontSize:'0.78rem',color:'#6366f1',margin:0,lineHeight:1.5}}>
-              Sé específico para que el candidato entienda mejor la comunidad.
-            </p>
-          </div>
-          <button onClick={handleNext} style={S.btnPill} className="btn-pill-hover">
-            Último Paso <ChevronRight size={18} strokeWidth={2.5}/>
-          </button>
-        </motion.div>
-      );
-
-      /* PASO 5 · CONTACTO */
-      case 5: return (
-        <motion.div key="s5" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{...S.page,background:t.bgApp}}>
-          <div style={S.pageHeader}>
-            <div style={{...S.stepIcon,background:'rgba(239,68,68,0.1)'}}><Phone size={20} color="#ef4444"/></div>
-            <h2 style={{...S.pageTitle,color:t.text}}>Contacto</h2>
-          </div>
-          <p style={{...S.label,color:t.textMuted}}>Datos del encuestado (opcionales)</p>
-          <div style={S.inputWrap}>
-            <User size={15} color={t.textMuted} style={S.inputIcon}/>
-            <input style={{...S.input,background:t.bgSurface,border:`2px solid ${t.border}`,color:t.text}}
-              placeholder="Nombre completo" value={formData.nombre} onChange={e=>setField('nombre',e.target.value)}/>
-          </div>
-          <div style={{...S.inputWrap,marginTop:13}}>
-            <Phone size={15} color={t.textMuted} style={S.inputIcon}/>
-            <input type="tel" style={{...S.input,background:t.bgSurface,border:`2px solid ${t.border}`,color:t.text}}
-              placeholder="Número de WhatsApp" value={formData.whatsapp} onChange={e=>setField('whatsapp',e.target.value)}/>
-          </div>
+          
           {config.gps && (
-            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',marginTop:13,
+            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',marginBottom:10,
               background:t.bgSurface,border:`1.5px solid ${t.border}`,borderRadius:14}}>
               <Navigation size={14} color="#10b981"/>
               <span style={{fontSize:'0.74rem',color:t.textMuted}}>Se capturará la ubicación GPS al guardar</span>
             </div>
           )}
-          <div style={{...S.tipBox,marginTop:13,marginBottom:0,background:t.bgSurface,border:`1.5px solid ${t.border}`}}>
-            <span style={{fontSize:16}}>🔒</span>
-            <p style={{fontSize:'0.75rem',color:t.textMuted,margin:0,lineHeight:1.5}}>
-              Datos confidenciales. Solo para seguimiento de campaña.
-            </p>
-          </div>
-          <div style={{flex:1}}/>
-          <button onClick={saveToLocal} disabled={saving}
-            style={{...S.btnPill,background:'linear-gradient(135deg,#ef4444,#b91c1c)',marginTop:14}}
+
+          <button onClick={saveToLocal} disabled={saving||!formData.candidato}
+            style={{...S.btnPill,background:'linear-gradient(135deg,#ef4444,#b91c1c)'}}
             className="btn-cta-hover">
             {saving
               ? <><Zap size={18}/> Guardando…</>
@@ -782,8 +670,8 @@ function App() {
       );
 
       /* ÉXITO */
-      case 6: return (
-        <motion.div key="s6" variants={pageVar} initial="hidden" animate="visible" exit="exit"
+      case 3: return (
+        <motion.div key="s3" variants={pageVar} initial="hidden" animate="visible" exit="exit"
           style={{...S.hero,position:'relative',overflow:'hidden',background:t.bgApp}}>
           <Confetti/>
           <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible" style={S.successCircle}>
@@ -874,7 +762,7 @@ function App() {
                   <ArrowLeft size={14} strokeWidth={2.5}/> Atrás
                 </button>
                 <StepDots current={step} total={TOTAL_STEPS}/>
-                <span style={S.footerBrand}>ROBLES 2026</span>
+                <span style={S.footerBrand}>SONDEO 2026</span>
               </div>
             </motion.div>
           )}
