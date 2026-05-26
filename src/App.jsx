@@ -248,13 +248,13 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
 
   const BASE_TOTAL = 228;
   const BASE_VOTES = { 
-    "ING. Nancy Goyes": 65, 
-    "Lic. Luz Álvarez": 55, 
+    "ING. Nancy Goyes": 61, 
+    "Lic. Luz Álvarez": 52, 
     "Sr. Bayardo Moreno": 50,
     "Made Luna": 18,
+    "Sr. Luis Ceron": 15,
     "srta. Vanesa Chunes": 12,
     "Sr. Juan Figueroa": 10,
-    "Sr. Luis Ceron": 8,
     "Lic. Jesenia Pinchao": 5,
     "ING. Verónica Taramuel": 3,
     "Jesica Flores": 2
