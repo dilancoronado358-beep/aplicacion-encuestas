@@ -243,6 +243,7 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
 
   const today   = countToday(surveys);
   const total   = surveys.length;
+  const pctGoal = config ? Math.min(100, Math.round((today/(config.goal||20))*100)) : 0;
   const parqData = makeChart(surveys, 'parroquia', PARROQUIAS.map(p=>p.name));
   const candData = makeChart(surveys, 'candidato', CANDIDATOS.map(c=>c.name));
 
@@ -423,6 +424,33 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   SUPABASE
+════════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://yeqjcnjkgguecuzetuvn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_lbkyaAlnCgcV-wNcCz2kwQ_iYQOONwe';
+
+const uploadSurvey = async (survey) => {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/encuestas`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+      },
+      body: JSON.stringify([survey]),
+    });
+    const txt = await res.text();
+    console.log('🔶 Supabase response →', { status: res.status, ok: res.ok, body: txt });
+    return res.ok;
+  } catch (e) {
+    console.warn('❗️ Error al subir a Supabase →', e);
+    return false;
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
    MAIN APP
 ════════════════════════════════════════════════════════════════════ */
 function App() {
@@ -450,6 +478,24 @@ function App() {
   const persistConfig  = cfg =>{ localStorage.setItem('campaign_config', JSON.stringify(cfg));  setConfig(cfg);  };
   const toggleDark = () => { const n=!darkMode; setDarkMode(n); localStorage.setItem('dark_mode',n); };
 
+  const syncPending = async () => {
+    const pending = surveys.filter(s => !s.uploaded);
+    if (!pending.length) return;
+    let updated = [...surveys];
+    for (let s of pending) {
+      if (await uploadSurvey(s)) {
+        s.uploaded = true;
+      }
+    }
+    persistSurveys(updated);
+  };
+
+  useEffect(() => {
+    if (isOnline) {
+      syncPending();
+    }
+  }, [isOnline, surveys.length]);
+
   const saveToLocal = async () => {
     setSaving(true);
     let coords = null;
@@ -463,10 +509,25 @@ function App() {
       );
     }
     if (navigator.vibrate) navigator.vibrate([80,40,140]);
-    const finalParroquia = formData.parroquia === 'Otra (Especificar)' ? (formData.parroquiaInput.trim() || 'Otra') : formData.parroquia;
-    const finalForm = { ...formData, parroquia: finalParroquia };
-    delete finalForm.parroquiaInput;
-    const updated = [...surveys, { ...finalForm, encuestador:config?.name||'', ...(coords||{}), ts:new Date().toISOString() }];
+    const finalParroquia = formData.parroquia === 'Otra (Especificar)' ? (formData.parroquiaInput?.trim() || 'Otra') : formData.parroquia;
+    
+    const newSurvey = { 
+      ...formData, 
+      parroquia: finalParroquia, 
+      encuestador_id: null,
+      encuestador: config?.name || '', 
+      ...(coords||{}), 
+      ts: new Date().toISOString(),
+      uploaded: false
+    };
+    delete newSurvey.parroquiaInput;
+
+    const isSuccess = await uploadSurvey(newSurvey);
+    if (isSuccess) {
+      newSurvey.uploaded = true;
+    }
+
+    const updated = [...surveys, newSurvey];
     persistSurveys(updated);
     setSaving(false);
     setStep(3);
