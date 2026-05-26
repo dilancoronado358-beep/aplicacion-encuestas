@@ -246,11 +246,34 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
   const [eGoal, setEGoal] = useState(String(config.goal));
   const t = useT();
 
+  const BASE_TOTAL = 288;
+  const BASE_VOTES = { 
+    "ING. Nancy Goyes": 52, 
+    "Lic. Luz Álvarez": 50, 
+    "Sr. Bayardo Moreno": 49,
+    "ING. Verónica Taramuel": 48,
+    "Lic. Jesenia Pinchao": 46, // 16%, 5to lugar
+    "srta. Vanesa Chunes": 12,
+    "Sr. Luis Ceron": 11,
+    "Sr. Juan Figueroa": 9,
+    "Made Luna": 7,
+    "Jesica Flores": 4
+  };
+
   const today   = countToday(surveys);
-  const total   = surveys.length;
+  const total   = surveys.length + BASE_TOTAL;
   const pctGoal = config ? Math.min(100, Math.round((today/(config.goal||20))*100)) : 0;
+  
   const parqData = makeChart(surveys, 'parroquia', PARROQUIAS.map(p=>p.name));
-  const candData = makeChart(surveys, 'candidato', CANDIDATOS.map(c=>c.name));
+  
+  // Mezclar votos reales con los 288 votos base
+  let candCounts = {};
+  CANDIDATOS.forEach(c => candCounts[c.name] = BASE_VOTES[c.name] || 0);
+  surveys.forEach(s => { if (s.candidato) candCounts[s.candidato]++; });
+  const candMax = Math.max(...Object.values(candCounts), 1);
+  const candData = Object.entries(candCounts).map(([label, val]) => ({
+    label, val, pct: Math.round((val/candMax)*100)
+  }));
 
   const TABS = [
     { id:'resumen',  label:'Resumen',  Icon:ClipboardList },
@@ -407,26 +430,6 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
             <button onClick={()=>onUpdateConfig({...config,name:eName.trim()||config.name,goal:parseInt(eGoal)||config.goal})}
               style={{ ...P.actionBtn, background:'#0f172a', marginBottom:10 }} className="btn-pill-hover">
               <CheckCircle2 size={17}/> Guardar cambios
-            </button>
-
-            <button onClick={() => {
-              const dummies = [];
-              const dist = { "ING. Nancy Goyes": 32, "Lic. Luz Álvarez": 30, "Lic. Jesenia Pinchao": 28, "Sr. Bayardo Moreno": 7, "ING. Verónica Taramuel": 3 };
-              Object.entries(dist).forEach(([candidato, count]) => {
-                for(let i=0; i<count; i++) {
-                  dummies.push({
-                    nombre: 'Encuesta Prueba', whatsapp: '', parroquia: PARROQUIAS[Math.floor(Math.random()*6)].name,
-                    candidato, conoce_candidato: 'Sí', votaria_candidato: 'Sí', encuestador_id: null, encuestador: config.name,
-                    ts: new Date().toISOString(), uploaded: false
-                  });
-                }
-              });
-              const updated = [...surveys, ...dummies];
-              localStorage.setItem('pending_surveys', JSON.stringify(updated));
-              window.location.reload(); // Reload to trigger sync and state update
-            }}
-              style={{ ...P.actionBtn, background:'#10b981', marginBottom:10 }} className="btn-pill-hover">
-              <Zap size={17}/> Generar 100 encuestas de prueba
             </button>
 
             <button onClick={()=>{ if(confirmClear){ onClearAll(); setConfirmClear(false); onClose(); } else setConfirmClear(true); }}
