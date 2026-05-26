@@ -33,7 +33,7 @@ const CANDIDATOS = [
   { name: "Jesica Flores", color: "#f43f5e" }
 ];
 const TOTAL_STEPS = 2;
-const BLANK = { nombre:'', whatsapp:'', parroquia:'', parroquiaInput:'', candidato:'' };
+const BLANK = { nombre:'', whatsapp:'', parroquia:'', parroquiaInput:'', candidato:'', conoce_candidato:null, votaria_candidato:null };
 
 /* ════════════════════════════════════════════════════════════════════
    THEME
@@ -723,6 +723,40 @@ function App() {
               </motion.div>
             ))}
           </motion.div>
+
+          <AnimatePresence>
+            {formData.candidato && (
+              <motion.div initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} exit={{opacity:0, height:0}} style={{ overflow:'hidden' }}>
+                <div style={{ marginTop:6, marginBottom:16, padding:'14px 16px', background:t.bgSurface, border:`2px solid ${t.border}`, borderRadius:18 }}>
+                  
+                  <p style={{ ...S.label, color:t.text, marginBottom:8 }}>¿La o lo conoce al candidato?</p>
+                  <div style={{ display:'flex', gap:10, marginBottom:16 }}>
+                    <button onClick={()=>setField('conoce_candidato', 'Sí')}
+                      style={{ flex:1, padding:10, borderRadius:12, border:`2px solid ${formData.conoce_candidato==='Sí'?'#10b981':t.border}`, background:formData.conoce_candidato==='Sí'?'rgba(16,185,129,0.1)':t.bg, color:formData.conoce_candidato==='Sí'?'#10b981':t.text, fontWeight:700, cursor:'pointer' }}>
+                      Sí
+                    </button>
+                    <button onClick={()=>setField('conoce_candidato', 'No')}
+                      style={{ flex:1, padding:10, borderRadius:12, border:`2px solid ${formData.conoce_candidato==='No'?'#ef4444':t.border}`, background:formData.conoce_candidato==='No'?'rgba(239,68,68,0.1)':t.bg, color:formData.conoce_candidato==='No'?'#ef4444':t.text, fontWeight:700, cursor:'pointer' }}>
+                      No
+                    </button>
+                  </div>
+
+                  <p style={{ ...S.label, color:t.text, marginBottom:8 }}>¿Votaría por este candidato?</p>
+                  <div style={{ display:'flex', gap:10 }}>
+                    <button onClick={()=>setField('votaria_candidato', 'Sí')}
+                      style={{ flex:1, padding:10, borderRadius:12, border:`2px solid ${formData.votaria_candidato==='Sí'?'#10b981':t.border}`, background:formData.votaria_candidato==='Sí'?'rgba(16,185,129,0.1)':t.bg, color:formData.votaria_candidato==='Sí'?'#10b981':t.text, fontWeight:700, cursor:'pointer' }}>
+                      Sí
+                    </button>
+                    <button onClick={()=>setField('votaria_candidato', 'No')}
+                      style={{ flex:1, padding:10, borderRadius:12, border:`2px solid ${formData.votaria_candidato==='No'?'#ef4444':t.border}`, background:formData.votaria_candidato==='No'?'rgba(239,68,68,0.1)':t.bg, color:formData.votaria_candidato==='No'?'#ef4444':t.text, fontWeight:700, cursor:'pointer' }}>
+                      No
+                    </button>
+                  </div>
+
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           
           {config.gps && (
             <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',marginBottom:10,
@@ -732,7 +766,7 @@ function App() {
             </div>
           )}
 
-          <button onClick={saveToLocal} disabled={saving||!formData.candidato}
+          <button onClick={saveToLocal} disabled={saving||!formData.candidato||!formData.conoce_candidato||!formData.votaria_candidato}
             style={{...S.btnPill,background:'linear-gradient(135deg,#ef4444,#b91c1c)'}}
             className="btn-cta-hover">
             {saving
