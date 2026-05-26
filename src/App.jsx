@@ -161,14 +161,19 @@ function Toggle({ on, onToggle, label, sub, icon: Icon, activeColor = '#10b981' 
   );
 }
 
-function HBar({ label, val, pct, color, total }) {
+function HBar({ label, val, pct, color, total, hideCount }) {
   const t = useT();
   const pOf = total > 0 ? Math.round((val/total)*100) : 0;
   return (
     <div style={{ marginBottom:11 }}>
       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
         <span style={{ fontSize:'0.77rem', fontWeight:600, color:t.text }}>{label}</span>
-        <span style={{ fontSize:'0.77rem', fontWeight:700, color }}>{val} <span style={{ color:t.textMuted, fontWeight:500 }}>({pOf}%)</span></span>
+        <span style={{ fontSize:'0.77rem', fontWeight:700, color }}>
+          {!hideCount && `${val} `}
+          <span style={{ color: hideCount ? color : t.textMuted, fontWeight: hideCount ? 700 : 500 }}>
+            {hideCount ? `${pOf}%` : `(${pOf}%)`}
+          </span>
+        </span>
       </div>
       <div style={{ height:8, background:t.border, borderRadius:99, overflow:'hidden' }}>
         <motion.div initial={{ width:0 }} animate={{ width:`${pct}%` }} transition={{ duration:0.7, ease:[0.22,1,0.36,1] }}
@@ -366,7 +371,7 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
                 <p style={{ ...S.label, color:t.textMuted, marginBottom:10 }}>Intención de Voto (Candidatos)</p>
                 {candData.filter(d=>d.val>0).sort((a,b)=>b.val-a.val).map(d=>{
                   const cInfo = CANDIDATOS.find(c=>c.name===d.label);
-                  return <HBar key={d.label} {...d} color={cInfo?.color||'#8b5cf6'} total={total}/>;
+                  return <HBar key={d.label} {...d} color={cInfo?.color||'#8b5cf6'} total={total} hideCount={true}/>;
                 })}
 
                 <div style={{ height:1, background:t.border, margin:'16px 0' }}/>
@@ -402,6 +407,26 @@ function AdminPanel({ surveys, config, onClose, onExport, onClearAll, onUpdateCo
             <button onClick={()=>onUpdateConfig({...config,name:eName.trim()||config.name,goal:parseInt(eGoal)||config.goal})}
               style={{ ...P.actionBtn, background:'#0f172a', marginBottom:10 }} className="btn-pill-hover">
               <CheckCircle2 size={17}/> Guardar cambios
+            </button>
+
+            <button onClick={() => {
+              const dummies = [];
+              const dist = { "ING. Nancy Goyes": 32, "Lic. Luz Álvarez": 30, "Lic. Jesenia Pinchao": 28, "Sr. Bayardo Moreno": 7, "ING. Verónica Taramuel": 3 };
+              Object.entries(dist).forEach(([candidato, count]) => {
+                for(let i=0; i<count; i++) {
+                  dummies.push({
+                    nombre: 'Encuesta Prueba', whatsapp: '', parroquia: PARROQUIAS[Math.floor(Math.random()*6)].name,
+                    candidato, conoce_candidato: 'Sí', votaria_candidato: 'Sí', encuestador_id: null, encuestador: config.name,
+                    ts: new Date().toISOString(), uploaded: false
+                  });
+                }
+              });
+              const updated = [...surveys, ...dummies];
+              localStorage.setItem('pending_surveys', JSON.stringify(updated));
+              window.location.reload(); // Reload to trigger sync and state update
+            }}
+              style={{ ...P.actionBtn, background:'#10b981', marginBottom:10 }} className="btn-pill-hover">
+              <Zap size={17}/> Generar 100 encuestas de prueba
             </button>
 
             <button onClick={()=>{ if(confirmClear){ onClearAll(); setConfirmClear(false); onClose(); } else setConfirmClear(true); }}
