@@ -17,11 +17,11 @@ export default defineConfig({
       },
       includeAssets: ['favicon.svg', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
-        name: 'Dr. Fabián Robles - Encuesta 2026',
-        short_name: 'Robles2026',
-        description: 'Aplicación de encuesta ciudadana para Montúfar 2026',
-        theme_color: '#1e1b4b',
-        background_color: '#1e1b4b',
+        name: 'BRIGADA RENOVACIÓN',
+        short_name: 'BRIGADA',
+        description: 'Aplicación oficial de brigada y monitoreo territorial Montúfar 2026',
+        theme_color: '#0f172a',
+        background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

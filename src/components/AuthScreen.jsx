@@ -195,14 +195,14 @@ export function AuthScreen({ onLogin, theme: t }) {
           </div>
         </div>
 
-        {/* Logo Oficial de la Marca: Renovación Montufareña */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+        {/* Logo Oficial de la Marca: BRIGADA RENOVACIÓN */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <div
             style={{
               background: '#ffffff',
-              borderRadius: 18,
-              padding: '10px 18px',
-              boxShadow: '0 12px 30px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.2) inset',
+              borderRadius: 16,
+              padding: '8px 16px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -210,14 +210,29 @@ export function AuthScreen({ onLogin, theme: t }) {
           >
             <img
               src="/logo.png"
-              alt="Renovación Montufareña"
+              alt="BRIGADA RENOVACIÓN"
               style={{
-                height: 48,
+                height: 42,
                 width: 'auto',
                 objectFit: 'contain',
                 display: 'block',
               }}
             />
+          </div>
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 20,
+              padding: '5px 12px',
+              color: '#38bdf8',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            BRIGADA RENOVACIÓN (pap)
           </div>
         </div>
 

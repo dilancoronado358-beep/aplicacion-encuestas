@@ -734,7 +734,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       {/* ── TOP BAR INSTITUCIONAL (FONDO BLANCO, FORMAL Y ELEGANTE) ── */}
       <header
         style={{
-          padding: '12px 20px',
+          padding: '10px 16px',
           background: '#ffffff',
           borderBottom: '1px solid #e2e8f0',
           display: 'flex',
@@ -743,9 +743,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           flexShrink: 0,
           zIndex: 100,
           boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          flexWrap: 'wrap',
+          gap: 10,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div
             style={{
               background: '#ffffff',
@@ -760,9 +762,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           >
             <img
               src="/logo.png"
-              alt="Renovación Montufareña"
+              alt="BRIGADA RENOVACIÓN"
               style={{
-                height: 32,
+                height: 30,
                 width: 'auto',
                 objectFit: 'contain',
                 display: 'block',
@@ -770,9 +772,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize: '1.08rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#0f172a' }}>
-                Centro de Mando Electoral
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <h1 style={{ fontSize: '1.05rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#0f172a' }}>
+                BRIGADA RENOVACIÓN (pap)
               </h1>
               <span
                 style={{
@@ -787,11 +789,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   letterSpacing: '0.04em',
                 }}
               >
-                ADMINISTRACIÓN
+                CENTRO DE MANDO
               </span>
             </div>
-            <p style={{ fontSize: '0.73rem', color: '#64748b', margin: 0, fontWeight: 500 }}>
-              Monitoreo Territorial · San Gabriel, Cantón Montúfar
+            <p style={{ fontSize: '0.72rem', color: '#64748b', margin: 0, fontWeight: 500 }}>
+              Monitoreo Territorial Puerta a Puerta · San Gabriel, Montúfar
             </p>
           </div>
         </div>

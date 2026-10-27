@@ -336,9 +336,11 @@ export default function App() {
 
     const resultado = formData.votaria_robles || 'indeciso';
     const tipoVisita = (resultado === 'nadie_en_casa' || resultado === 'no_trabajable') ? resultado : 'efectiva';
+    const nombreAsignado = formData.nombre?.trim() || (formData.manzana ? `Mz. ${formData.manzana}` : 'Vivienda');
 
     const newSurvey = {
       ...formData,
+      nombre: nombreAsignado,
       tipo_visita: tipoVisita,
       resultado_voto: resultado,
       candidato: resultado === 'voto_seguro' ? 'Dr. Fabián Robles' : (resultado === 'no_vota' ? 'Otro / Rechazo' : (resultado === 'indeciso' ? 'Indeciso' : 'N/A')),
@@ -468,7 +470,7 @@ export default function App() {
   const pctGoal = config ? Math.min(100, Math.round((todayCt / (config.goal || 20)) * 100)) : 0;
   const isInSurvey = step > 0 && step < 3;
 
-  const canSaveStep1 = formData.nombre?.trim() && formData.manzana?.trim();
+  const canSaveStep1 = !!formData.manzana?.trim();
   const canSaveStep2 = !saving && formData.votaria_robles;
 
   /* ── Login / Auth Screen ──────────────────────────────────────── */
@@ -568,9 +570,12 @@ export default function App() {
                 />
               </div>
 
-              <h1 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0', letterSpacing: '-0.02em' }}>
-                Sistema de Registro Territorial
+              <h1 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+                BRIGADA RENOVACIÓN (pap)
               </h1>
+              <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0, fontWeight: 600 }}>
+                Despliegue Territorial Puerta a Puerta
+              </p>
             </div>
 
             {/* Ficha Oficial de Identificación del Brigadista */}
@@ -746,8 +751,8 @@ export default function App() {
                 <FileText size={18} color="#0f172a" />
               </div>
               <div>
-                <h2 style={{ ...S.pageTitle, color: '#0f172a', margin: 0 }}>Paso 1 · Identificación y Vivienda</h2>
-                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de registro ciudadano en territorio</p>
+                <h2 style={{ ...S.pageTitle, color: '#0f172a', margin: 0 }}>Paso 1 · Ubicación y Vivienda</h2>
+                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de registro territorial puerta a puerta</p>
               </div>
             </div>
 
@@ -765,23 +770,6 @@ export default function App() {
                     style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
                     value={formData.fecha || ''}
                     onChange={(e) => setField('fecha', e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* CAMPO 2: NOMBRE COMPLETO */}
-              <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-                  <User size={13} color="#64748b" />
-                  <span>NOMBRE DEL ENCUESTADO *</span>
-                </label>
-                <div style={S.inputWrap}>
-                  <User size={15} color="#94a3b8" style={S.inputIcon} />
-                  <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
-                    placeholder="Nombre y Apellidos completos del ciudadano"
-                    value={formData.nombre}
-                    onChange={(e) => setField('nombre', e.target.value)}
                   />
                 </div>
               </div>
@@ -973,11 +961,11 @@ export default function App() {
             </div>
 
             <button
-              disabled={!formData.nombre?.trim()}
+              disabled={!formData.manzana?.trim()}
               onClick={handleNext}
               style={{
                 ...S.btnPill,
-                background: formData.nombre?.trim() ? '#0f172a' : '#cbd5e1',
+                background: formData.manzana?.trim() ? '#0f172a' : '#cbd5e1',
                 marginTop: 8,
               }}
             >
@@ -1290,8 +1278,8 @@ export default function App() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Ciudadano:</span>
-                <strong style={{ color: '#0f172a' }}>{formData.nombre || 'Nadie en domicilio'}</strong>
+                <span style={{ color: '#64748b' }}>Predio / Vivienda:</span>
+                <strong style={{ color: '#0f172a' }}>{formData.numero_medidor_casa ? `Casa / Medidor: ${formData.numero_medidor_casa}` : (formData.manzana ? `Manzana ${formData.manzana}` : 'Vivienda')}</strong>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
@@ -1333,7 +1321,7 @@ export default function App() {
                 }}
               >
                 <FileText size={15} />
-                <span>REGISTRAR SIGUIENTE CIUDADANO</span>
+                <span>REGISTRAR SIGUIENTE VIVIENDA</span>
               </button>
 
               <button
@@ -1584,7 +1572,7 @@ export default function App() {
                   <ArrowLeft size={14} strokeWidth={2.5} /> Atrás
                 </button>
                 <StepDots current={step} total={TOTAL_STEPS} />
-                <span style={S.footerBrand}>SONDEO 2026</span>
+                <span style={S.footerBrand}>BRIGADA RENOVACIÓN (pap)</span>
               </div>
             </motion.div>
           )}
@@ -1655,7 +1643,7 @@ const S = {
   btnPill: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, marginTop: 8, borderRadius: 10, border: 'none', background: '#0f172a', color: '#fff', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,23,42,0.15)' },
   btnSecondary: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 42, borderRadius: 10, border: '1px solid #cbd5e1', background: '#ffffff', color: '#475569', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' },
   successCircle: { width: 72, height: 72, borderRadius: 16, background: '#f1f5f9', border: '1.5px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, zIndex: 1 },
-  footer: { padding: '10px 20px 16px', background: '#ffffff', borderTop: '1px solid #e2e8f0' },
+  footer: { padding: '10px 20px calc(14px + env(safe-area-inset-bottom, 0px))', background: '#ffffff', borderTop: '1px solid #e2e8f0' },
   progressTrack: { height: 4, borderRadius: 4, overflow: 'hidden', marginBottom: 10, background: '#e2e8f0' },
   progressFill: { height: '100%', background: '#0f172a', borderRadius: 4 },
   footerRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },

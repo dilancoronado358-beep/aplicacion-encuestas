@@ -50,7 +50,7 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
             'N°': idx + 1,
             'Fecha / Hora': s.fecha || (s.ts ? new Date(s.ts).toLocaleString('es-EC') : 'N/A'),
             'Encuestador': s.encuestador || 'No asignado',
-            'Ciudadano / Nombre': s.nombre || 'No registrado',
+            'Vivienda / Referencia': s.nombre || 'No registrado',
             'Manzana (CPV)': s.manzana || 'N/A',
             'N° Medidor / Casa': s.numero_medidor_casa || s.numero_casa || 'N/A',
             'Descripción de la Casa': s.descripcion_casa || 'N/A',
@@ -163,7 +163,7 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
 
     // Descarga universal con Blob y enlace directo
     const fechaHoy = new Date().toISOString().slice(0, 10);
-    const fileName = `Reporte_Oficial_Encuestas_Montufar_${fechaHoy}.xlsx`;
+    const fileName = `Reporte_Brigada_Renovacion_Montufar_${fechaHoy}.xlsx`;
 
     try {
       const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
