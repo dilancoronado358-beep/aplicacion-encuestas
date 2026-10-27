@@ -483,7 +483,41 @@ export default function App() {
   const pctGoal = config ? Math.min(100, Math.round((todayCt / (config.goal || 20)) * 100)) : 0;
   const isInSurvey = step > 0 && step < 3;
 
-  const canSaveStep1 = !!formData.manzana?.trim();
+  const selectedPriorities = Array.isArray(formData.problemas_prioritarios)
+    ? formData.problemas_prioritarios
+    : (formData.problema_prioritario ? [formData.problema_prioritario] : []);
+
+  const togglePriorityProblem = (prob) => {
+    setFormData((prev) => {
+      const current = Array.isArray(prev.problemas_prioritarios)
+        ? [...prev.problemas_prioritarios]
+        : (prev.problema_prioritario ? [prev.problema_prioritario] : []);
+
+      if (current.includes(prob)) {
+        const next = current.filter((p) => p !== prob);
+        return {
+          ...prev,
+          problemas_prioritarios: next,
+          problema_prioritario: next.join(' | '),
+          problemas: next,
+        };
+      } else {
+        if (current.length >= 3) {
+          alert('Puede seleccionar un máximo de 3 prioridades.');
+          return prev;
+        }
+        const next = [...current, prob];
+        return {
+          ...prev,
+          problemas_prioritarios: next,
+          problema_prioritario: next.join(' | '),
+          problemas: next,
+        };
+      }
+    });
+  };
+
+  const canSaveStep1 = !!formData.manzana?.trim() && selectedPriorities.length >= 1 && selectedPriorities.length <= 3;
   const canSaveStep2 = !saving && formData.votaria_robles;
 
   /* ── Login / Auth Screen ──────────────────────────────────────── */
@@ -890,43 +924,82 @@ export default function App() {
                 />
               </div>
 
-              {/* PREGUNTA SOLICITADA: PROBLEMA MÁS IMPORTANTE */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px' }}>
-                <label style={{ fontSize: '0.76rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, lineHeight: 1.35 }}>
-                  <AlertCircle size={15} color="#475569" />
-                  <span>¿Cuál cree usted que es el problema más importante que debe atender la próxima administración municipal?</span>
-                </label>
-                <select
-                  value={formData.problema_prioritario || ''}
-                  onChange={(e) => setField('problema_prioritario', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '9px 12px',
-                    borderRadius: 8,
-                    border: '1px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#0f172a',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    outline: 'none',
-                    cursor: 'pointer',
-                    boxSizing: 'border-box',
-                    marginBottom: 6,
-                  }}
-                >
-                  <option value="">-- Seleccione la prioridad principal --</option>
-                  {PROBLEMAS_MUNICIPALES_PRIORITARIOS.map((prob) => (
-                    <option key={prob} value={prob}>{prob}</option>
-                  ))}
-                </select>
+              {/* PREGUNTA: PROBLEMAS MUNICIPALES PRIORITARIOS (MÍNIMO 1, MÁXIMO 3) */}
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '14px 14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6, gap: 8 }}>
+                  <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'flex-start', gap: 6, lineHeight: 1.35 }}>
+                    <AlertCircle size={16} color="#0f172a" style={{ flexShrink: 0, marginTop: 1 }} />
+                    <span>¿Cuál cree usted que es el problema más importante que debe atender la próxima administración municipal?</span>
+                  </label>
+                </div>
 
-                {formData.problema_prioritario === '🏛️ Otro (especificar)' && (
-                  <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', height: 40, fontSize: '0.8rem', marginTop: 6 }}
-                    placeholder="Especifique el problema municipal prioritario..."
-                    value={formData.problema_prioritario_otro || ''}
-                    onChange={(e) => setField('problema_prioritario_otro', e.target.value)}
-                  />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600 }}>
+                    Escoja mínimo 1 y máximo 3 prioridades
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '2px 8px',
+                      borderRadius: 12,
+                      background: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#f0fdf4' : '#fffbeb',
+                      color: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#15803d' : '#b45309',
+                      border: `1px solid ${(selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#bbf7d0' : '#fde68a'}`,
+                    }}
+                  >
+                    {selectedPriorities.length} / 3 seleccionados
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                  {PROBLEMAS_MUNICIPALES_PRIORITARIOS.map((prob) => {
+                    const isSelected = selectedPriorities.includes(prob);
+                    const isMaxReached = selectedPriorities.length >= 3 && !isSelected;
+                    return (
+                      <button
+                        key={prob}
+                        type="button"
+                        onClick={() => togglePriorityProblem(prob)}
+                        style={{
+                          padding: '7px 11px',
+                          borderRadius: 8,
+                          border: `1.5px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
+                          background: isSelected ? '#0f172a' : (isMaxReached ? '#f8fafc' : '#ffffff'),
+                          color: isSelected ? '#ffffff' : (isMaxReached ? '#94a3b8' : '#334155'),
+                          fontSize: '0.74rem',
+                          fontWeight: isSelected ? 800 : 600,
+                          cursor: isMaxReached ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          textAlign: 'left',
+                          opacity: isMaxReached ? 0.6 : 1,
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {isSelected ? (
+                          <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <Check size={10} color="#0f172a" strokeWidth={3.5} />
+                          </div>
+                        ) : (
+                          <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid #cbd5e1', flexShrink: 0 }} />
+                        )}
+                        <span>{prob}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {selectedPriorities.includes('🏛️ Otro (especificar)') && (
+                  <div style={{ marginTop: 8 }}>
+                    <input
+                      style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', height: 40, fontSize: '0.8rem' }}
+                      placeholder="Especifique la otra prioridad o necesidad..."
+                      value={formData.problema_prioritario_otro || ''}
+                      onChange={(e) => setField('problema_prioritario_otro', e.target.value)}
+                    />
+                  </div>
                 )}
               </div>
             </div>
@@ -986,17 +1059,22 @@ export default function App() {
             </div>
 
             <button
-              disabled={!formData.manzana?.trim()}
+              disabled={!canSaveStep1}
               onClick={handleNext}
               style={{
                 ...S.btnPill,
-                background: formData.manzana?.trim() ? '#0f172a' : '#cbd5e1',
+                background: canSaveStep1 ? '#0f172a' : '#cbd5e1',
                 marginTop: 8,
               }}
             >
               <span>CONTINUAR A CONSULTA CIUDADANA</span>
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
+            {!canSaveStep1 && formData.manzana?.trim() && selectedPriorities.length === 0 && (
+              <p style={{ margin: '6px 0 0', fontSize: '0.72rem', color: '#b45309', textAlign: 'center', fontWeight: 700 }}>
+                ⚠️ Seleccione al menos 1 prioridad municipal (máximo 3) para continuar.
+              </p>
+            )}
           </motion.div>
         );
 
