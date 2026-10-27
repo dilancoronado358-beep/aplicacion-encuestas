@@ -104,11 +104,15 @@ export const unpackSurveyFromSupabase = (raw) => {
 export const uploadSurvey = async (survey) => {
   try {
     const payload = formatSurveyForSupabase(survey);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(`${SUPABASE_URL}/rest/v1/encuestas`, {
       method: 'POST',
       headers,
       body: JSON.stringify([payload]),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     const isOk = res.ok;
     if (!isOk) {
       const errTxt = await res.text();
@@ -298,18 +302,31 @@ export const registerEncuestadorCloud = async (userData) => {
  * Envía la ubicación GPS en tiempo real del encuestador a Supabase.
  * Soporta tanto la tabla dedicada 'encuestadores_ubicaciones' como el canal de 'encuestas'
  */
+const lastHeartbeatMap = new Map();
+
 export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy = 0) => {
   if (!email || !lat || !lng) return false;
   const cleanEmail = email.toLowerCase().trim();
+
+  // Throttling: máximo un envío cada 12 segundos por encuestador para evitar trabar la app
+  const nowMs = Date.now();
+  const lastSent = lastHeartbeatMap.get(cleanEmail) || 0;
+  if (nowMs - lastSent < 12000) return true;
+  lastHeartbeatMap.set(cleanEmail, nowMs);
+
   const now = new Date().toISOString();
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
     const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?email=eq.${encodeURIComponent(cleanEmail)}`, {
       method: 'PATCH',
       headers: {
         ...headers,
         Prefer: 'return=representation',
       },
+      signal: controller.signal,
       body: JSON.stringify({
         nombre: nombre || cleanEmail,
         lat: parseFloat(lat),
@@ -319,14 +336,20 @@ export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy
         activo: true,
       }),
     });
+    clearTimeout(timeoutId);
+
     if (patchRes.ok) {
       const data = await patchRes.json().catch(() => []);
       if (Array.isArray(data) && data.length > 0) return true;
     }
 
+    const postController = new AbortController();
+    const postTimeoutId = setTimeout(() => postController.abort(), 4000);
+
     const postRes = await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones`, {
       method: 'POST',
       headers,
+      signal: postController.signal,
       body: JSON.stringify([
         {
           email: cleanEmail,
@@ -339,9 +362,9 @@ export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy
         },
       ]),
     });
+    clearTimeout(postTimeoutId);
     return postRes.ok;
   } catch (err) {
-    console.warn('Error enviando heartbeat GPS de encuestador:', err);
     return false;
   }
 };
