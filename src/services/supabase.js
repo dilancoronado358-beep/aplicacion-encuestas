@@ -303,14 +303,30 @@ export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy
   const cleanEmail = email.toLowerCase().trim();
   const now = new Date().toISOString();
 
-  // 1. Intentar upsert en encuestadores_ubicaciones
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?on_conflict=email`, {
-      method: 'POST',
+    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?email=eq.${encodeURIComponent(cleanEmail)}`, {
+      method: 'PATCH',
       headers: {
         ...headers,
-        Prefer: 'resolution=merge-duplicates,return=representation',
+        Prefer: 'return=representation',
       },
+      body: JSON.stringify({
+        nombre: nombre || cleanEmail,
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+        accuracy: parseFloat(accuracy || 0),
+        updated_at: now,
+        activo: true,
+      }),
+    });
+    if (patchRes.ok) {
+      const data = await patchRes.json().catch(() => []);
+      if (Array.isArray(data) && data.length > 0) return true;
+    }
+
+    const postRes = await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones`, {
+      method: 'POST',
+      headers,
       body: JSON.stringify([
         {
           email: cleanEmail,
@@ -323,33 +339,9 @@ export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy
         },
       ]),
     });
-    if (res.ok) return true;
+    return postRes.ok;
   } catch (err) {
-    // Si la tabla aún no existe, usar el canal de encuestas
-  }
-
-  // 2. Canal de telemetría GPS en encuestas
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/encuestas`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify([
-        {
-          nombre: 'Ubicación GPS Encuestador',
-          parroquia: 'San Gabriel',
-          candidato: 'GPS_TRACKING',
-          encuestador: nombre || cleanEmail,
-          encuestador_id: cleanEmail,
-          lat: String(lat),
-          lng: String(lng),
-          uploaded: true,
-          ts: now,
-        },
-      ]),
-    });
-    return res.ok;
-  } catch (e) {
-    console.warn('Error enviando heartbeat GPS de encuestador:', e);
+    console.warn('Error enviando heartbeat GPS de encuestador:', err);
     return false;
   }
 };
