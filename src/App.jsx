@@ -314,19 +314,39 @@ export default function App() {
     }));
   };
 
-  // Guardado de la nueva encuesta completa
+  // Captura satelital GPS en tiempo real con máxima precisión y sin cache
+  const getAccurateGPS = async () => {
+    if (navigator.geolocation) {
+      try {
+        const pos = await new Promise((resolve) => {
+          navigator.geolocation.getCurrentPosition(
+            (p) => resolve({
+              lat: Number(p.coords.latitude).toFixed(6),
+              lng: Number(p.coords.longitude).toFixed(6),
+              accuracy: p.coords.accuracy
+            }),
+            () => resolve(null),
+            { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
+          );
+        });
+        if (pos) return pos;
+      } catch (e) {
+        console.warn('GPS directo:', e);
+      }
+    }
+    if (userCoords && userCoords.lat && userCoords.lng) {
+      return {
+        lat: Number(userCoords.lat).toFixed(6),
+        lng: Number(userCoords.lng).toFixed(6),
+        accuracy: userCoords.accuracy || 10
+      };
+    }
+    return null;
+  };
+
   const saveToLocal = async () => {
     setSaving(true);
-    let coords = null;
-    if (config?.gps && navigator.geolocation) {
-      coords = await new Promise((resolve) =>
-        navigator.geolocation.getCurrentPosition(
-          (p) => resolve({ lat: p.coords.latitude.toFixed(6), lng: p.coords.longitude.toFixed(6) }),
-          () => resolve(null),
-          { timeout: 7000, maximumAge: 30000, enableHighAccuracy: true }
-        )
-      );
-    }
+    const coords = await getAccurateGPS();
 
     if (navigator.vibrate) navigator.vibrate([80, 40, 140]);
 
@@ -362,51 +382,44 @@ export default function App() {
     setStep(3);
   };
 
-  // Guardado rápido de incidencias en territorio (⚪ Nadie en casa / 🔘 No trabajable)
-  const saveQuickIncidence = async (tipo) => {
+  // Guardado de incidencia directo desde adentro de la encuesta (Paso 1) con ubicación exacta
+  const saveIncidentFromStep1 = async (tipo) => {
     setSaving(true);
-    let coords = null;
-    if (config?.gps && navigator.geolocation) {
-      coords = await new Promise((resolve) =>
-        navigator.geolocation.getCurrentPosition(
-          (p) => resolve({ lat: p.coords.latitude.toFixed(6), lng: p.coords.longitude.toFixed(6) }),
-          () => resolve(null),
-          { timeout: 7000, maximumAge: 30000, enableHighAccuracy: true }
-        )
-      );
-    }
-
+    const coords = await getAccurateGPS();
     if (navigator.vibrate) navigator.vibrate([60, 30, 90]);
 
-    let autoManzana = 'En territorio';
-    if (userCoords) {
-      const match = autoDetectManzana(userCoords.lat, userCoords.lng);
-      if (match) autoManzana = match;
+    let detectedManzana = formData.manzana?.trim();
+    if (!detectedManzana && coords) {
+      detectedManzana = autoDetectManzana(coords.lat, coords.lng) || '';
     }
 
-    const incidenceRecord = {
-      ...BLANK,
-      fecha: new Date().toISOString().slice(0, 16),
-      nombre: tipo === 'nadie_en_casa' ? 'Nadie en domicilio' : 'Zona no trabajable',
-      manzana: autoManzana,
-      numero_medidor_casa: 'S/N',
-      descripcion_casa: tipo === 'nadie_en_casa' ? 'No se obtuvo respuesta en la vivienda' : 'Predio o zona sin viviendas habitadas',
+    const assignedName = formData.numero_medidor_casa?.trim()
+      ? `Casa / Medidor: ${formData.numero_medidor_casa.trim()}`
+      : (detectedManzana ? `Mz. ${detectedManzana}` : (tipo === 'nadie_en_casa' ? 'Nadie en domicilio' : 'Zona no trabajable'));
+
+    const incidentRecord = {
+      ...formData,
+      nombre: assignedName,
+      manzana: detectedManzana || 'En territorio',
+      numero_medidor_casa: formData.numero_medidor_casa || 'S/N',
+      descripcion_casa: formData.descripcion_casa || (tipo === 'nadie_en_casa' ? 'No se obtuvo respuesta en la vivienda' : 'Predio o zona sin viviendas habitadas'),
       problemas: [],
       votaria_robles: tipo,
       tipo_visita: tipo,
       resultado_voto: tipo,
       candidato: tipo === 'nadie_en_casa' ? 'Nadie en domicilio' : 'Zona no trabajable',
       encuestador: config?.name || 'Encuestador',
-      parroquia: 'San Gabriel (Centro)',
+      parroquia: formData.parroquia || 'San Gabriel (Centro)',
       ...(coords || {}),
-      ts: new Date().toISOString(),
+      ts: formData.fecha ? new Date(formData.fecha).toISOString() : new Date().toISOString(),
       uploaded: false,
     };
+    delete incidentRecord.parroquiaInput;
 
-    const isSuccess = await uploadSurvey(incidenceRecord);
-    incidenceRecord.uploaded = isSuccess;
+    const isSuccess = await uploadSurvey(incidentRecord);
+    incidentRecord.uploaded = isSuccess;
 
-    const updated = [...surveys, incidenceRecord];
+    const updated = [...surveys, incidentRecord];
     persistSurveys(updated);
     setSaving(false);
     setStep(3);
@@ -694,51 +707,6 @@ export default function App() {
               <FileText size={16} />
               <span>INICIAR REGISTRO DE ENCUESTA</span>
             </button>
-
-            {/* Registro Rápido de Incidencias en Territorio (Formal) */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%', marginTop: 10 }}>
-              <button
-                disabled={saving}
-                onClick={() => saveQuickIncidence('nadie_en_casa')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                  height: 42,
-                  borderRadius: 10,
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#334155',
-                  fontWeight: 700,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                }}
-              >
-                <span>⚪ Nadie en Domicilio</span>
-              </button>
-
-              <button
-                disabled={saving}
-                onClick={() => saveQuickIncidence('no_trabajable')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                  height: 42,
-                  borderRadius: 10,
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#334155',
-                  fontWeight: 700,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                }}
-              >
-                <span>🔘 Zona No Trabajable</span>
-              </button>
-            </div>
           </motion.div>
         );
 
@@ -754,6 +722,50 @@ export default function App() {
                 <h2 style={{ ...S.pageTitle, color: '#0f172a', margin: 0 }}>Paso 1 · Ubicación y Vivienda</h2>
                 <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de registro territorial puerta a puerta</p>
               </div>
+            </div>
+
+            {/* INDICADOR DE POSICIÓN SATELITAL GPS EN TIEMPO REAL */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                borderRadius: 8,
+                padding: '7px 12px',
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.73rem', fontWeight: 700, color: '#0f172a' }}>
+                <Navigation size={13} color="#2563eb" />
+                <span>
+                  {userCoords
+                    ? `GPS Exacto: ${Number(userCoords.lat).toFixed(5)}, ${Number(userCoords.lng).toFixed(5)}`
+                    : 'Obteniendo GPS satelital...'}
+                </span>
+                {userCoords?.accuracy && (
+                  <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 800 }}>
+                    (±{Math.round(userCoords.accuracy)}m)
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={requestLocationPermission}
+                style={{
+                  background: '#f1f5f9',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: 4,
+                  padding: '2px 8px',
+                  fontSize: '0.66rem',
+                  fontWeight: 800,
+                  color: '#0f172a',
+                  cursor: 'pointer',
+                }}
+              >
+                Refrescar GPS
+              </button>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', paddingRight: 4, display: 'flex', flexDirection: 'column', gap: 12 }} className="custom-scrollbar">
@@ -957,6 +969,60 @@ export default function App() {
                   value={formData.problemas_otro || ''}
                   onChange={(e) => setField('problemas_otro', e.target.value)}
                 />
+              </div>
+            </div>
+
+            {/* INCIDENCIAS DIRECTAS EN TERRITORIO (ADENTRO DE LA ENCUESTA) */}
+            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px', marginTop: 10 }}>
+              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8, textAlign: 'center' }}>
+                ¿Se encuentra alguien en el domicilio?
+              </span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => saveIncidentFromStep1('nadie_en_casa')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    height: 44,
+                    borderRadius: 8,
+                    border: '1.5px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#334155',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <span>⚪ Nadie en Domicilio</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => saveIncidentFromStep1('no_trabajable')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    height: 44,
+                    borderRadius: 8,
+                    border: '1.5px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#334155',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <span>🔘 Zona No Trabajable</span>
+                </button>
               </div>
             </div>
 

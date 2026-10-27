@@ -347,13 +347,45 @@ export const sendEncuestadorHeartbeat = async (email, nombre, lat, lng, accuracy
 };
 
 /**
- * Consulta la ubicación en tiempo real de todos los encuestadores activos en campo
+ * Elimina un encuestador tanto de la tabla de encuestadores como de la tabla de ubicaciones
+ */
+export const deleteEncuestadorCloud = async (id, email) => {
+  try {
+    if (id) {
+      await fetch(`${SUPABASE_URL}/rest/v1/encuestadores?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      });
+    }
+    if (email) {
+      await fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?email=eq.${encodeURIComponent(email)}`, {
+        method: 'DELETE',
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      });
+    }
+    return true;
+  } catch (err) {
+    console.error('Error al eliminar encuestador:', err);
+    return false;
+  }
+};
+
+/**
+ * Consulta la ubicación en tiempo real de todos los encuestadores activos en campo.
+ * Filtra rigurosamente: solo devuelve encuestadores registrados en la lista oficial
+ * y que hayan reportado señal en los últimos 10 minutos (en línea).
  */
 export const fetchLiveEncuestadoresLocations = async () => {
   const encuestadoresMap = new Map();
 
-  // 1. Intentar consultar tabla dedicada encuestadores_ubicaciones
   try {
+    // 1. Obtener la lista oficial de encuestadores registrados
+    const encList = await fetchEncuestadoresList();
+    const validEmails = new Set(
+      Array.isArray(encList) ? encList.map((e) => (e.email || '').toLowerCase().trim()) : []
+    );
+
+    // 2. Consultar tabla de ubicaciones
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?select=*&order=updated_at.desc`,
       {
@@ -364,70 +396,48 @@ export const fetchLiveEncuestadoresLocations = async () => {
         },
       }
     );
+
     if (res.ok) {
       const rows = await res.json();
       if (Array.isArray(rows) && rows.length > 0) {
+        const orphanIds = [];
         rows.forEach((r) => {
-          if (!encuestadoresMap.has(r.email) && r.lat && r.lng) {
+          const emailKey = (r.email || '').toLowerCase().trim();
+          
+          // Si el encuestador fue eliminado de la lista oficial, marcar para borrado
+          if (validEmails.size > 0 && !validEmails.has(emailKey)) {
+            if (r.id) orphanIds.push(r.id);
+            return;
+          }
+
+          if (!encuestadoresMap.has(emailKey) && r.lat && r.lng) {
             const updatedAt = new Date(r.updated_at || r.created_at || Date.now());
             const minutesDiff = (Date.now() - updatedAt.getTime()) / (1000 * 60);
-            encuestadoresMap.set(r.email, {
-              id: r.id || r.email,
-              email: r.email,
-              nombre: r.nombre || r.email,
-              lat: parseFloat(r.lat),
-              lng: parseFloat(r.lng),
-              accuracy: r.accuracy || 10,
-              updatedAt,
-              isOnline: minutesDiff < 5,
-              source: 'encuestadores_ubicaciones',
-            });
-          }
-        });
-        return Array.from(encuestadoresMap.values());
-      }
-    }
-  } catch (err) {
-    // Continuar al canal de encuestas
-  }
-
-  // 2. Consultar registros recientes de GPS_TRACKING en encuestas
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/encuestas?candidato=eq.GPS_TRACKING&order=ts.desc&limit=100`,
-      {
-        method: 'GET',
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-      }
-    );
-    if (res.ok) {
-      const rows = await res.json();
-      if (Array.isArray(rows)) {
-        rows.forEach((r) => {
-          const key = r.encuestador_id || r.encuestador;
-          if (key && !encuestadoresMap.has(key) && r.lat && r.lng) {
-            const lat = parseFloat(r.lat);
-            const lng = parseFloat(r.lng);
-            if (!isNaN(lat) && !isNaN(lng)) {
-              const updatedAt = new Date(r.ts || r.created_at || Date.now());
-              const minutesDiff = (Date.now() - updatedAt.getTime()) / (1000 * 60);
-              encuestadoresMap.set(key, {
-                id: r.id || key,
-                email: r.encuestador_id || key,
-                nombre: r.encuestador || 'Encuestador',
-                lat,
-                lng,
-                accuracy: 12,
+            
+            // Solo considerar encuestadores activos con señal reciente (últimos 10 min)
+            if (minutesDiff <= 10) {
+              encuestadoresMap.set(emailKey, {
+                id: r.id || r.email,
+                email: r.email,
+                nombre: r.nombre || r.email,
+                lat: parseFloat(r.lat),
+                lng: parseFloat(r.lng),
+                accuracy: r.accuracy || 10,
                 updatedAt,
                 isOnline: minutesDiff < 5,
-                source: 'encuestas',
+                source: 'encuestadores_ubicaciones',
               });
             }
           }
         });
+
+        // Limpieza automática en segundo plano de encuestadores eliminados
+        if (orphanIds.length > 0) {
+          fetch(`${SUPABASE_URL}/rest/v1/encuestadores_ubicaciones?id=in.(${orphanIds.join(',')})`, {
+            method: 'DELETE',
+            headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+          }).catch(() => {});
+        }
       }
     }
   } catch (err) {

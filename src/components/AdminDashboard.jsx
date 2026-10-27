@@ -15,7 +15,8 @@ import {
   calculateResultadoVoto,
   fetchLiveEncuestadoresLocations,
   sendEncuestadorHeartbeat,
-  deleteAllSurveysCloud
+  deleteAllSurveysCloud,
+  deleteEncuestadorCloud
 } from '../services/supabase';
 import { exportSurveysToExcel } from '../services/excelExport';
 import { CANDIDATOS, PARROQUIAS } from '../constants';
@@ -456,7 +457,12 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
     if (!showEncuestadores) return;
 
     liveEncuestadores.forEach((enc) => {
-      if (!enc.lat || !enc.lng) return;
+      if (!enc.lat || !enc.lng || !enc.isOnline) return;
+
+      const existsInTeam = encuestadores.length === 0 || encuestadores.some(
+        (u) => (u.email || '').toLowerCase().trim() === (enc.email || '').toLowerCase().trim()
+      );
+      if (!existsInTeam) return;
 
       const encIcon = L.divIcon({
         className: 'custom-enc-pin-wrapper',
@@ -551,6 +557,29 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       }, 1200);
     } else {
       setUserModalStatus({ ok: false, msg: 'No se pudo crear. Verifica si el correo ya existe.' });
+    }
+  };
+
+  // Manejo de eliminación de encuestadores y administradores
+  const handleDeleteUser = async (u) => {
+    if (u.email === user?.email) {
+      alert('No puedes eliminar tu propia cuenta en uso activo.');
+      return;
+    }
+    const confirmDel = window.confirm(
+      `¿Está seguro de eliminar al usuario "${u.nombre}" (${u.email})?\n\n` +
+      `• Se borrará de la base de datos de usuarios oficiales.\n` +
+      `• Su ubicación satelital se eliminará inmediatamente del mapa en tiempo real.\n` +
+      `• Esta acción es irreversible.`
+    );
+    if (!confirmDel) return;
+
+    const ok = await deleteEncuestadorCloud(u.id, u.email);
+    if (ok) {
+      alert(`Usuario "${u.nombre}" eliminado correctamente de la base de datos.`);
+      await loadData();
+    } else {
+      alert('Ocurrió un inconveniente al eliminar el usuario.');
     }
   };
 
@@ -2464,6 +2493,30 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginTop: 4 }}>
                     <span style={{ color: '#64748b' }}>🟢 Votos Seguros logrados:</span>
                     <strong style={{ color: '#16a34a' }}>{u.voto_seguro} ({u.efectividad}%)</strong>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, paddingTop: 8, borderTop: '1px solid #f1f5f9' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteUser(u)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        background: '#ffffff',
+                        border: '1px solid #fca5a5',
+                        color: '#dc2626',
+                        borderRadius: 6,
+                        padding: '4px 10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                      title="Eliminar usuario de la base de datos y retirar del mapa"
+                    >
+                      <Trash2 size={12} color="#dc2626" />
+                      <span>Eliminar usuario</span>
+                    </button>
                   </div>
                 </div>
               ))}
