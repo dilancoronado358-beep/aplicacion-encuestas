@@ -929,47 +929,6 @@ export default function App() {
                   />
                 )}
               </div>
-
-              {/* OTRAS NECESIDADES REPORTADAS */}
-              <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#475569', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
-                  <span>Otras necesidades secundarias expresadas por el ciudadano:</span>
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 6 }}>
-                  {PROBLEMAS_COMUNES.map((prob) => {
-                    const isSelected = Array.isArray(formData.problemas) && formData.problemas.includes(prob);
-                    return (
-                      <button
-                        key={prob}
-                        type="button"
-                        onClick={() => toggleProblem(prob)}
-                        style={{
-                          padding: '6px 10px',
-                          borderRadius: 6,
-                          border: `1px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
-                          background: isSelected ? '#0f172a' : '#ffffff',
-                          color: isSelected ? '#ffffff' : '#334155',
-                          fontSize: '0.72rem',
-                          fontWeight: isSelected ? 800 : 600,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 5,
-                        }}
-                      >
-                        {isSelected && <Check size={12} color="#ffffff" strokeWidth={3} />}
-                        <span>{prob}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <input
-                  style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', height: 40, fontSize: '0.8rem' }}
-                  placeholder="Otro requerimiento específico del sector..."
-                  value={formData.problemas_otro || ''}
-                  onChange={(e) => setField('problemas_otro', e.target.value)}
-                />
-              </div>
             </div>
 
             {/* INCIDENCIAS DIRECTAS EN TERRITORIO (ADENTRO DE LA ENCUESTA) */}
