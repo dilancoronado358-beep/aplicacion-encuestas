@@ -17,7 +17,8 @@ import {
   TOTAL_STEPS,
   BLANK,
   LIGHT,
-  DARK
+  DARK,
+  getLocalDatetimeString
 } from './constants';
 import { Confetti, StepDots } from './components/UI';
 import { AuthScreen } from './components/AuthScreen';
@@ -76,7 +77,10 @@ export default function App() {
   }, []);
   const [config, setConfig] = useState(() => JSON.parse(localStorage.getItem('campaign_config') || 'null'));
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('dark_mode') === 'true');
-  const [formData, setFormData] = useState(BLANK);
+  const [formData, setFormData] = useState(() => ({
+    ...BLANK,
+    fecha: getLocalDatetimeString(),
+  }));
   const [showAdmin, setShowAdmin] = useState(false);
   const [saving, setSaving] = useState(false);
   const [adminInFieldMode, setAdminInFieldMode] = useState(false);
@@ -507,7 +511,7 @@ export default function App() {
     }
     setFormData((prev) => ({
       ...prev,
-      fecha: prev.fecha || new Date().toISOString().slice(0, 16),
+      fecha: getLocalDatetimeString(),
       manzana: autoManzana || prev.manzana || '',
     }));
     setStep(1);
@@ -520,7 +524,7 @@ export default function App() {
     }
     setFormData({
       ...BLANK,
-      fecha: new Date().toISOString().slice(0, 16),
+      fecha: getLocalDatetimeString(),
       manzana: autoManzana,
     });
     setStep(1);
@@ -528,7 +532,7 @@ export default function App() {
   const goHome = () => {
     setFormData({
       ...BLANK,
-      fecha: new Date().toISOString().slice(0, 16),
+      fecha: getLocalDatetimeString(),
     });
     setStep(0);
   };
@@ -889,7 +893,7 @@ export default function App() {
                   <input
                     type="datetime-local"
                     style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
-                    value={formData.fecha || ''}
+                    value={formData.fecha || getLocalDatetimeString()}
                     onChange={(e) => setField('fecha', e.target.value)}
                   />
                 </div>
