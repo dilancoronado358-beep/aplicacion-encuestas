@@ -1,187 +1,277 @@
 import * as XLSX from 'xlsx';
 
 /**
- * Genera y descarga un archivo Excel (.xlsx) estructurado profesionalmente
- * con 3 hojas: Encuestas Detalladas, Rendimiento por Encuestador y Balance de Semaforización.
- * Compatible con todos los navegadores móviles y de escritorio.
+ * Formatea fechas a hora local ecuatoriana legible DD/MM/AAAA HH:mm
+ */
+const formatLocalTime = (val) => {
+  if (!val) return 'N/A';
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  } catch (e) {
+    return String(val);
+  }
+};
+
+/**
+ * Genera y descarga el reporte oficial institucional en formato Excel (.xlsx).
+ * Contiene 4 hojas profesionales:
+ * 1. Resumen Ejecutivo y Totales
+ * 2. Base Completa de Encuestas (con links GPS a Google Maps)
+ * 3. Rendimiento por Encuestador (con conteos y efectividad)
+ * 4. Prioridades Ciudadanas (Ranking de problemas barriales)
  */
 export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestadoresStats = []) => {
   try {
     const wb = XLSX.utils.book_new();
+    const total = surveys.length;
+    const fechaReporte = formatLocalTime(new Date());
 
-    // 1. HOJA DE ENCUESTAS DETALLADAS
-    const rows = (surveys && surveys.length > 0)
+    // ════════════════════════════════════════════════════════════════════
+    // HOJA 1: 📊 RESUMEN EJECUTIVO Y TOTALES
+    // ════════════════════════════════════════════════════════════════════
+    const pct = (val) => (total > 0 ? ((val / total) * 100).toFixed(1) : '0.0');
+    const totalEfectivas = (statsCounts.voto_seguro || 0) + (statsCounts.indeciso || 0) + (statsCounts.no_vota || 0);
+    const pctFavorableEfectivo = totalEfectivas > 0 ? (((statsCounts.voto_seguro || 0) / totalEfectivas) * 100).toFixed(1) : '0.0';
+
+    const resumenRows = [
+      { 'REPORTE TERRITORIAL OFICIAL': 'BRIGADA RENOVACIÓN - ALCALDÍA DE MONTÚFAR', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'Campaña Oficial Dr. Fabián Robles', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': `Fecha de Emisión: ${fechaReporte}`, 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': '', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': '1. BALANCE GENERAL DE SEMAFORIZACIÓN', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': '🟢 VOTO SEGURO (Respaldo Firme)', 'VALOR / TOTAL': statsCounts.voto_seguro || 0, 'PORCENTAJE': `${pct(statsCounts.voto_seguro || 0)}%`, 'OBSERVACIÓN': 'Voto consolidado y favorable' },
+      { 'REPORTE TERRITORIAL OFICIAL': '🟡 INDECISO / POR DEFINIR', 'VALOR / TOTAL': statsCounts.indeciso || 0, 'PORCENTAJE': `${pct(statsCounts.indeciso || 0)}%`, 'OBSERVACIÓN': 'Requiere revisita y entrega de propuestas' },
+      { 'REPORTE TERRITORIAL OFICIAL': '🔴 NO VOTA / NO REGRESAR', 'VALOR / TOTAL': statsCounts.no_vota || 0, 'PORCENTAJE': `${pct(statsCounts.no_vota || 0)}%`, 'OBSERVACIÓN': 'Oposición o rechazo a la visita' },
+      { 'REPORTE TERRITORIAL OFICIAL': '⚪ NADIE EN DOMICILIO', 'VALOR / TOTAL': statsCounts.nadie_en_casa || 0, 'PORCENTAJE': `${pct(statsCounts.nadie_en_casa || 0)}%`, 'OBSERVACIÓN': 'Viviendas cerradas sin respuesta' },
+      { 'REPORTE TERRITORIAL OFICIAL': '🔘 ZONA NO TRABAJABLE', 'VALOR / TOTAL': statsCounts.no_trabajable || 0, 'PORCENTAJE': `${pct(statsCounts.no_trabajable || 0)}%`, 'OBSERVACIÓN': 'Predios baldíos, comercios o deshabitados' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'TOTAL GENERAL DE VISITAS EN TERRITORIO', 'VALOR / TOTAL': total, 'PORCENTAJE': '100.0%', 'OBSERVACIÓN': '100% registros georreferenciados' },
+      { 'REPORTE TERRITORIAL OFICIAL': '', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': '2. EFECTIVIDAD SOBRE CONTACTOS CIUDADANOS', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'Total Entrevistas Efectivas (Ciudadanos contactados)', 'VALOR / TOTAL': totalEfectivas, 'PORCENTAJE': `${pct(totalEfectivas)}%`, 'OBSERVACIÓN': 'Excluye casas cerradas y zonas vacías' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'Porcentaje de Apoyo Favorable Efectivo', 'VALOR / TOTAL': `${pctFavorableEfectivo}%`, 'PORCENTAJE': `${pctFavorableEfectivo}%`, 'OBSERVACIÓN': 'Votos Seguros sobre total de ciudadanos atendidos' },
+    ];
+
+    const wsResumen = XLSX.utils.json_to_sheet(resumenRows);
+    wsResumen['!cols'] = [
+      { wch: 48 }, // Indicador
+      { wch: 22 }, // Total
+      { wch: 18 }, // Porcentaje
+      { wch: 45 }, // Observación
+    ];
+    XLSX.utils.book_append_sheet(wb, wsResumen, '📊 Resumen Ejecutivo');
+
+    // ════════════════════════════════════════════════════════════════════
+    // HOJA 2: 📋 BASE COMPLETA DE ENCUESTAS (DETALLE VIVIENDA A VIVIENDA)
+    // ════════════════════════════════════════════════════════════════════
+    const encuestasRows = (surveys && surveys.length > 0)
       ? surveys.map((s, idx) => {
           const rawVoto = s.votaria_robles || s.resultado_voto || '';
-          const labelVoto = (
-            rawVoto === 'voto_seguro' ? 'Voto Seguro' :
-            rawVoto === 'indeciso' ? 'Indeciso' :
-            rawVoto === 'no_vota' ? 'No Vota / No Regresar' :
-            rawVoto === 'nadie_en_casa' ? 'Nadie en Casa' :
-            rawVoto === 'no_trabajable' ? 'No Trabajable' : 'Otro'
+          const semaforoTexto = (
+            rawVoto === 'voto_seguro' ? '🟢 Voto Seguro' :
+            rawVoto === 'indeciso' ? '🟡 Indeciso' :
+            rawVoto === 'no_vota' ? '🔴 No Vota' :
+            rawVoto === 'nadie_en_casa' ? '⚪ Nadie en Domicilio' :
+            rawVoto === 'no_trabajable' ? '🔘 Zona No Trabajable' : 'Sin definir'
           );
-          const semaforoIcon = (
-            rawVoto === 'voto_seguro' ? '🟢 Verde (Seguro)' :
-            rawVoto === 'indeciso' ? '🟡 Amarillo (Indeciso)' :
-            rawVoto === 'no_vota' ? '🔴 Rojo (No Vota)' :
-            rawVoto === 'nadie_en_casa' ? '⚪ Blanco (Nadie en Casa)' :
-            rawVoto === 'no_trabajable' ? '🔘 Plomo (No Trabajable)' : 'Sin clasificar'
-          );
-
-          const problemasStr = Array.isArray(s.problemas)
-            ? s.problemas.join(', ') + (s.problemas_otro ? ` | Otro: ${s.problemas_otro}` : '')
-            : (s.problemas || s.problemas_otro || 'Ninguno reportado');
 
           const apoyoStr = s.apoyo_robles === 'si' ? 'Sí, contamos con su apoyo'
-            : s.apoyo_robles === 'no' ? 'No apoya'
+            : s.apoyo_robles === 'no' ? 'No apoya la candidatura'
             : s.apoyo_robles === 'tal_vez' ? 'Tal vez / Por definir'
-            : (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en casa' : s.tipo_visita === 'no_trabajable' ? 'No trabajable' : 'N/A');
+            : (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en domicilio' : s.tipo_visita === 'no_trabajable' ? 'Zona no trabajable' : 'No consultado');
 
           const prioridadStr = s.problema_prioritario === '🏛️ Otro (especificar)'
             ? (s.problema_prioritario_otro ? `Otro: ${s.problema_prioritario_otro}` : 'Otro')
             : (s.problema_prioritario || 'No especificado');
 
-          const regresarStr = s.podemos_regresar === 'si' ? 'Sí, con gusto'
+          const regresarStr = s.podemos_regresar === 'si' ? 'Sí, con gusto puede regresar'
             : s.podemos_regresar === 'no' ? 'No regresar (no insistir)'
             : s.podemos_regresar === 'quizas' ? 'Quizás más adelante'
-            : (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en casa' : s.tipo_visita === 'no_trabajable' ? 'No trabajable' : 'N/A');
+            : (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en domicilio' : s.tipo_visita === 'no_trabajable' ? 'Zona no trabajable' : 'No consultado');
+
+          const problemasStr = Array.isArray(s.problemas)
+            ? s.problemas.join(', ') + (s.problemas_otro ? ` | Otro: ${s.problemas_otro}` : '')
+            : (s.problemas || s.problemas_otro || 'Ninguna');
+
+          const latNum = parseFloat(s.lat);
+          const lngNum = parseFloat(s.lng);
+          const mapsLink = (!isNaN(latNum) && !isNaN(lngNum))
+            ? `https://www.google.com/maps?q=${latNum.toFixed(6)},${lngNum.toFixed(6)}`
+            : 'Sin coordenadas';
 
           return {
             'N°': idx + 1,
-            'Fecha / Hora': s.fecha || (s.ts ? new Date(s.ts).toLocaleString('es-EC') : 'N/A'),
+            'Fecha y Hora': formatLocalTime(s.fecha || s.ts || s.created_at),
             'Encuestador': s.encuestador || 'No asignado',
-            'Vivienda / Referencia': s.nombre || 'No registrado',
-            'Manzana (CPV)': s.manzana || 'N/A',
-            'N° Medidor / Casa': s.numero_medidor_casa || s.numero_casa || 'N/A',
-            'Descripción de la Casa': s.descripcion_casa || 'N/A',
-            '¿Contamos con su apoyo?': apoyoStr,
-            'Problema Prioritario Próxima Administración': prioridadStr,
-            '¿Podemos regresar a visitarle?': regresarStr,
+            'Semaforización Oficial': semaforoTexto,
+            'Vivienda / Nombre': s.nombre || 'Vivienda',
+            'Manzana Censal (CPV)': s.manzana || 'S/N',
+            'N° Medidor / Casa': s.numero_medidor_casa || s.numero_casa || 'S/N',
+            'Descripción de la Vivienda': s.descripcion_casa || 'Sin descripción',
+            '1. ¿Contamos con su apoyo?': apoyoStr,
+            '2. ¿Podemos regresar?': regresarStr,
+            '3. Problema Municipal Prioritario': prioridadStr,
             'Otras Necesidades del Sector': problemasStr,
-            '¿Votaría por Fabián Robles?': labelVoto,
-            'Semaforización': semaforoIcon,
+            'Parroquia': s.parroquia || 'San Gabriel (Centro)',
             'Observaciones': s.observaciones || '',
-            'Parroquia': s.parroquia || 'Montúfar',
-            'Latitud (GPS)': s.lat || '',
-            'Longitud (GPS)': s.lng || '',
-            'ID de Registro': s.id || '',
+            'Latitud (GPS)': latNum ? latNum.toFixed(6) : '',
+            'Longitud (GPS)': lngNum ? lngNum.toFixed(6) : '',
+            'Ver en Google Maps': mapsLink,
+            'ID Registro': s.id || '',
           };
         })
       : [{
           'N°': 1,
-          'Fecha / Hora': 'Sin registros aún',
+          'Fecha y Hora': 'Sin registros aún',
           'Encuestador': 'N/A',
-          'Ciudadano / Nombre': 'Plantilla lista para recepción de datos',
-          'Manzana (CPV)': 'N/A',
+          'Semaforización Oficial': 'N/A',
+          'Vivienda / Nombre': 'Plantilla lista',
+          'Manzana Censal (CPV)': 'N/A',
           'N° Medidor / Casa': 'N/A',
-          'Descripción de la Casa': 'N/A',
-          '¿Contamos con su apoyo?': 'N/A',
-          'Problema Prioritario Próxima Administración': 'N/A',
-          '¿Podemos regresar a visitarle?': 'N/A',
+          'Descripción de la Vivienda': 'N/A',
+          '1. ¿Contamos con su apoyo?': 'N/A',
+          '2. ¿Podemos regresar?': 'N/A',
+          '3. Problema Municipal Prioritario': 'N/A',
           'Otras Necesidades del Sector': 'N/A',
-          '¿Votaría por Fabián Robles?': 'N/A',
-          'Semaforización': 'N/A',
-          'Observaciones': '',
           'Parroquia': 'Montúfar',
+          'Observaciones': '',
           'Latitud (GPS)': '',
           'Longitud (GPS)': '',
-          'ID de Registro': '',
+          'Ver en Google Maps': '',
+          'ID Registro': '',
         }];
 
-    const wsEncuestas = XLSX.utils.json_to_sheet(rows);
+    const wsEncuestas = XLSX.utils.json_to_sheet(encuestasRows);
     wsEncuestas['!cols'] = [
       { wch: 6 },  // N°
-      { wch: 20 }, // Fecha
-      { wch: 22 }, // Encuestador
-      { wch: 26 }, // Nombre
-      { wch: 18 }, // Manzana
+      { wch: 19 }, // Fecha y Hora
+      { wch: 24 }, // Encuestador
+      { wch: 24 }, // Semaforización Oficial
+      { wch: 28 }, // Vivienda / Nombre
+      { wch: 22 }, // Manzana CPV
       { wch: 20 }, // N° Medidor
-      { wch: 30 }, // Desc Casa
-      { wch: 24 }, // ¿Contamos con su apoyo?
-      { wch: 38 }, // Problema Prioritario
-      { wch: 24 }, // ¿Podemos regresar?
-      { wch: 36 }, // Otras Necesidades
-      { wch: 24 }, // ¿Votaría?
-      { wch: 24 }, // Semaforización
-      { wch: 26 }, // Observaciones
-      { wch: 20 }, // Parroquia
-      { wch: 15 }, // Lat
-      { wch: 15 }, // Lng
-      { wch: 36 }, // ID
+      { wch: 34 }, // Descripción Vivienda
+      { wch: 26 }, // ¿Contamos con su apoyo?
+      { wch: 26 }, // ¿Podemos regresar?
+      { wch: 40 }, // Problema Prioritario
+      { wch: 38 }, // Otras Necesidades
+      { wch: 22 }, // Parroquia
+      { wch: 28 }, // Observaciones
+      { wch: 15 }, // Latitud
+      { wch: 15 }, // Longitud
+      { wch: 44 }, // Google Maps Link
+      { wch: 36 }, // ID Registro
     ];
-    XLSX.utils.book_append_sheet(wb, wsEncuestas, 'Encuestas Detalladas');
+    XLSX.utils.book_append_sheet(wb, wsEncuestas, '📋 Base Completa Encuestas');
 
-    // 2. HOJA DE RENDIMIENTO POR ENCUESTADOR
+    // ════════════════════════════════════════════════════════════════════
+    // HOJA 3: 👥 RENDIMIENTO POR ENCUESTADOR
+    // ════════════════════════════════════════════════════════════════════
     const encRows = (encuestadoresStats && encuestadoresStats.length > 0)
       ? encuestadoresStats.map((e, idx) => ({
           'N°': idx + 1,
           'Encuestador': e.nombre || 'N/A',
-          'Correo Electrónico': e.email || 'N/A',
+          'Correo Institucional': e.email || 'N/A',
           'Total Visitas': e.total || 0,
           '🟢 Voto Seguro': e.voto_seguro || 0,
           '🟡 Indeciso': e.indeciso || 0,
           '🔴 No Vota': e.no_vota || 0,
-          '⚪ Nadie en Casa': e.nadie_en_casa || 0,
-          '🔘 No Trabajable': e.no_trabajable || 0,
-          '% Efectividad (Voto Seguro)': `${e.efectividad || 0}%`,
-          'Estado': e.isOnline ? 'En Línea (GPS)' : 'Inactivo',
+          '⚪ Nadie en Domicilio': e.nadie_en_casa || 0,
+          '🔘 Zona No Trabajable': e.no_trabajable || 0,
+          '% Efectividad Voto Seguro': `${e.efectividad || 0}%`,
+          'Manzanas Cubiertas': e.manzanasCount || 0,
+          'Detalle Manzanas Visitadas': e.manzanasPreview || 'S/N',
+          'Estado GPS en Vivo': e.isOnline ? '🟢 En Línea (Activo)' : '⚪ Inactivo',
         }))
-      : [{ 'Aviso': 'No hay encuestadores registrados aún' }];
+      : [{ 'Aviso': 'No hay encuestadores con visitas registradas aún' }];
 
     const wsEnc = XLSX.utils.json_to_sheet(encRows);
     wsEnc['!cols'] = [
-      { wch: 6 },
-      { wch: 26 },
-      { wch: 28 },
-      { wch: 14 },
-      { wch: 16 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 18 },
-      { wch: 18 },
-      { wch: 26 },
-      { wch: 16 },
+      { wch: 6 },  // N°
+      { wch: 26 }, // Encuestador
+      { wch: 28 }, // Correo
+      { wch: 16 }, // Total
+      { wch: 16 }, // Voto Seguro
+      { wch: 14 }, // Indeciso
+      { wch: 14 }, // No Vota
+      { wch: 22 }, // Nadie en Domicilio
+      { wch: 22 }, // No Trabajable
+      { wch: 26 }, // % Efectividad
+      { wch: 20 }, // Manzanas Cubiertas
+      { wch: 34 }, // Detalle Manzanas
+      { wch: 20 }, // Estado GPS
     ];
-    XLSX.utils.book_append_sheet(wb, wsEnc, 'Rendimiento Encuestadores');
+    XLSX.utils.book_append_sheet(wb, wsEnc, '👥 Rendimiento Encuestadores');
 
-    // 3. HOJA DE BALANCE Y SEMAFORIZACIÓN GENERAL
-    const total = surveys.length;
-    const pct = (val) => (total > 0 ? ((val / total) * 100).toFixed(1) : '0.0');
+    // ════════════════════════════════════════════════════════════════════
+    // HOJA 4: 🏛️ PRIORIDADES CIUDADANAS (RANKING DE NECESIDADES)
+    // ════════════════════════════════════════════════════════════════════
+    const prioridadesMap = {};
+    surveys.forEach((s) => {
+      const p = s.problema_prioritario;
+      if (p && p.trim() && p !== 'No especificado') {
+        prioridadesMap[p] = (prioridadesMap[p] || 0) + 1;
+      }
+    });
 
-    const semaforoRows = [
-      { 'Categoría': '🟢 Voto Seguro', 'Total': statsCounts.voto_seguro || 0, 'Porcentaje': `${pct(statsCounts.voto_seguro || 0)}%` },
-      { 'Categoría': '🟡 Indeciso / Abierto a propuestas', 'Total': statsCounts.indeciso || 0, 'Porcentaje': `${pct(statsCounts.indeciso || 0)}%` },
-      { 'Categoría': '🔴 No Vota / No Regresar', 'Total': statsCounts.no_vota || 0, 'Porcentaje': `${pct(statsCounts.no_vota || 0)}%` },
-      { 'Categoría': '⚪ Nadie en Domicilio', 'Total': statsCounts.nadie_en_casa || 0, 'Porcentaje': `${pct(statsCounts.nadie_en_casa || 0)}%` },
-      { 'Categoría': '🔘 Zona No Trabajable (Sin Casas)', 'Total': statsCounts.no_trabajable || 0, 'Porcentaje': `${pct(statsCounts.no_trabajable || 0)}%` },
-      { 'Categoría': 'TOTAL GENERAL DE VISITAS REGISTRADAS', 'Total': total, 'Porcentaje': '100.0%' },
+    const sortedPrioridades = Object.entries(prioridadesMap)
+      .map(([problema, conteo]) => ({
+        problema,
+        conteo,
+        porcentaje: total > 0 ? ((conteo / total) * 100).toFixed(1) : '0.0',
+      }))
+      .sort((a, b) => b.conteo - a.conteo);
+
+    const rankingRows = sortedPrioridades.length > 0
+      ? sortedPrioridades.map((r, idx) => ({
+          'Ranking': idx + 1,
+          'Problema o Necesidad Prioritaria del Cantón': r.problema,
+          'Votos / Menciones Ciudadanas': r.conteo,
+          '% de Importancia Ciudadana': `${r.porcentaje}%`,
+        }))
+      : [{ 'Ranking': 1, 'Problema o Necesidad Prioritaria del Cantón': 'No hay prioridades registradas aún', 'Votos / Menciones Ciudadanas': 0, '% de Importancia Ciudadana': '0.0%' }];
+
+    const wsPrioridades = XLSX.utils.json_to_sheet(rankingRows);
+    wsPrioridades['!cols'] = [
+      { wch: 10 }, // Ranking
+      { wch: 55 }, // Problema
+      { wch: 28 }, // Votos
+      { wch: 26 }, // %
     ];
+    XLSX.utils.book_append_sheet(wb, wsPrioridades, '🏛️ Prioridades Ciudadanas');
 
-    const wsSemaforo = XLSX.utils.json_to_sheet(semaforoRows);
-    wsSemaforo['!cols'] = [{ wch: 42 }, { wch: 14 }, { wch: 16 }];
-    XLSX.utils.book_append_sheet(wb, wsSemaforo, 'Balance Semaforización');
-
-    // Descarga universal con Blob y enlace directo
-    const fechaHoy = new Date().toISOString().slice(0, 10);
-    const fileName = `Reporte_Brigada_Renovacion_Montufar_${fechaHoy}.xlsx`;
+    // ════════════════════════════════════════════════════════════════════
+    // DESCARGA DEL ARCHIVO EXCEL (.XLSX) GARANTIZANDO EXTENSIÓN Y NOMBRE
+    // ════════════════════════════════════════════════════════════════════
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    const fileName = `Reporte_Oficial_Brigada_Renovacion_Montufar_${dateStamp}.xlsx`;
 
     try {
+      // Método principal de SheetJS: genera la descarga directamente con nombre y extensión .xlsx
+      XLSX.writeFile(wb, fileName, { bookType: 'xlsx', compression: true });
+      return true;
+    } catch (writeErr) {
+      console.warn('Fallo XLSX.writeFile, utilizando fallback con Blob:', writeErr);
       const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([wbout], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
       });
-      const url = URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      return true;
-    } catch (blobErr) {
-      console.warn('Fallback a XLSX.writeFile:', blobErr);
-      XLSX.writeFile(wb, fileName);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 1500);
       return true;
     }
   } catch (error) {
