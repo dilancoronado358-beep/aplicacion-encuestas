@@ -176,6 +176,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       mapInstanceRef.current = map;
       markersLayerRef.current = markersGroup;
       encuestadoresLayerRef.current = encuestadoresGroup;
+
+      map.on('click', () => {
+        setSelectedPoint(null);
+      });
     }
 
     if (activeTab === 'map' && mapInstanceRef.current) {
@@ -1454,29 +1458,45 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             <AnimatePresence>
               {selectedPoint && (
                 <motion.div
-                  initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 50, scale: 0.95 }}
+                  initial={{ opacity: 0, x: 40, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 40, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                   style={{
                     position: 'absolute',
-                    bottom: 24,
+                    top: 14,
                     right: 14,
-                    zIndex: 500,
-                    width: 330,
+                    bottom: 14,
+                    zIndex: 1000,
+                    width: 340,
                     maxWidth: 'calc(100% - 28px)',
+                    maxHeight: 'calc(100% - 28px)',
                     background: '#ffffff',
                     border: '1.5px solid #cbd5e1',
                     borderRadius: 16,
-                    padding: '16px 18px',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.1)',
                     color: '#0f172a',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 22 }}>{COLOR_CONFIG[selectedPoint.resultado_voto]?.emoji || '📍'}</span>
-                      <div>
-                        <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#0f172a' }}>
+                  {/* Encabezado fijo superior siempre visible */}
+                  <div
+                    style={{
+                      padding: '14px 16px',
+                      borderBottom: '1px solid #e2e8f0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: '#ffffff',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                      <span style={{ fontSize: 22, flexShrink: 0 }}>{COLOR_CONFIG[selectedPoint.resultado_voto]?.emoji || '📍'}</span>
+                      <div style={{ minWidth: 0 }}>
+                        <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {selectedPoint.tipo_visita === 'nadie_en_casa'
                             ? 'Nadie en Domicilio'
                             : selectedPoint.tipo_visita === 'no_trabajable'
@@ -1487,7 +1507,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                           style={{
                             fontSize: '0.68rem',
                             fontWeight: 800,
-                            color: COLOR_CONFIG[selectedPoint.resultado_voto]?.color || '#2563eb',
+                            color: COLOR_CONFIG[selectedPoint.resultado_voto]?.text || '#2563eb',
                             textTransform: 'uppercase',
                           }}
                         >
@@ -1496,21 +1516,49 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       </div>
                     </div>
                     <button
+                      type="button"
                       onClick={() => setSelectedPoint(null)}
-                      style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: 2 }}
+                      title="Cerrar detalle"
+                      style={{
+                        background: '#f1f5f9',
+                        border: '1.5px solid #cbd5e1',
+                        color: '#0f172a',
+                        cursor: 'pointer',
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                      }}
                     >
-                      <X size={18} />
+                      <X size={18} strokeWidth={2.5} />
                     </button>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: '0.78rem', color: '#334155' }}>
+                  {/* Cuerpo desplazable con todo el contenido de la encuesta */}
+                  <div
+                    className="custom-scrollbar"
+                    style={{
+                      flex: 1,
+                      overflowY: 'auto',
+                      padding: '14px 16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                      fontSize: '0.78rem',
+                      color: '#334155',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                      <Users size={14} color="#2563eb" />
+                      <Users size={14} color="#2563eb" style={{ flexShrink: 0 }} />
                       <span><strong>Encuestador:</strong> {selectedPoint.encuestador || 'No asignado'}</span>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                      <Clock size={14} color="#2563eb" />
+                      <Clock size={14} color="#2563eb" style={{ flexShrink: 0 }} />
                       <span>
                         <strong>Fecha / Hora:</strong>{' '}
                         {new Date(selectedPoint.fecha || selectedPoint.ts || selectedPoint.created_at).toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })}{' '}
@@ -1520,20 +1568,20 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
                     {selectedPoint.manzana && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                        <Home size={14} color="#2563eb" />
-                        <span><strong>Manzana (CPV):</strong> {selectedPoint.manzana}</span>
+                        <Home size={14} color="#2563eb" style={{ flexShrink: 0 }} />
+                        <span><strong>Manzana (CPV):</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800 }}>{selectedPoint.manzana}</span></span>
                       </div>
                     )}
 
                     {selectedPoint.numero_medidor_casa && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                        <MapPin size={14} color="#2563eb" />
+                        <MapPin size={14} color="#2563eb" style={{ flexShrink: 0 }} />
                         <span><strong>N° Medidor / Casa:</strong> {selectedPoint.numero_medidor_casa}</span>
                       </div>
                     )}
 
                     {selectedPoint.descripcion_casa && (
-                      <div style={{ background: '#f8fafc', padding: '6px 10px', borderRadius: 8, border: '1px solid #e2e8f0', marginTop: 2 }}>
+                      <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Descripción de la Vivienda:</strong>
                         <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>{selectedPoint.descripcion_casa}</span>
                       </div>
@@ -1541,7 +1589,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
                     {selectedPoint.apoyo_robles && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 2 }}>
-                        <span style={{ fontSize: 13 }}>🤝</span>
+                        <span style={{ fontSize: 14 }}>🤝</span>
                         <span>
                           <strong>¿Contamos con su apoyo?:</strong>{' '}
                           <strong style={{ color: selectedPoint.apoyo_robles === 'si' ? '#16a34a' : selectedPoint.apoyo_robles === 'no' ? '#dc2626' : '#d97706' }}>
@@ -1552,7 +1600,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     )}
 
                     {selectedPoint.problema_prioritario && (
-                      <div style={{ background: '#f8fafc', padding: '6px 10px', borderRadius: 8, border: '1px solid #e2e8f0', marginTop: 2 }}>
+                      <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#dc2626', display: 'block' }}>Problema Prioritario Municipio:</strong>
                         <span style={{ fontSize: '0.76rem', color: '#0f172a', fontWeight: 700 }}>
                           {selectedPoint.problema_prioritario}
@@ -1562,8 +1610,8 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     )}
 
                     {selectedPoint.podemos_regresar && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 2 }}>
-                        <span style={{ fontSize: 13 }}>🚶</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <span style={{ fontSize: 14 }}>🚶</span>
                         <span>
                           <strong>¿Podemos regresar?:</strong>{' '}
                           <span style={{ color: selectedPoint.podemos_regresar === 'si' ? '#16a34a' : selectedPoint.podemos_regresar === 'no' ? '#dc2626' : '#d97706', fontWeight: 700 }}>
@@ -1574,7 +1622,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     )}
 
                     {selectedPoint.problemas && (
-                      <div style={{ background: '#f8fafc', padding: '6px 10px', borderRadius: 8, border: '1px solid #e2e8f0', marginTop: 2 }}>
+                      <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Otras Necesidades Reportadas:</strong>
                         <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>
                           {Array.isArray(selectedPoint.problemas) ? selectedPoint.problemas.join(', ') : selectedPoint.problemas}
@@ -1583,32 +1631,75 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       </div>
                     )}
 
-                    <div style={{ marginTop: 4, fontSize: '0.68rem', color: '#64748b' }}>
+                    {selectedPoint.observaciones && (
+                      <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                        <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Observaciones:</strong>
+                        <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>{selectedPoint.observaciones}</span>
+                      </div>
+                    )}
+
+                    <div style={{ marginTop: 2, fontSize: '0.68rem', color: '#64748b' }}>
                       GPS: {selectedPoint.lat?.toFixed?.(5) || selectedPoint.lat}, {selectedPoint.lng?.toFixed?.(5) || selectedPoint.lng}
                     </div>
+                  </div>
 
+                  {/* Barra fija inferior con botones de acción y botón cerrar */}
+                  <div
+                    style={{
+                      padding: '10px 14px',
+                      borderTop: '1px solid #e2e8f0',
+                      background: '#f8fafc',
+                      display: 'flex',
+                      gap: 8,
+                      flexShrink: 0,
+                    }}
+                  >
                     <button
+                      type="button"
                       onClick={() => {
                         mapInstanceRef.current?.flyTo([selectedPoint.lat, selectedPoint.lng], 20, { animate: true, duration: 0.8 });
                       }}
                       style={{
-                        marginTop: 8,
+                        flex: 1,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: 6,
-                        padding: '8px 12px',
+                        height: 38,
                         background: '#0f172a',
                         border: 'none',
                         borderRadius: 8,
                         color: '#fff',
                         fontWeight: 700,
-                        fontSize: '0.74rem',
+                        fontSize: '0.76rem',
                         cursor: 'pointer',
                       }}
                     >
                       <Home size={14} />
-                      <span>Ver Casa de Cerca (Zoom HD)</span>
+                      <span>Zoom HD</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPoint(null)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 5,
+                        height: 38,
+                        padding: '0 16px',
+                        background: '#ffffff',
+                        border: '1.5px solid #cbd5e1',
+                        borderRadius: 8,
+                        color: '#0f172a',
+                        fontWeight: 800,
+                        fontSize: '0.76rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <X size={15} strokeWidth={2.5} />
+                      <span>Cerrar</span>
                     </button>
                   </div>
                 </motion.div>
