@@ -27,11 +27,11 @@ const MONTUFAR_CENTER = [0.5936, -77.8306];
 
 // Mapeo exacto de colores institucional según especificación
 export const COLOR_CONFIG = {
-  voto_seguro:   { label: 'Voto Seguro',       color: '#10b981', border: '#059669', bgLight: '#ecfdf5', emoji: '🟢', text: '#065f46' },
-  indeciso:      { label: 'Indeciso',          color: '#f59e0b', border: '#d97706', bgLight: '#fffbeb', emoji: '🟡', text: '#92400e' },
-  no_vota:       { label: 'No Vota / Rechazo', color: '#ef4444', border: '#dc2626', bgLight: '#fef2f2', emoji: '🔴', text: '#991b1b' },
-  nadie_en_casa: { label: 'Nadie en Casa',     color: '#64748b', border: '#cbd5e1', bgLight: '#f8fafc', emoji: '⚪', text: '#334155' },
-  no_trabajable: { label: 'Zona no Trabajable', color: '#475569', border: '#94a3b8', bgLight: '#f1f5f9', emoji: '🔘', text: '#1e293b' },
+  voto_seguro:   { label: 'Voto Seguro',         color: '#10b981', border: '#059669', bgLight: '#ecfdf5', emoji: '🟢', text: '#065f46' },
+  indeciso:      { label: 'Indeciso',            color: '#f59e0b', border: '#d97706', bgLight: '#fffbeb', emoji: '🟡', text: '#92400e' },
+  no_vota:       { label: 'No Vota / Rechazo',   color: '#ef4444', border: '#dc2626', bgLight: '#fef2f2', emoji: '🔴', text: '#991b1b' },
+  nadie_en_casa: { label: 'Nadie en Domicilio',  color: '#ffffff', border: '#1e293b', bgLight: '#ffffff', emoji: '⚪', text: '#0f172a' },
+  no_trabajable: { label: 'Zona no Trabajable',  color: '#64748b', border: '#334155', bgLight: '#f1f5f9', emoji: '🔘', text: '#1e293b' },
 };
 
 export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
@@ -350,6 +350,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       bounds.push([s.lat, s.lng]);
 
       const conf = COLOR_CONFIG[s.resultado_voto] || COLOR_CONFIG.indeciso;
+      const isNadieEnCasa = s.resultado_voto === 'nadie_en_casa';
+      const isNoTrabajable = s.resultado_voto === 'no_trabajable';
+
+      const pinBg = isNadieEnCasa ? '#ffffff' : (isNoTrabajable ? '#64748b' : conf.color);
+      const pinBorder = isNadieEnCasa ? '#1e293b' : (isNoTrabajable ? '#334155' : conf.border);
+      const pinShadow = isNadieEnCasa ? '0 0 10px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.35)' : `0 0 10px ${pinBg}99, 0 3px 6px rgba(0,0,0,0.35)`;
+      const innerDot = isNadieEnCasa ? '#0f172a' : '#ffffff';
 
       const customIcon = L.divIcon({
         className: 'custom-map-pin',
@@ -358,16 +365,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            background: ${conf.color};
-            border: 3px solid ${conf.border};
-            box-shadow: 0 0 10px ${conf.color}99, 0 3px 6px rgba(0,0,0,0.35);
+            background: ${pinBg};
+            border: 3px solid ${pinBorder};
+            box-shadow: ${pinShadow};
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: transform 0.2s ease;
           ">
-            <div style="width: 6px; height: 6px; border-radius: 50%; background: ${s.resultado_voto === 'nadie_en_casa' ? '#0f172a' : '#ffffff'};"></div>
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: ${innerDot};"></div>
           </div>
         `,
         iconSize: [22, 22],
@@ -1093,17 +1100,17 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             gap: 6,
             padding: '4px 10px',
             borderRadius: 8,
-            background: filterStatus === 'nadie_en_casa' ? '#64748b' : '#f8fafc',
-            border: '1.5px solid #cbd5e1',
-            color: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#334155',
+            background: filterStatus === 'nadie_en_casa' ? '#0f172a' : '#ffffff',
+            border: '1.5px solid #64748b',
+            color: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#0f172a',
             fontSize: '0.75rem',
             fontWeight: 800,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#94a3b8' }} />
-          ⚪ Nadie en Casa: {statsCounts.nadie_en_casa}
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffffff', border: '1.5px solid #0f172a' }} />
+          ⚪ Nadie en Domicilio: {statsCounts.nadie_en_casa}
         </button>
 
         <button
@@ -1115,7 +1122,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             padding: '4px 10px',
             borderRadius: 8,
             background: filterStatus === 'no_trabajable' ? '#475569' : '#f1f5f9',
-            border: '1.5px solid #94a3b8',
+            border: '1.5px solid #475569',
             color: filterStatus === 'no_trabajable' ? '#ffffff' : '#1e293b',
             fontSize: '0.75rem',
             fontWeight: 800,
@@ -1124,7 +1131,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'no_trabajable' ? '#ffffff' : '#64748b' }} />
-          🔘 No Trabajable: {statsCounts.no_trabajable}
+          🔘 Zona No Trabajable: {statsCounts.no_trabajable}
         </button>
 
         {filterStatus !== 'all' && (

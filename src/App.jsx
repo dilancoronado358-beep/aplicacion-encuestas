@@ -269,62 +269,27 @@ export default function App() {
     });
   };
 
-  // Manejo de la pregunta: ¿Contamos con su apoyo? (ligado a semaforización)
+  // Manejo de la pregunta 1: ¿Contamos con su apoyo? (independiente)
   const handleSelectApoyo = (apoyoId) => {
-    let semaforo = 'indeciso';
-    let regresar = formData.podemos_regresar;
-    if (apoyoId === 'si') {
-      semaforo = 'voto_seguro';
-      if (!regresar) regresar = 'si';
-    } else if (apoyoId === 'no') {
-      semaforo = 'no_vota';
-      regresar = 'no';
-    } else if (apoyoId === 'tal_vez') {
-      semaforo = 'indeciso';
-      if (!regresar) regresar = 'quizas';
-    }
     setFormData((f) => ({
       ...f,
       apoyo_robles: apoyoId,
-      votaria_robles: semaforo,
-      podemos_regresar: regresar,
     }));
   };
 
-  // Manejo de la pregunta: ¿Podemos regresar? (ligado a semaforización)
+  // Manejo de la pregunta 2: ¿Podemos regresar? (independiente)
   const handleSelectRegresar = (regresarId) => {
-    let semaforo = formData.votaria_robles;
-    if (regresarId === 'no') {
-      semaforo = 'no_vota';
-    } else if (regresarId === 'si' && formData.apoyo_robles === 'si') {
-      semaforo = 'voto_seguro';
-    }
     setFormData((f) => ({
       ...f,
       podemos_regresar: regresarId,
-      votaria_robles: semaforo,
     }));
   };
 
-  // Manejo directo de la tarjeta de semaforización
+  // Manejo de la pregunta 3: Evaluación y semaforización oficial (independiente)
   const handleSelectSemaforo = (semaforoId) => {
-    let apoyo = formData.apoyo_robles;
-    let regresar = formData.podemos_regresar;
-    if (semaforoId === 'voto_seguro') {
-      apoyo = 'si';
-      regresar = 'si';
-    } else if (semaforoId === 'no_vota') {
-      apoyo = 'no';
-      regresar = 'no';
-    } else if (semaforoId === 'indeciso') {
-      apoyo = 'tal_vez';
-      regresar = 'quizas';
-    }
     setFormData((f) => ({
       ...f,
       votaria_robles: semaforoId,
-      apoyo_robles: apoyo,
-      podemos_regresar: regresar,
     }));
   };
 
@@ -381,7 +346,15 @@ export default function App() {
         ? formData.parroquiaInput?.trim() || 'Otra'
         : (formData.parroquia || 'San Gabriel (Centro)');
 
-      const resultado = formData.votaria_robles || 'indeciso';
+      let resultado = formData.votaria_robles;
+      if (!resultado) {
+        if (formData.apoyo_robles === 'si') resultado = 'voto_seguro';
+        else if (formData.apoyo_robles === 'no') resultado = 'no_vota';
+        else if (formData.apoyo_robles === 'tal_vez') resultado = 'indeciso';
+        else if (formData.podemos_regresar === 'si') resultado = 'voto_seguro';
+        else if (formData.podemos_regresar === 'no') resultado = 'no_vota';
+        else resultado = 'indeciso';
+      }
       const tipoVisita = (resultado === 'nadie_en_casa' || resultado === 'no_trabajable') ? resultado : 'efectiva';
       const nombreAsignado = formData.nombre?.trim() || (formData.manzana ? `Mz. ${formData.manzana}` : 'Vivienda');
 
@@ -1097,19 +1070,20 @@ export default function App() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: 6,
-                    height: 44,
+                    gap: 8,
+                    height: 46,
                     borderRadius: 8,
-                    border: '1.5px solid #cbd5e1',
+                    border: '2px solid #94a3b8',
                     background: '#ffffff',
-                    color: '#334155',
-                    fontWeight: 700,
-                    fontSize: '0.78rem',
+                    color: '#0f172a',
+                    fontWeight: 800,
+                    fontSize: '0.8rem',
                     cursor: 'pointer',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <span>⚪ Nadie en Domicilio</span>
+                  <span style={{ width: 13, height: 13, borderRadius: '50%', background: '#ffffff', border: '2.5px solid #334155', display: 'inline-block', flexShrink: 0 }} />
+                  <span>Nadie en Domicilio</span>
                 </button>
 
                 <button
@@ -1120,19 +1094,20 @@ export default function App() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: 6,
-                    height: 44,
+                    gap: 8,
+                    height: 46,
                     borderRadius: 8,
-                    border: '1.5px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#334155',
-                    fontWeight: 700,
-                    fontSize: '0.78rem',
+                    border: '2px solid #334155',
+                    background: '#64748b',
+                    color: '#ffffff',
+                    fontWeight: 800,
+                    fontSize: '0.8rem',
                     cursor: 'pointer',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    boxShadow: '0 2px 4px rgba(100,116,139,0.3)',
                   }}
                 >
-                  <span>🔘 Zona No Trabajable</span>
+                  <span style={{ width: 13, height: 13, borderRadius: '50%', background: '#64748b', border: '2.5px solid #ffffff', display: 'inline-block', flexShrink: 0 }} />
+                  <span>Zona No Trabajable</span>
                 </button>
               </div>
             </div>
@@ -1291,7 +1266,7 @@ export default function App() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {OPCIONES_VOTO_ROBLES.map((op) => {
                     const isSelected = formData.votaria_robles === op.id;
-                    const statusDot = op.id === 'voto_seguro' ? '#15803d' : op.id === 'indeciso' ? '#d97706' : op.id === 'no_vota' ? '#dc2626' : op.id === 'nadie_en_casa' ? '#64748b' : '#334155';
+                    const statusDot = op.id === 'voto_seguro' ? '#15803d' : op.id === 'indeciso' ? '#d97706' : op.id === 'no_vota' ? '#dc2626' : op.id === 'nadie_en_casa' ? '#ffffff' : '#64748b';
                     return (
                       <div
                         key={op.id}
@@ -1307,7 +1282,7 @@ export default function App() {
                           cursor: 'pointer',
                         }}
                       >
-                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: statusDot, flexShrink: 0 }} />
+                        <div style={{ width: 12, height: 12, borderRadius: '50%', background: statusDot, border: op.id === 'nadie_en_casa' ? '2px solid #334155' : 'none', flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <span style={{ fontWeight: 800, fontSize: '0.84rem', color: '#0f172a' }}>
@@ -1383,35 +1358,40 @@ export default function App() {
               )}
             </div>
 
-            <button
-              onClick={saveToLocal}
-              disabled={!formData.votaria_robles || saving}
-              style={{
-                width: '100%',
-                height: 48,
-                borderRadius: 8,
-                border: 'none',
-                background: formData.votaria_robles ? '#0f172a' : '#cbd5e1',
-                color: '#ffffff',
-                fontWeight: 800,
-                fontSize: '0.9rem',
-                cursor: formData.votaria_robles && !saving ? 'pointer' : 'not-allowed',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-              }}
-            >
-              {saving ? (
-                <>
-                  <Zap size={16} /> Guardando en Base Central…
-                </>
-              ) : (
-                <>
-                  <Send size={16} strokeWidth={2.2} /> GUARDAR REGISTRO DE ENCUESTA
-                </>
-              )}
-            </button>
+            {(() => {
+              const canSave = Boolean(formData.votaria_robles || formData.apoyo_robles);
+              return (
+                <button
+                  onClick={saveToLocal}
+                  disabled={!canSave || saving}
+                  style={{
+                    width: '100%',
+                    height: 48,
+                    borderRadius: 8,
+                    border: 'none',
+                    background: canSave ? '#0f172a' : '#cbd5e1',
+                    color: '#ffffff',
+                    fontWeight: 800,
+                    fontSize: '0.9rem',
+                    cursor: canSave && !saving ? 'pointer' : 'not-allowed',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  {saving ? (
+                    <>
+                      <Zap size={16} /> Guardando en Base Central…
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} strokeWidth={2.2} /> GUARDAR REGISTRO DE ENCUESTA
+                    </>
+                  )}
+                </button>
+              );
+            })()}
           </motion.div>
         );
 

@@ -48,20 +48,20 @@ export const OPCIONES_VOTO_ROBLES = [
   },
   {
     id: 'nadie_en_casa',
-    label: 'Nadie en Casa',
+    label: 'Nadie en Domicilio',
     sublabel: 'No salió nadie en el domicilio al momento de la visita',
-    color: '#64748b',
-    border: '#cbd5e1',
+    color: '#ffffff',
+    border: '#334155',
     bg: '#ffffff',
     emoji: '⚪',
     badgeText: 'SIN RESPUESTA'
   },
   {
     id: 'no_trabajable',
-    label: 'No Trabajable (Sin Casas)',
+    label: 'Zona no Trabajable',
     sublabel: 'Terreno baldío, comercio cerrado o zona deshabitada',
-    color: '#475569',
-    border: '#64748b',
+    color: '#64748b',
+    border: '#334155',
     bg: '#f1f5f9',
     emoji: '🔘',
     badgeText: 'NO TRABAJABLE'
