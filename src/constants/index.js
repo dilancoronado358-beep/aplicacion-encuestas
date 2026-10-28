@@ -19,47 +19,47 @@ export const OPCIONES_VOTO_ROBLES = [
   {
     id: 'voto_seguro',
     label: 'Voto Seguro',
-    sublabel: 'Apoya con firmeza al Dr. Fabián Robles',
+    sublabel: 'Respaldo firme y comprometido con el proyecto del Dr. Fabián Robles',
     color: '#10b981',
     border: '#059669',
     bg: '#ecfdf5',
     emoji: '',
-    badgeText: 'SEGURO'
+    badgeText: 'RESPALDO CONFIRMADO'
   },
   {
     id: 'indeciso',
     label: 'Indeciso / Por Definir',
-    sublabel: 'Aún no decide, abierto a propuestas o información',
+    sublabel: 'Ciudadano receptivo en proceso de evaluación de propuestas',
     color: '#f59e0b',
     border: '#d97706',
     bg: '#fffbeb',
     emoji: '',
-    badgeText: 'INDECISO'
+    badgeText: 'EN EVALUACIÓN'
   },
   {
     id: 'no_vota',
-    label: 'No Regresar / No Vota',
-    sublabel: 'No apoyará o solicitó expresamente no volver a visitar',
+    label: 'No Vota / Sin Afinidad',
+    sublabel: 'Manifiesta no apoyar o solicita no realizar visitas de seguimiento',
     color: '#ef4444',
     border: '#dc2626',
     bg: '#fef2f2',
     emoji: '',
-    badgeText: 'NO VOTA'
+    badgeText: 'SIN AFINIDAD'
   },
   {
     id: 'nadie_en_casa',
-    label: 'Nadie en Domicilio',
-    sublabel: 'No salió nadie en el domicilio al momento de la visita',
+    label: 'Sin Respuesta en Domicilio',
+    sublabel: 'Inmueble cerrado o sin ocupantes al momento del barrido territorial',
     color: '#ffffff',
     border: '#334155',
     bg: '#ffffff',
     emoji: '',
-    badgeText: 'SIN RESPUESTA'
+    badgeText: 'AUSENTE'
   },
   {
     id: 'no_trabajable',
-    label: 'Zona no Trabajable',
-    sublabel: 'Terreno baldío, comercio cerrado o zona deshabitada',
+    label: 'Predio No Trabajable',
+    sublabel: 'Lote baldío, comercio cerrado o zona deshabitada',
     color: '#64748b',
     border: '#334155',
     bg: '#f1f5f9',
@@ -82,9 +82,9 @@ export const PROBLEMAS_COMUNES = [
 
 // Opciones de respuesta para: ¿Contamos con su apoyo?
 export const OPCIONES_APOYO = [
-  { id: 'si', label: 'Sí, contamos con su apoyo', emoji: '', color: '#10b981', semaforo: 'voto_seguro' },
-  { id: 'tal_vez', label: 'Tal vez / Por definir', emoji: '', color: '#f59e0b', semaforo: 'indeciso' },
-  { id: 'no', label: 'No apoya la candidatura', emoji: '', color: '#ef4444', semaforo: 'no_vota' },
+  { id: 'si', label: 'Sí, respalda la candidatura', emoji: '', color: '#10b981', semaforo: 'voto_seguro' },
+  { id: 'tal_vez', label: 'Indeciso / En evaluación', emoji: '', color: '#f59e0b', semaforo: 'indeciso' },
+  { id: 'no', label: 'No respalda la candidatura', emoji: '', color: '#ef4444', semaforo: 'no_vota' },
 ];
 
 // Problemas más importantes para la próxima administración municipal
@@ -103,9 +103,9 @@ export const PROBLEMAS_MUNICIPALES_PRIORITARIOS = [
 
 // Opciones de respuesta para: ¿Podemos regresar a seguirle contando la propuesta del Dr. Fabián Robles?
 export const OPCIONES_REGRESAR = [
-  { id: 'si', label: 'Sí, con gusto puede regresar', emoji: '', color: '#10b981', semaforo: 'voto_seguro' },
-  { id: 'quizas', label: 'Quizás más adelante', emoji: '', color: '#f59e0b', semaforo: 'indeciso' },
-  { id: 'no', label: 'No regresar (no insistir)', emoji: '', color: '#ef4444', semaforo: 'no_vota' },
+  { id: 'si', label: 'Sí, autoriza visita de seguimiento', emoji: '', color: '#10b981', semaforo: 'voto_seguro' },
+  { id: 'quizas', label: 'Por definir / Posible segunda visita', emoji: '', color: '#f59e0b', semaforo: 'indeciso' },
+  { id: 'no', label: 'No autoriza nuevas visitas', emoji: '', color: '#ef4444', semaforo: 'no_vota' },
 ];
 
 export const TOTAL_STEPS = 2;
