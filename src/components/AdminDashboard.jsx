@@ -663,26 +663,51 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
   // Estadísticas consolidadas por encuestador con cobertura de manzanas
   const encuestadoresStats = React.useMemo(() => {
+    // 1. Partir de los encuestadores registrados en el sistema
     const list = [...encuestadores];
-    // Asegurar que si un encuestador está en encuestas pero no en la lista de usuarios, también aparezca
-    const registeredEmails = new Set(list.map((u) => u.email?.toLowerCase()));
+
+    // Registro de identificadores ya conocidos (email, nombre, name) normalizados
+    const knownKeys = new Set();
+    list.forEach((u) => {
+      if (u.email) knownKeys.add(u.email.toLowerCase().trim());
+      if (u.nombre) knownKeys.add(u.nombre.toLowerCase().trim());
+      if (u.name) knownKeys.add(u.name.toLowerCase().trim());
+    });
+
+    // 2. Si hay encuestas hechas por algún encuestador no registrado, agregarlo sin duplicar a los existentes
     surveys.forEach((s) => {
-      if (s.encuestador && !registeredEmails.has(s.encuestador.toLowerCase())) {
-        registeredEmails.add(s.encuestador.toLowerCase());
+      const enc = (s.encuestador || '').trim();
+      const encLower = enc.toLowerCase();
+      if (encLower && !knownKeys.has(encLower)) {
+        knownKeys.add(encLower);
         list.push({
-          id: s.encuestador,
-          nombre: s.encuestador,
-          email: s.encuestador,
-          rol: 'encuestador'
+          id: enc,
+          nombre: enc,
+          email: s.encuestador_email || enc,
+          rol: 'encuestador',
         });
       }
     });
 
-    return list.map((e) => {
-      const encSurveys = surveys.filter((s) =>
-        (s.encuestador && s.encuestador.toLowerCase() === (e.nombre || '').toLowerCase()) ||
-        (s.encuestador && s.encuestador.toLowerCase() === (e.email || '').toLowerCase())
-      );
+    // 3. Deduplicar estrictamente la lista consolidada por nombre normalizado
+    const seenNames = new Set();
+    const uniqueList = [];
+    list.forEach((e) => {
+      const normName = (e.nombre || e.name || e.email || '').toLowerCase().trim();
+      if (!normName || seenNames.has(normName)) return;
+      seenNames.add(normName);
+      uniqueList.push(e);
+    });
+
+    return uniqueList.map((e) => {
+      const eName = (e.nombre || e.name || '').toLowerCase().trim();
+      const eEmail = (e.email || '').toLowerCase().trim();
+
+      const encSurveys = surveys.filter((s) => {
+        const sEnc = (s.encuestador || '').toLowerCase().trim();
+        return (eName && sEnc === eName) || (eEmail && sEnc === eEmail);
+      });
+
       const total = encSurveys.length;
       const voto_seguro = encSurveys.filter((s) => (s.votaria_robles || s.resultado_voto) === 'voto_seguro').length;
       const indeciso = encSurveys.filter((s) => (s.votaria_robles || s.resultado_voto) === 'indeciso').length;
@@ -695,7 +720,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       const manzanas = [...new Set(encSurveys.map((s) => s.manzana).filter((m) => m && m !== 'En territorio'))];
 
       const isOnline = liveEncuestadores.some(
-        (l) => l.email?.toLowerCase() === e.email?.toLowerCase() || l.nombre?.toLowerCase() === e.nombre?.toLowerCase()
+        (l) => (l.email && l.email.toLowerCase().trim() === eEmail) || (l.nombre && l.nombre.toLowerCase().trim() === eName)
       );
 
       return {
