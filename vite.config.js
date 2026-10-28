@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'inline',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true
@@ -20,7 +20,7 @@ export default defineConfig({
         name: 'BRIGADA RENOVACIÓN',
         short_name: 'BRIGADA',
         description: 'Aplicación oficial de brigada y monitoreo territorial Montúfar 2026',
-        theme_color: '#0f172a',
+        theme_color: '#0c2340',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',

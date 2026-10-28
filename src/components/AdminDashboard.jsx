@@ -27,12 +27,34 @@ const MONTUFAR_CENTER = [0.5936, -77.8306];
 
 // Mapeo exacto de colores institucional según especificación
 export const COLOR_CONFIG = {
-  voto_seguro:   { label: 'Voto Seguro',         color: '#10b981', border: '#059669', bgLight: '#ecfdf5', emoji: '🟢', text: '#065f46' },
-  indeciso:      { label: 'Indeciso',            color: '#f59e0b', border: '#d97706', bgLight: '#fffbeb', emoji: '🟡', text: '#92400e' },
-  no_vota:       { label: 'No Vota / Rechazo',   color: '#ef4444', border: '#dc2626', bgLight: '#fef2f2', emoji: '🔴', text: '#991b1b' },
-  nadie_en_casa: { label: 'Nadie en Domicilio',  color: '#ffffff', border: '#1e293b', bgLight: '#ffffff', emoji: '⚪', text: '#0f172a' },
-  no_trabajable: { label: 'Zona no Trabajable',  color: '#64748b', border: '#334155', bgLight: '#f1f5f9', emoji: '🔘', text: '#1e293b' },
+  voto_seguro:   { label: 'Voto Seguro',         color: '#10b981', border: '#059669', bgLight: '#ecfdf5', emoji: '', text: '#065f46' },
+  indeciso:      { label: 'Indeciso',            color: '#f59e0b', border: '#d97706', bgLight: '#fffbeb', emoji: '', text: '#92400e' },
+  no_vota:       { label: 'No Vota / Rechazo',   color: '#ef4444', border: '#dc2626', bgLight: '#fef2f2', emoji: '', text: '#991b1b' },
+  nadie_en_casa: { label: 'Nadie en Domicilio',  color: '#ffffff', border: '#1e293b', bgLight: '#ffffff', emoji: '', text: '#0c2340' },
+  no_trabajable: { label: 'Zona no Trabajable',  color: '#64748b', border: '#334155', bgLight: '#f1f5f9', emoji: '', text: '#1e293b' },
 };
+
+// Indicador de estado sobrio (reemplaza a los emojis, conserva la semaforización)
+const StatusDot = ({ conf, size = 9 }) => (
+  <span
+    aria-hidden="true"
+    style={{
+      display: 'inline-block',
+      width: size,
+      height: size,
+      borderRadius: '50%',
+      flexShrink: 0,
+      background: conf?.color || '#94a3b8',
+      border: `1.5px solid ${conf?.border || '#64748b'}`,
+    }}
+  />
+);
+
+// Normaliza textos guardados con emojis en versiones anteriores de la app
+const stripEmoji = (txt) =>
+  typeof txt === 'string'
+    ? txt.replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\uFE0F\u200D\u20E3]+\s?/gu, '').trim()
+    : txt;
 
 export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
   const [activeTab, setActiveTab] = useState('map'); // 'map' | 'stats' | 'users'
@@ -121,7 +143,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           lng = MONTUFAR_CENTER[1] + (Math.cos(idx) * 0.0035);
         }
         const resultado = s.votaria_robles || s.resultado_voto || calculateResultadoVoto(s);
-        uniqueSurveys.push({ ...s, lat, lng, resultado_voto: resultado });
+        const cleanList = (v) => (Array.isArray(v) ? v.map(stripEmoji) : v);
+        uniqueSurveys.push({
+          ...s,
+          lat,
+          lng,
+          resultado_voto: resultado,
+          problema_prioritario: stripEmoji(s.problema_prioritario),
+          problemas_prioritarios: cleanList(s.problemas_prioritarios),
+          problemas: cleanList(s.problemas),
+        });
       });
       setSurveys(uniqueSurveys);
     } else {
@@ -235,7 +266,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
           layer.bindTooltip(`
             <div style="font-family: inherit; font-size: 11px; padding: 2px 4px; line-height: 1.3;">
-              <strong style="color: #dc2626;">🏛️ Manzana: ${manCode}</strong><br/>
+              <strong style="color: #dc2626;">Manzana: ${manCode}</strong><br/>
               <span style="color: #475569;">${parroquia} &bull; ${cant}</span>
             </div>
           `, { sticky: true });
@@ -264,14 +295,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 .setContent(`
                   <div style="font-family: inherit; font-size: 13px; min-width: 210px; padding: 4px;">
                     <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                      <span style="font-size: 16px;">🏛️</span>
+                      <span style="font-size: 16px;"></span>
                       <strong style="color: #dc2626; font-size: 14px;">Manzana: ${manCode}</strong>
                     </div>
                     <div style="font-size: 12px; color: #334155; margin-bottom: 3px;">
-                      📍 <strong>Parroquia:</strong> ${parroquia}
+                      <strong>Parroquia:</strong> ${parroquia}
                     </div>
                     <div style="font-size: 12px; color: #334155; margin-bottom: 3px;">
-                      🏙️ <strong>Cantón:</strong> ${cant} (CARCHI)
+                      <strong>Cantón:</strong> ${cant} (CARCHI)
                     </div>
                     <div style="font-size: 11px; color: #64748b; margin-top: 5px; padding-top: 4px; border-top: 1px dashed #cbd5e1;">
                       Fuente: CPV (${p.anio || '2022'}) &bull; Perímetro: ${p.Shape_Leng ? parseFloat(p.Shape_Leng).toFixed(1) + 'm' : 'N/A'}
@@ -366,7 +397,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       const pinBg = isNadieEnCasa ? '#ffffff' : (isNoTrabajable ? '#64748b' : conf.color);
       const pinBorder = isNadieEnCasa ? '#1e293b' : (isNoTrabajable ? '#334155' : conf.border);
       const pinShadow = isNadieEnCasa ? '0 0 10px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.35)' : `0 0 10px ${pinBg}99, 0 3px 6px rgba(0,0,0,0.35)`;
-      const innerDot = isNadieEnCasa ? '#0f172a' : '#ffffff';
+      const innerDot = isNadieEnCasa ? '#0c2340' : '#ffffff';
 
       const customIcon = L.divIcon({
         className: 'custom-map-pin',
@@ -408,34 +439,34 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
         : '';
 
       const personTitle = s.tipo_visita === 'nadie_en_casa'
-        ? '⚪ Nadie en Domicilio'
+        ? 'Nadie en Domicilio'
         : s.tipo_visita === 'no_trabajable'
-        ? '🔘 Zona no Trabajable'
+        ? 'Zona no Trabajable'
         : s.nombre || 'Ciudadano encuestado';
 
       marker.bindPopup(`
         <div style="font-family: inherit; font-size: 13px; min-width: 225px; padding: 4px;">
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-            <span style="font-size: 15px;">${conf.emoji}</span>
-            <strong style="color: #0f172a; font-size: 14px;">${personTitle}</strong>
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${conf.color};border:2px solid ${conf.border};flex-shrink:0;"></span>
+            <strong style="color: #0c2340; font-size: 14px;">${personTitle}</strong>
           </div>
           <div style="color: #475569; font-size: 12px; margin-bottom: 3px;">
-            👤 <strong>Encuestador:</strong> ${s.encuestador || 'No asignado'}
+            <strong>Encuestador:</strong> ${s.encuestador || 'No asignado'}
           </div>
           <div style="color: #475569; font-size: 12px; margin-bottom: 3px;">
-            🏛️ <strong>Manzana CPV:</strong> ${s.manzana || 'No registrada'}
+            <strong>Manzana CPV:</strong> ${s.manzana || 'No registrada'}
           </div>
           <div style="color: #475569; font-size: 12px; margin-bottom: 3px;">
-            🏠 <strong>Medidor / Casa:</strong> ${s.numero_medidor_casa || s.numero_casa || 'S/N'}
+            <strong>Medidor / Casa:</strong> ${s.numero_medidor_casa || s.numero_casa || 'S/N'}
           </div>
-          ${s.descripcion_casa ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;">📋 <strong>Vivienda:</strong> ${s.descripcion_casa}</div>` : ''}
-          ${s.apoyo_robles ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;">🤝 <strong>¿Apoyo Robles?:</strong> ${s.apoyo_robles === 'si' ? 'Sí' : s.apoyo_robles === 'no' ? 'No' : 'Tal vez'}</div>` : ''}
-          ${s.problema_prioritario ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;">⚠️ <strong>Prioridad Municipio:</strong> ${s.problema_prioritario}</div>` : ''}
-          ${s.podemos_regresar ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;">🚶 <strong>¿Podemos regresar?:</strong> ${s.podemos_regresar === 'si' ? 'Sí' : s.podemos_regresar === 'no' ? 'No' : 'Quizás'}</div>` : ''}
+          ${s.descripcion_casa ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;"><strong>Vivienda:</strong> ${s.descripcion_casa}</div>` : ''}
+          ${s.apoyo_robles ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;"><strong>¿Apoyo Robles?:</strong> ${s.apoyo_robles === 'si' ? 'Sí' : s.apoyo_robles === 'no' ? 'No' : 'Tal vez'}</div>` : ''}
+          ${s.problema_prioritario ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;"><strong>Prioridad Municipio:</strong> ${s.problema_prioritario}</div>` : ''}
+          ${s.podemos_regresar ? `<div style="color: #475569; font-size: 12px; margin-bottom: 3px;"><strong>¿Podemos regresar?:</strong> ${s.podemos_regresar === 'si' ? 'Sí' : s.podemos_regresar === 'no' ? 'No' : 'Quizás'}</div>` : ''}
           <div style="color: #475569; font-size: 12px; margin-bottom: 3px;">
-            🕒 <strong>Hora:</strong> ${formattedTime} (${formattedDate})
+            <strong>Hora:</strong> ${formattedTime} (${formattedDate})
           </div>
-          <div style="color: ${conf.color}; font-weight: 800; font-size: 12px; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #cbd5e1;">
+          <div style="color: ${conf.color}; font-weight: 600; font-size: 12px; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #cbd5e1;">
             Semaforización: ${conf.label}
           </div>
         </div>
@@ -523,21 +554,21 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               <div style="width: 10px; height: 10px; border-radius: 50%; background: #2563eb; box-shadow: 0 0 8px #2563eb;"></div>
               <strong style="color: #1d4ed8; font-size: 14px;">${enc.nombre}</strong>
             </div>
-            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px;">
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">
               EN VIVO
             </span>
           </div>
           <div style="font-size: 12px; color: #475569; margin-bottom: 4px;">
-            📧 <strong>Email:</strong> ${enc.email}
+            <strong>Email:</strong> ${enc.email}
           </div>
           <div style="font-size: 12px; color: #475569; margin-bottom: 4px;">
-            ⏱️ <strong>Última señal:</strong> ${timeStr}
+            <strong>Última señal:</strong> ${timeStr}
           </div>
           <div style="font-size: 12px; color: #475569; margin-bottom: 6px;">
-            📍 <strong>GPS:</strong> ${enc.lat.toFixed(5)}, ${enc.lng.toFixed(5)}
+            <strong>GPS:</strong> ${enc.lat.toFixed(5)}, ${enc.lng.toFixed(5)}
           </div>
           <div style="font-size: 11px; color: #64748b; background: #f1f5f9; padding: 5px 8px; border-radius: 6px;">
-            🛰️ Monitoreo activo de encuestador en territorio
+            Monitoreo activo de encuestador en territorio
           </div>
         </div>
       `);
@@ -643,13 +674,15 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
   const problemasPrioritariosStats = React.useMemo(() => {
     const counts = {};
     surveys.forEach((s) => {
-      const p = s.problema_prioritario;
-      if (p) {
-        const key = p === '🏛️ Otro (especificar)' && s.problema_prioritario_otro
+      const list = Array.isArray(s.problemas_prioritarios) && s.problemas_prioritarios.length
+        ? s.problemas_prioritarios
+        : String(s.problema_prioritario || '').split('|').map((x) => x.trim()).filter(Boolean);
+      list.forEach((p) => {
+        const key = p === 'Otro (especificar)' && s.problema_prioritario_otro
           ? `Otro: ${s.problema_prioritario_otro}`
           : p;
         counts[key] = (counts[key] || 0) + 1;
-      }
+      });
     });
     const totalCounted = Object.values(counts).reduce((a, b) => a + b, 0);
     return Object.entries(counts)
@@ -772,7 +805,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
   // Eliminar todas las encuestas y dejar el sistema en 0 para producción
   const handlePurgeAllData = async () => {
     const confirmDelete = window.confirm(
-      '⚠️ ADVERTENCIA: ¿Está seguro de eliminar TODOS los datos de las encuestas?\n\n' +
+      'ADVERTENCIA: ¿Está seguro de eliminar TODOS los datos de las encuestas?\n\n' +
       '• Se borrarán todas las visitas, datos geográficos y respuestas registradas en Supabase.\n' +
       '• Los contadores, balances estadísticos y el mapa quedarán en 0.\n' +
       '• Esta acción es irreversible.\n\n' +
@@ -790,7 +823,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       setSurveys([]);
       markersLayerRef.current?.clearLayers();
       setSelectedPoint(null);
-      alert('✅ Todos los datos han sido eliminados de Supabase. El sistema ha quedado en 0 y listo para operar.');
+      alert('Todos los datos han sido eliminados de Supabase. El sistema ha quedado en 0 y listo para operar.');
     } catch (err) {
       console.error(err);
       alert('Ocurrió un error al purgar los datos: ' + err.message);
@@ -801,7 +834,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#f8fafc', color: '#0f172a', overflow: 'hidden', fontFamily: 'inherit' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#f8fafc', color: '#0c2340', overflow: 'hidden', fontFamily: 'inherit' }}>
       {/* ── TOP BAR INSTITUCIONAL (FONDO BLANCO, FORMAL Y ELEGANTE) ── */}
       <header
         style={{
@@ -822,7 +855,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           <div
             style={{
               background: '#ffffff',
-              borderRadius: 10,
+              borderRadius: 6,
               padding: '4px 10px',
               display: 'flex',
               alignItems: 'center',
@@ -844,16 +877,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '1.05rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#0f172a' }}>
+              <h1 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em', color: '#0c2340' }}>
                 BRIGADA RENOVACIÓN (pap)
               </h1>
               <span
                 style={{
                   background: '#f1f5f9',
-                  color: '#0f172a',
+                  color: '#0c2340',
                   border: '1px solid #cbd5e1',
                   fontSize: '0.65rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   padding: '2px 8px',
                   borderRadius: 6,
                   textTransform: 'uppercase',
@@ -882,12 +915,12 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               gap: 6,
               height: 38,
               padding: '0 12px',
-              borderRadius: 10,
-              border: '1px solid #fecaca',
-              background: '#fff1f2',
+              borderRadius: 6,
+              border: '1px solid #d9b3b3',
+              background: '#ffffff',
               color: '#b91c1c',
               fontSize: '0.78rem',
-              fontWeight: 700,
+              fontWeight: 600,
               cursor: purging ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s ease',
             }}
@@ -906,14 +939,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               gap: 7,
               height: 38,
               padding: '0 14px',
-              borderRadius: 10,
+              borderRadius: 6,
               border: 'none',
-              background: '#16a34a',
+              background: '#1f4d3a',
               color: '#ffffff',
               fontSize: '0.8rem',
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(22,163,74,0.25)',
+              boxShadow: '0 2px 8px rgba(31, 77, 58, 0.22)',
               transition: 'background 0.15s ease',
             }}
           >
@@ -930,12 +963,12 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               gap: 6,
               height: 38,
               padding: '0 12px',
-              borderRadius: 10,
+              borderRadius: 6,
               border: '1px solid #cbd5e1',
               background: '#ffffff',
               color: '#334155',
               fontSize: '0.78rem',
-              fontWeight: 700,
+              fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
             }}
@@ -952,16 +985,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               gap: 6,
               height: 38,
               padding: '0 12px',
-              borderRadius: 10,
-              border: '1px solid #0f172a',
-              background: '#0f172a',
+              borderRadius: 6,
+              border: '1px solid #0c2340',
+              background: '#0c2340',
               color: '#ffffff',
               fontSize: '0.78rem',
-              fontWeight: 700,
+              fontWeight: 600,
               cursor: 'pointer',
             }}
           >
-            <UserPlus size={14} color="#38bdf8" />
+            <UserPlus size={14} color="#c3d0e2" />
             <span className="hide-mobile">Nuevo Usuario</span>
           </button>
 
@@ -974,7 +1007,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               gap: 6,
               height: 38,
               padding: '0 10px',
-              borderRadius: 10,
+              borderRadius: 6,
               border: '1px solid #cbd5e1',
               background: '#ffffff',
               color: '#475569',
@@ -993,7 +1026,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             style={{
               width: 38,
               height: 38,
-              borderRadius: 10,
+              borderRadius: 6,
               border: '1px solid #cbd5e1',
               background: '#ffffff',
               color: '#475569',
@@ -1025,10 +1058,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
       >
         {/* TOTAL PUNTOS */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
             Total Puntos:
           </span>
-          <strong style={{ color: '#0f172a', fontSize: '0.95rem', fontWeight: 900 }}>
+          <strong style={{ color: '#0c2340', fontSize: '0.95rem', fontWeight: 600 }}>
             {surveys.length}
           </strong>
         </div>
@@ -1050,10 +1083,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             }}
           >
             <Trophy size={14} color={winningCategory.conf.color} />
-            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: winningCategory.conf.text, textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 600, color: winningCategory.conf.text, textTransform: 'uppercase' }}>
               Va Ganando:
             </span>
-            <strong style={{ fontSize: '0.8rem', fontWeight: 900, color: winningCategory.conf.text }}>
+            <strong style={{ fontSize: '0.8rem', fontWeight: 600, color: winningCategory.conf.text }}>
               {winningCategory.label} ({winningPct}%)
             </strong>
           </div>
@@ -1076,13 +1109,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             border: `1.5px solid ${COLOR_CONFIG.voto_seguro.border}`,
             color: filterStatus === 'voto_seguro' ? '#ffffff' : '#065f46',
             fontSize: '0.75rem',
-            fontWeight: 800,
+            fontWeight: 600,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'voto_seguro' ? '#ffffff' : '#10b981' }} />
-          🟢 Seguro: {statsCounts.voto_seguro}
+          Seguro: {statsCounts.voto_seguro}
         </button>
 
         <button
@@ -1097,13 +1130,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             border: `1.5px solid ${COLOR_CONFIG.indeciso.border}`,
             color: filterStatus === 'indeciso' ? '#ffffff' : '#92400e',
             fontSize: '0.75rem',
-            fontWeight: 800,
+            fontWeight: 600,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'indeciso' ? '#ffffff' : '#f59e0b' }} />
-          🟡 Indeciso: {statsCounts.indeciso}
+          Indeciso: {statsCounts.indeciso}
         </button>
 
         <button
@@ -1118,13 +1151,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             border: `1.5px solid ${COLOR_CONFIG.no_vota.border}`,
             color: filterStatus === 'no_vota' ? '#ffffff' : '#991b1b',
             fontSize: '0.75rem',
-            fontWeight: 800,
+            fontWeight: 600,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'no_vota' ? '#ffffff' : '#ef4444' }} />
-          🔴 No Vota: {statsCounts.no_vota}
+          No Vota: {statsCounts.no_vota}
         </button>
 
         <button
@@ -1135,17 +1168,17 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             gap: 6,
             padding: '4px 10px',
             borderRadius: 8,
-            background: filterStatus === 'nadie_en_casa' ? '#0f172a' : '#ffffff',
+            background: filterStatus === 'nadie_en_casa' ? '#0c2340' : '#ffffff',
             border: '1.5px solid #64748b',
-            color: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#0f172a',
+            color: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#0c2340',
             fontSize: '0.75rem',
-            fontWeight: 800,
+            fontWeight: 600,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffffff', border: '1.5px solid #0f172a' }} />
-          ⚪ Nadie en Domicilio: {statsCounts.nadie_en_casa}
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffffff', border: '1.5px solid #0c2340' }} />
+          Nadie en Domicilio: {statsCounts.nadie_en_casa}
         </button>
 
         <button
@@ -1160,13 +1193,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             border: '1.5px solid #475569',
             color: filterStatus === 'no_trabajable' ? '#ffffff' : '#1e293b',
             fontSize: '0.75rem',
-            fontWeight: 800,
+            fontWeight: 600,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'no_trabajable' ? '#ffffff' : '#64748b' }} />
-          🔘 Zona No Trabajable: {statsCounts.no_trabajable}
+          Zona No Trabajable: {statsCounts.no_trabajable}
         </button>
 
         {filterStatus !== 'all' && (
@@ -1177,7 +1210,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               border: 'none',
               color: '#2563eb',
               fontSize: '0.74rem',
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
             }}
@@ -1199,14 +1232,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             borderRadius: 8,
             border: activeTab === 'map' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
-            fontWeight: 800,
+            fontWeight: 600,
             fontSize: '0.82rem',
             background: activeTab === 'map' ? '#ffffff' : 'transparent',
-            color: activeTab === 'map' ? '#0f172a' : '#64748b',
+            color: activeTab === 'map' ? '#0c2340' : '#64748b',
             boxShadow: activeTab === 'map' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
           }}
         >
-          <Compass size={16} color={activeTab === 'map' ? '#0f172a' : '#94a3b8'} />
+          <Compass size={16} color={activeTab === 'map' ? '#0c2340' : '#94a3b8'} />
           <span>Mapa en Tiempo Real</span>
         </button>
 
@@ -1220,14 +1253,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             borderRadius: 8,
             border: activeTab === 'stats' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
-            fontWeight: 800,
+            fontWeight: 600,
             fontSize: '0.82rem',
             background: activeTab === 'stats' ? '#ffffff' : 'transparent',
-            color: activeTab === 'stats' ? '#0f172a' : '#64748b',
+            color: activeTab === 'stats' ? '#0c2340' : '#64748b',
             boxShadow: activeTab === 'stats' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
           }}
         >
-          <BarChart3 size={16} color={activeTab === 'stats' ? '#0f172a' : '#94a3b8'} />
+          <BarChart3 size={16} color={activeTab === 'stats' ? '#0c2340' : '#94a3b8'} />
           <span>Analíticas & Base Territorial</span>
         </button>
 
@@ -1241,14 +1274,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             borderRadius: 8,
             border: activeTab === 'users' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
-            fontWeight: 800,
+            fontWeight: 600,
             fontSize: '0.82rem',
             background: activeTab === 'users' ? '#ffffff' : 'transparent',
-            color: activeTab === 'users' ? '#0f172a' : '#64748b',
+            color: activeTab === 'users' ? '#0c2340' : '#64748b',
             boxShadow: activeTab === 'users' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
           }}
         >
-          <Users size={16} color={activeTab === 'users' ? '#0f172a' : '#94a3b8'} />
+          <Users size={16} color={activeTab === 'users' ? '#0c2340' : '#94a3b8'} />
           <span>Equipo & Roles ({encuestadores.length})</span>
         </button>
       </div>
@@ -1278,7 +1311,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 background: 'rgba(255,255,255,0.96)',
                 backdropFilter: 'blur(10px)',
                 border: '1px solid #cbd5e1',
-                borderRadius: 10,
+                borderRadius: 6,
                 padding: '6px 12px',
                 display: 'flex',
                 alignItems: 'center',
@@ -1293,16 +1326,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: '#0f172a',
+                  color: '#0c2340',
                   fontSize: '0.8rem',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer',
                 }}
               >
-                <option value="all" style={{ background: '#ffffff', color: '#0f172a' }}>Todos los encuestadores</option>
+                <option value="all" style={{ background: '#ffffff', color: '#0c2340' }}>Todos los encuestadores</option>
                 {Array.from(new Set(surveys.map((s) => s.encuestador).filter(Boolean))).map((enc) => (
-                  <option key={enc} value={enc} style={{ background: '#ffffff', color: '#0f172a' }}>
+                  <option key={enc} value={enc} style={{ background: '#ffffff', color: '#0c2340' }}>
                     {enc}
                   </option>
                 ))}
@@ -1319,7 +1352,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 background: 'rgba(255,255,255,0.96)',
                 backdropFilter: 'blur(10px)',
                 border: '1px solid #cbd5e1',
-                borderRadius: 10,
+                borderRadius: 6,
                 padding: 4,
                 display: 'flex',
                 alignItems: 'center',
@@ -1337,10 +1370,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   padding: '5px 10px',
                   borderRadius: 6,
                   border: 'none',
-                  background: mapStyle === 'satellite' ? '#dc2626' : 'transparent',
+                  background: mapStyle === 'satellite' ? '#0c2340' : 'transparent',
                   color: mapStyle === 'satellite' ? '#ffffff' : '#334155',
                   fontSize: '0.74rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >
@@ -1358,10 +1391,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   padding: '5px 10px',
                   borderRadius: 6,
                   border: 'none',
-                  background: mapStyle === 'streets' ? '#dc2626' : 'transparent',
+                  background: mapStyle === 'streets' ? '#0c2340' : 'transparent',
                   color: mapStyle === 'streets' ? '#ffffff' : '#334155',
                   fontSize: '0.74rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >
@@ -1384,7 +1417,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   background: showManzanas ? '#fef2f2' : 'transparent',
                   color: showManzanas ? '#dc2626' : '#64748b',
                   fontSize: '0.74rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >
@@ -1405,7 +1438,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   background: showEncuestadores ? '#eff6ff' : 'transparent',
                   color: showEncuestadores ? '#2563eb' : '#64748b',
                   fontSize: '0.74rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >
@@ -1421,7 +1454,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   border: '1px solid #cbd5e1',
                   borderRadius: 6,
                   padding: '5px 8px',
-                  color: '#0f172a',
+                  color: '#0c2340',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -1442,7 +1475,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 background: 'rgba(255,255,255,0.96)',
                 backdropFilter: 'blur(8px)',
                 border: '1px solid #cbd5e1',
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: '10px 14px',
                 fontSize: '0.72rem',
                 display: 'flex',
@@ -1452,7 +1485,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 color: '#334155',
               }}
             >
-              <span style={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.04em' }}>
+              <span style={{ fontWeight: 600, color: '#0c2340', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.04em' }}>
                 Semaforización & Capas
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -1477,11 +1510,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, paddingTop: 4, borderTop: '1px dashed #cbd5e1' }}>
                 <span style={{ width: 12, height: 3, background: '#dc2626', borderRadius: 2 }} />
-                <span style={{ color: '#dc2626', fontWeight: 700 }}>Líneas Rojas: 292 Manzanas (CPV)</span>
+                <span style={{ color: '#dc2626', fontWeight: 600 }}>Líneas Rojas: 292 Manzanas (CPV)</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
                 <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#2563eb', border: '2px solid #ffffff', boxShadow: '0 0 6px #2563eb' }} />
-                <span style={{ color: '#2563eb', fontWeight: 700 }}>Punto Azul: Encuestador en vivo</span>
+                <span style={{ color: '#2563eb', fontWeight: 600 }}>Punto Azul: Encuestador en vivo</span>
               </div>
             </div>
 
@@ -1504,9 +1537,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     maxHeight: 'calc(100% - 28px)',
                     background: '#ffffff',
                     border: '1.5px solid #cbd5e1',
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: '0 20px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.1)',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
@@ -1525,9 +1558,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                      <span style={{ fontSize: 22, flexShrink: 0 }}>{COLOR_CONFIG[selectedPoint.resultado_voto]?.emoji || '📍'}</span>
+                      <StatusDot conf={COLOR_CONFIG[selectedPoint.resultado_voto]} size={12} />
                       <div style={{ minWidth: 0 }}>
-                        <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 600, color: '#0c2340', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {selectedPoint.tipo_visita === 'nadie_en_casa'
                             ? 'Nadie en Domicilio'
                             : selectedPoint.tipo_visita === 'no_trabajable'
@@ -1537,7 +1570,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                         <span
                           style={{
                             fontSize: '0.68rem',
-                            fontWeight: 800,
+                            fontWeight: 600,
                             color: COLOR_CONFIG[selectedPoint.resultado_voto]?.text || '#2563eb',
                             textTransform: 'uppercase',
                           }}
@@ -1553,7 +1586,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       style={{
                         background: '#f1f5f9',
                         border: '1.5px solid #cbd5e1',
-                        color: '#0f172a',
+                        color: '#0c2340',
                         cursor: 'pointer',
                         width: 32,
                         height: 32,
@@ -1600,7 +1633,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     {selectedPoint.manzana && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                         <Home size={14} color="#2563eb" style={{ flexShrink: 0 }} />
-                        <span><strong>Manzana (CPV):</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800 }}>{selectedPoint.manzana}</span></span>
+                        <span><strong>Manzana (CPV):</strong> <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{selectedPoint.manzana}</span></span>
                       </div>
                     )}
 
@@ -1614,13 +1647,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     {selectedPoint.descripcion_casa && (
                       <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Descripción de la Vivienda:</strong>
-                        <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>{selectedPoint.descripcion_casa}</span>
+                        <span style={{ fontSize: '0.76rem', color: '#0c2340' }}>{selectedPoint.descripcion_casa}</span>
                       </div>
                     )}
 
                     {selectedPoint.apoyo_robles && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 2 }}>
-                        <span style={{ fontSize: 14 }}>🤝</span>
+                        <span style={{ fontSize: 14 }}></span>
                         <span>
                           <strong>¿Contamos con su apoyo?:</strong>{' '}
                           <strong style={{ color: selectedPoint.apoyo_robles === 'si' ? '#16a34a' : selectedPoint.apoyo_robles === 'no' ? '#dc2626' : '#d97706' }}>
@@ -1633,7 +1666,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     {selectedPoint.problema_prioritario && (
                       <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#dc2626', display: 'block' }}>Problema Prioritario Municipio:</strong>
-                        <span style={{ fontSize: '0.76rem', color: '#0f172a', fontWeight: 700 }}>
+                        <span style={{ fontSize: '0.76rem', color: '#0c2340', fontWeight: 600 }}>
                           {selectedPoint.problema_prioritario}
                           {selectedPoint.problema_prioritario_otro ? ` (${selectedPoint.problema_prioritario_otro})` : ''}
                         </span>
@@ -1642,10 +1675,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
                     {selectedPoint.podemos_regresar && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                        <span style={{ fontSize: 14 }}>🚶</span>
+                        <span style={{ fontSize: 14 }}></span>
                         <span>
                           <strong>¿Podemos regresar?:</strong>{' '}
-                          <span style={{ color: selectedPoint.podemos_regresar === 'si' ? '#16a34a' : selectedPoint.podemos_regresar === 'no' ? '#dc2626' : '#d97706', fontWeight: 700 }}>
+                          <span style={{ color: selectedPoint.podemos_regresar === 'si' ? '#16a34a' : selectedPoint.podemos_regresar === 'no' ? '#dc2626' : '#d97706', fontWeight: 600 }}>
                             {selectedPoint.podemos_regresar === 'si' ? 'Sí, con gusto' : selectedPoint.podemos_regresar === 'no' ? 'No regresar' : 'Quizás más adelante'}
                           </span>
                         </span>
@@ -1655,7 +1688,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     {selectedPoint.problemas && (
                       <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Otras Necesidades Reportadas:</strong>
-                        <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>
+                        <span style={{ fontSize: '0.76rem', color: '#0c2340' }}>
                           {Array.isArray(selectedPoint.problemas) ? selectedPoint.problemas.join(', ') : selectedPoint.problemas}
                           {selectedPoint.problemas_otro ? ` (Otro: ${selectedPoint.problemas_otro})` : ''}
                         </span>
@@ -1665,7 +1698,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     {selectedPoint.observaciones && (
                       <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                         <strong style={{ fontSize: '0.7rem', color: '#64748b', display: 'block' }}>Observaciones:</strong>
-                        <span style={{ fontSize: '0.76rem', color: '#0f172a' }}>{selectedPoint.observaciones}</span>
+                        <span style={{ fontSize: '0.76rem', color: '#0c2340' }}>{selectedPoint.observaciones}</span>
                       </div>
                     )}
 
@@ -1697,11 +1730,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                         justifyContent: 'center',
                         gap: 6,
                         height: 38,
-                        background: '#0f172a',
+                        background: '#0c2340',
                         border: 'none',
                         borderRadius: 8,
                         color: '#fff',
-                        fontWeight: 700,
+                        fontWeight: 600,
                         fontSize: '0.76rem',
                         cursor: 'pointer',
                       }}
@@ -1723,8 +1756,8 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                         background: '#ffffff',
                         border: '1.5px solid #cbd5e1',
                         borderRadius: 8,
-                        color: '#0f172a',
-                        fontWeight: 800,
+                        color: '#0c2340',
+                        fontWeight: 600,
                         fontSize: '0.76rem',
                         cursor: 'pointer',
                       }}
@@ -1744,11 +1777,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             {/* ENCABEZADO DE LA SECCIÓN ESTADÍSTICA */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h2 style={{ fontSize: '1.35rem', fontWeight: 900, margin: 0, color: '#0f172a' }}>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 600, margin: 0, color: '#0c2340' }}>
                   Parte Estadístico y Balance de Terreno
                 </h2>
                 <p style={{ fontSize: '0.84rem', color: '#64748b', margin: '4px 0 0' }}>
-                  Consolidado general de encuestas · {surveys.length} visitas procesadas en territorio
+                  Consolidado general de encuestas · {surveys.length} {surveys.length === 1 ? 'visita procesada' : 'visitas procesadas'} en territorio
                 </p>
               </div>
 
@@ -1762,11 +1795,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     alignItems: 'center',
                     gap: 7,
                     padding: '11px 16px',
-                    borderRadius: 10,
-                    border: '1px solid #fecaca',
-                    background: '#fff1f2',
+                    borderRadius: 6,
+                    border: '1px solid #d9b3b3',
+                    background: '#ffffff',
                     color: '#b91c1c',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     fontSize: '0.82rem',
                     cursor: purging ? 'not-allowed' : 'pointer',
                   }}
@@ -1784,14 +1817,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     alignItems: 'center',
                     gap: 8,
                     padding: '11px 20px',
-                    borderRadius: 10,
+                    borderRadius: 6,
                     border: 'none',
-                    background: '#16a34a',
+                    background: '#1f4d3a',
                     color: '#fff',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     fontSize: '0.85rem',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(22,163,74,0.25)',
+                    boxShadow: '0 4px 14px rgba(31, 77, 58, 0.22)',
                   }}
                 >
                   <FileSpreadsheet size={18} />
@@ -1805,7 +1838,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: '20px 24px',
                 marginBottom: 20,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -1813,11 +1846,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 6, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Trophy size={20} color="#d97706" />
                   </div>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: '#0c2340' }}>
                       Estado de la Semaforización: ¿Cuál va ganando?
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
@@ -1838,12 +1871,12 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       gap: 8,
                     }}
                   >
-                    <span style={{ fontSize: 18 }}>{winningCategory.conf.emoji}</span>
+                    <StatusDot conf={winningCategory.conf} size={12} />
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
                         Líder en Territorio
                       </div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: 900, color: winningCategory.conf.text }}>
+                      <div style={{ fontSize: '0.92rem', fontWeight: 600, color: winningCategory.conf.text }}>
                         {winningCategory.label} ({winningPct}%)
                       </div>
                     </div>
@@ -1858,18 +1891,18 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   const isWinner = winningCategory?.key === cat.key && cat.count > 0;
                   return (
                     <div key={cat.key}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 700, marginBottom: 5 }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#0f172a' }}>
-                          <span>{cat.conf.emoji}</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, marginBottom: 5 }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#0c2340' }}>
+                          <StatusDot conf={cat.conf} />
                           <span>{cat.label}</span>
                           {isWinner && (
-                            <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.65rem', fontWeight: 800, padding: '1px 6px', borderRadius: 4 }}>
+                            <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.65rem', fontWeight: 600, padding: '1px 6px', borderRadius: 4 }}>
                               LÍDER
                             </span>
                           )}
                         </span>
-                        <span style={{ color: cat.conf.text, fontWeight: 800 }}>
-                          {cat.count} votos ({pct}%)
+                        <span style={{ color: cat.conf.text, fontWeight: 600 }}>
+                          {cat.count} {cat.count === 1 ? 'voto' : 'votos'} ({pct}%)
                         </span>
                       </div>
                       <div style={{ height: 10, borderRadius: 99, background: '#f1f5f9', overflow: 'hidden' }}>
@@ -1896,15 +1929,15 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  borderRadius: 16,
+                  borderRadius: 8,
                   padding: '20px 22px',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 20 }}>🤝</span>
+                  <span style={{ fontSize: 20 }}></span>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 900, color: '#0f172a' }}>
+                    <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 600, color: '#0c2340' }}>
                       ¿Contamos con su apoyo?
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>
@@ -1914,24 +1947,24 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#15803d', textTransform: 'uppercase' }}>🟢 Sí Apoya</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#166534', margin: '2px 0' }}>{apoyoCounts.si}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 700 }}>
+                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase' }}>Sí Apoya</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#166534', margin: '2px 0' }}>{apoyoCounts.si}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.si / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase' }}>🟡 Tal vez</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#92400e', margin: '2px 0' }}>{apoyoCounts.tal_vez}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 700 }}>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase' }}>Tal vez</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#92400e', margin: '2px 0' }}>{apoyoCounts.tal_vez}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.tal_vez / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#b91c1c', textTransform: 'uppercase' }}>🔴 No Apoya</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#991b1b', margin: '2px 0' }}>{apoyoCounts.no}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 700 }}>
+                  <div style={{ background: '#fef2f2', border: '1px solid #d9b3b3', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase' }}>No Apoya</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#991b1b', margin: '2px 0' }}>{apoyoCounts.no}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.no / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
@@ -1949,15 +1982,15 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  borderRadius: 16,
+                  borderRadius: 8,
                   padding: '20px 22px',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 20 }}>🚶</span>
+                  <span style={{ fontSize: 20 }}></span>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 900, color: '#0f172a' }}>
+                    <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 600, color: '#0c2340' }}>
                       Disposición a Revisita Territorial
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>
@@ -1967,24 +2000,24 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#15803d', textTransform: 'uppercase' }}>🟢 Sí con gusto</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#166534', margin: '2px 0' }}>{regresarCounts.si}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 700 }}>
+                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase' }}>Sí con gusto</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#166534', margin: '2px 0' }}>{regresarCounts.si}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.si / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase' }}>🟡 Quizás</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#92400e', margin: '2px 0' }}>{regresarCounts.quizas}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 700 }}>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase' }}>Quizás</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#92400e', margin: '2px 0' }}>{regresarCounts.quizas}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.quizas / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#b91c1c', textTransform: 'uppercase' }}>🔴 No Regresar</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#991b1b', margin: '2px 0' }}>{regresarCounts.no}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 700 }}>
+                  <div style={{ background: '#fef2f2', border: '1px solid #d9b3b3', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase' }}>No Regresar</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#991b1b', margin: '2px 0' }}>{regresarCounts.no}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.no / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
@@ -2003,7 +2036,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: '20px 24px',
                 marginBottom: 20,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -2011,15 +2044,15 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
                     Problema Más Importante a Atender por la Próxima Administración Municipal
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '3px 0 0' }}>
                     Prioridades directas identificadas por los ciudadanos de San Gabriel y Montúfar
                   </p>
                 </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0f172a', background: '#f1f5f9', padding: '4px 10px', borderRadius: 8 }}>
-                  {problemasPrioritariosStats.reduce((a, b) => a + b.count, 0)} respuestas registradas
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', padding: '4px 10px', borderRadius: 8 }}>
+                  {problemasPrioritariosStats.reduce((a, b) => a + b.count, 0)} menciones registradas
                 </span>
               </div>
 
@@ -2031,15 +2064,15 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {problemasPrioritariosStats.map((item, idx) => (
                     <div key={item.problema}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 700, marginBottom: 4 }}>
-                        <span style={{ color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: 6, background: idx === 0 ? '#0f172a' : '#f1f5f9', color: idx === 0 ? '#fff' : '#64748b', fontSize: 10, fontWeight: 900, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, marginBottom: 4 }}>
+                        <span style={{ color: '#0c2340', display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ width: 20, height: 20, borderRadius: 6, background: idx === 0 ? '#0c2340' : '#f1f5f9', color: idx === 0 ? '#fff' : '#64748b', fontSize: 10, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                             {idx + 1}
                           </span>
                           <span>{item.problema}</span>
                         </span>
-                        <span style={{ color: '#0f172a', fontWeight: 800 }}>
-                          {item.count} votos ({item.pct}%)
+                        <span style={{ color: '#0c2340', fontWeight: 600 }}>
+                          {item.count} {item.count === 1 ? 'mención' : 'menciones'} ({item.pct}%)
                         </span>
                       </div>
                       <div style={{ height: 8, borderRadius: 99, background: '#f1f5f9', overflow: 'hidden' }}>
@@ -2047,7 +2080,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                           style={{
                             height: '100%',
                             width: `${item.pct}%`,
-                            background: idx === 0 ? '#0f172a' : '#64748b',
+                            background: idx === 0 ? '#0c2340' : '#64748b',
                             borderRadius: 99,
                             transition: 'width 0.5s ease',
                           }}
@@ -2064,7 +2097,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: '20px 24px',
                 marginBottom: 20,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -2072,7 +2105,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
                     Parte Estadístico por Encuestador (Rendimiento Individual)
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '4px 0 0' }}>
@@ -2085,16 +2118,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', color: '#475569' }}>
-                      <th style={{ padding: '12px 14px', fontWeight: 800 }}>Encuestador</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>Total</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>🟢 Voto Seguro</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>🟡 Indeciso</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>🔴 No Vota</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>⚪ Nadie Casa</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>🔘 No Trab.</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>Manzanas</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>% Respaldo</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 800, textAlign: 'center' }}>GPS Vivo</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600 }}>Encuestador</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Total</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Voto Seguro</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Indeciso</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>No Vota</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Nadie Casa</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>No Trab.</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Manzanas</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>% Respaldo</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>GPS Vivo</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2113,30 +2146,30 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                             background: idx % 2 === 0 ? '#ffffff' : '#fcfcfd',
                           }}
                         >
-                          <td style={{ padding: '12px 14px', fontWeight: 700, color: '#0f172a' }}>
+                          <td style={{ padding: '12px 14px', fontWeight: 600, color: '#0c2340' }}>
                             <div>{e.nombre}</div>
                             <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 500 }}>{e.email}</div>
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 900, fontSize: '0.9rem', color: '#0f172a' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, fontSize: '0.9rem', color: '#0c2340' }}>
                             {e.total}
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800, color: '#15803d' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#15803d' }}>
                             {e.voto_seguro}
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800, color: '#b45309' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#b45309' }}>
                             {e.indeciso}
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800, color: '#b91c1c' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#b91c1c' }}>
                             {e.no_vota}
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#475569' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
                             {e.nadie_en_casa}
                           </td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#475569' }}>
+                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
                             {e.no_trabajable}
                           </td>
                           <td style={{ padding: '12px 14px', textAlign: 'center' }}>
-                            <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#0f172a', background: '#f1f5f9', padding: '2px 8px', borderRadius: 6 }}>
+                            <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', padding: '2px 8px', borderRadius: 6 }}>
                               {e.manzanasCount || 0} mz
                             </span>
                           </td>
@@ -2147,7 +2180,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                                 borderRadius: 6,
                                 background: e.efectividad >= 50 ? '#ecfdf5' : '#fef2f2',
                                 color: e.efectividad >= 50 ? '#059669' : '#dc2626',
-                                fontWeight: 800,
+                                fontWeight: 600,
                                 fontSize: '0.78rem',
                               }}
                             >
@@ -2161,7 +2194,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                                 alignItems: 'center',
                                 gap: 5,
                                 fontSize: '0.72rem',
-                                fontWeight: 800,
+                                fontWeight: 600,
                                 color: e.isOnline ? '#2563eb' : '#94a3b8',
                               }}
                             >
@@ -2189,14 +2222,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: '20px 24px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
                     Base de Datos Territorial & Registros de Encuestas (Vista Admin Completa)
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '3px 0 0' }}>
@@ -2205,7 +2238,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 700 }}>
+                  <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>
                     Mostrando <strong>{filteredTableSurveys.length}</strong> de {surveys.length} visitas
                   </span>
                   <button
@@ -2218,11 +2251,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       gap: 6,
                       padding: '6px 12px',
                       borderRadius: 8,
-                      border: '1px solid #fecaca',
-                      background: '#fff1f2',
+                      border: '1px solid #d9b3b3',
+                      background: '#ffffff',
                       color: '#b91c1c',
                       fontSize: '0.75rem',
-                      fontWeight: 800,
+                      fontWeight: 600,
                       cursor: purging ? 'not-allowed' : 'pointer',
                     }}
                   >
@@ -2241,7 +2274,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       background: '#ecfdf5',
                       color: '#15803d',
                       fontSize: '0.75rem',
-                      fontWeight: 800,
+                      fontWeight: 600,
                       cursor: 'pointer',
                     }}
                   >
@@ -2259,7 +2292,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   gap: 10,
                   background: '#f8fafc',
                   padding: '12px 14px',
-                  borderRadius: 12,
+                  borderRadius: 8,
                   border: '1px solid #e2e8f0',
                   marginBottom: 16,
                 }}
@@ -2280,7 +2313,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       border: '1px solid #cbd5e1',
                       background: '#ffffff',
                       fontSize: '0.8rem',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       outline: 'none',
                     }}
                   />
@@ -2305,16 +2338,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     fontSize: '0.78rem',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     fontWeight: 600,
                   }}
                 >
                   <option value="all">Semaforización: Todas</option>
-                  <option value="voto_seguro">🟢 Voto Seguro</option>
-                  <option value="indeciso">🟡 Indeciso</option>
-                  <option value="no_vota">🔴 No Vota / Rechazo</option>
-                  <option value="nadie_en_casa">⚪ Nadie en Casa</option>
-                  <option value="no_trabajable">🔘 No Trabajable</option>
+                  <option value="voto_seguro">Voto Seguro</option>
+                  <option value="indeciso">Indeciso</option>
+                  <option value="no_vota">No Vota / Rechazo</option>
+                  <option value="nadie_en_casa">Nadie en Casa</option>
+                  <option value="no_trabajable">No Trabajable</option>
                 </select>
 
                 {/* Filtro por Encuestador */}
@@ -2328,7 +2361,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     fontSize: '0.78rem',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     fontWeight: 600,
                   }}
                 >
@@ -2351,14 +2384,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     fontSize: '0.78rem',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     fontWeight: 600,
                   }}
                 >
                   <option value="all">¿Apoyo?: Todos</option>
-                  <option value="si">🟢 Sí apoya</option>
-                  <option value="tal_vez">🟡 Tal vez</option>
-                  <option value="no">🔴 No apoya</option>
+                  <option value="si">Sí apoya</option>
+                  <option value="tal_vez">Tal vez</option>
+                  <option value="no">No apoya</option>
                 </select>
               </div>
 
@@ -2367,18 +2400,18 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', textAlign: 'left' }}>
                   <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                     <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', color: '#475569' }}>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Estado</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Ciudadano</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Encuestador</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Manzana CPV</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Medidor / Casa</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Descripción Vivienda</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>¿Apoyo Robles?</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Problema Prioritario</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>¿Revisitar?</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Otras Necesidades</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800 }}>Fecha / Hora</th>
-                      <th style={{ padding: '10px 12px', fontWeight: 800, textAlign: 'center' }}>Acción</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Estado</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Ciudadano</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Encuestador</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Manzana CPV</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Medidor / Casa</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Descripción Vivienda</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>¿Apoyo Robles?</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Problema Prioritario</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>¿Revisitar?</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Otras Necesidades</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600 }}>Fecha / Hora</th>
+                      <th style={{ padding: '10px 12px', fontWeight: 600, textAlign: 'center' }}>Acción</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2412,29 +2445,29 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                                   border: `1px solid ${conf.border}`,
                                   padding: '2px 8px',
                                   borderRadius: 6,
-                                  fontWeight: 800,
+                                  fontWeight: 600,
                                   fontSize: '0.72rem',
                                 }}
                               >
-                                <span>{conf.emoji}</span>
+                                <StatusDot conf={conf} size={8} />
                                 {conf.label}
                               </span>
                             </td>
 
                             {/* CIUDADANO */}
-                            <td style={{ padding: '10px 12px', fontWeight: 800, color: '#0f172a' }}>
+                            <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0c2340' }}>
                               <div>{s.nombre || (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en domicilio' : s.tipo_visita === 'no_trabajable' ? 'Zona no trabajable' : 'Ciudadano')}</div>
                               <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 500 }}>{s.parroquia || 'Montúfar'}</div>
                             </td>
 
                             {/* ENCUESTADOR */}
-                            <td style={{ padding: '10px 12px', color: '#0f172a', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                            <td style={{ padding: '10px 12px', color: '#0c2340', fontWeight: 600, whiteSpace: 'nowrap' }}>
                               {s.encuestador || 'No asignado'}
                             </td>
 
                             {/* MANZANA CPV */}
                             <td style={{ padding: '10px 12px' }}>
-                              <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#0f172a', background: '#f1f5f9', padding: '3px 7px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.75rem' }}>
+                              <span style={{ fontFamily: 'monospace', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', padding: '3px 7px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.75rem' }}>
                                 {s.manzana || 'S/N'}
                               </span>
                             </td>
@@ -2454,16 +2487,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                             {/* ¿CONTAMOS CON SU APOYO? */}
                             <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
                               {s.apoyo_robles === 'si' ? (
-                                <span style={{ color: '#15803d', fontWeight: 800, background: '#ecfdf5', padding: '2px 8px', borderRadius: 6, border: '1px solid #bbf7d0', fontSize: '0.72rem' }}>
-                                  🟢 Sí Apoya
+                                <span style={{ color: '#15803d', fontWeight: 600, background: '#ecfdf5', padding: '2px 8px', borderRadius: 6, border: '1px solid #bbf7d0', fontSize: '0.72rem' }}>
+                                  Sí Apoya
                                 </span>
                               ) : s.apoyo_robles === 'tal_vez' ? (
-                                <span style={{ color: '#b45309', fontWeight: 800, background: '#fffbeb', padding: '2px 8px', borderRadius: 6, border: '1px solid #fde68a', fontSize: '0.72rem' }}>
-                                  🟡 Tal vez
+                                <span style={{ color: '#b45309', fontWeight: 600, background: '#fffbeb', padding: '2px 8px', borderRadius: 6, border: '1px solid #fde68a', fontSize: '0.72rem' }}>
+                                  Tal vez
                                 </span>
                               ) : s.apoyo_robles === 'no' ? (
-                                <span style={{ color: '#b91c1c', fontWeight: 800, background: '#fef2f2', padding: '2px 8px', borderRadius: 6, border: '1px solid #fecaca', fontSize: '0.72rem' }}>
-                                  🔴 No Apoya
+                                <span style={{ color: '#b91c1c', fontWeight: 600, background: '#fef2f2', padding: '2px 8px', borderRadius: 6, border: '1px solid #d9b3b3', fontSize: '0.72rem' }}>
+                                  No Apoya
                                 </span>
                               ) : (
                                 <span style={{ color: '#94a3b8' }}>-</span>
@@ -2471,7 +2504,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                             </td>
 
                             {/* PROBLEMA PRIORITARIO MUNICIPAL */}
-                            <td style={{ padding: '10px 12px', color: '#0f172a', fontWeight: 600, maxWidth: 200 }}>
+                            <td style={{ padding: '10px 12px', color: '#0c2340', fontWeight: 600, maxWidth: 200 }}>
                               <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={s.problema_prioritario || ''}>
                                 {s.problema_prioritario || '-'}
                               </span>
@@ -2480,11 +2513,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                             {/* ¿PODEMOS REGRESAR? */}
                             <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
                               {s.podemos_regresar === 'si' ? (
-                                <span style={{ color: '#15803d', fontWeight: 700, fontSize: '0.72rem' }}>🟢 Sí con gusto</span>
+                                <span style={{ color: '#15803d', fontWeight: 600, fontSize: '0.72rem' }}>Sí con gusto</span>
                               ) : s.podemos_regresar === 'quizas' ? (
-                                <span style={{ color: '#b45309', fontWeight: 700, fontSize: '0.72rem' }}>🟡 Quizás</span>
+                                <span style={{ color: '#b45309', fontWeight: 600, fontSize: '0.72rem' }}>Quizás</span>
                               ) : s.podemos_regresar === 'no' ? (
-                                <span style={{ color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem' }}>🔴 No regresar</span>
+                                <span style={{ color: '#b91c1c', fontWeight: 600, fontSize: '0.72rem' }}>No regresar</span>
                               ) : (
                                 <span style={{ color: '#94a3b8' }}>-</span>
                               )}
@@ -2521,14 +2554,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                                     borderRadius: 6,
                                     border: '1px solid #cbd5e1',
                                     background: '#ffffff',
-                                    color: '#0f172a',
+                                    color: '#0c2340',
                                     fontSize: '0.72rem',
-                                    fontWeight: 800,
+                                    fontWeight: 600,
                                     cursor: 'pointer',
                                   }}
                                   title="Localizar vivienda y punto en el Mapa"
                                 >
-                                  <MapPin size={12} color="#0f172a" />
+                                  <MapPin size={12} color="#0c2340" />
                                   <span>Ver Mapa</span>
                                 </button>
                               ) : (
@@ -2551,7 +2584,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           <div style={{ flex: 1, padding: 24, overflowY: 'auto', background: '#f8fafc' }} className="custom-scrollbar">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h2 style={{ fontSize: '1.35rem', fontWeight: 900, margin: 0, color: '#0f172a' }}>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 600, margin: 0, color: '#0c2340' }}>
                   Equipo de Trabajo (Roles & Usuarios)
                 </h2>
                 <p style={{ fontSize: '0.84rem', color: '#64748b', margin: '4px 0 0' }}>
@@ -2566,11 +2599,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   alignItems: 'center',
                   gap: 8,
                   padding: '10px 18px',
-                  borderRadius: 10,
+                  borderRadius: 6,
                   border: 'none',
-                  background: '#0f172a',
+                  background: '#0c2340',
                   color: '#ffffff',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: '0.84rem',
                   cursor: 'pointer',
                   boxShadow: '0 4px 14px rgba(15,23,42,0.2)',
@@ -2587,21 +2620,21 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   key={u.id || u.email}
                   style={{
                     background: '#ffffff',
-                    border: `1.5px solid ${u.rol === 'admin' ? '#0f172a' : '#e2e8f0'}`,
-                    borderRadius: 14,
+                    border: `1.5px solid ${u.rol === 'admin' ? '#0c2340' : '#e2e8f0'}`,
+                    borderRadius: 8,
                     padding: 18,
                     boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <div>
-                      <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#0f172a' }}>{u.nombre}</h4>
+                      <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 600, color: '#0c2340' }}>{u.nombre}</h4>
                       <span style={{ fontSize: '0.76rem', color: '#64748b' }}>{u.email}</span>
                     </div>
                     <span
                       style={{
                         fontSize: '0.68rem',
-                        fontWeight: 800,
+                        fontWeight: 600,
                         padding: '3px 8px',
                         borderRadius: 6,
                         background: u.rol === 'admin' ? '#fef2f2' : '#eff6ff',
@@ -2610,17 +2643,17 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                         textTransform: 'uppercase',
                       }}
                     >
-                      {u.rol === 'admin' ? '🛡️ Administrador' : '📋 Encuestador'}
+                      {u.rol === 'admin' ? 'Administrador' : 'Encuestador'}
                     </span>
                   </div>
 
                   <div style={{ borderTop: '1px dashed #e2e8f0', paddingTop: 10, marginTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
                     <span style={{ color: '#64748b' }}>Visitas levantadas:</span>
-                    <strong style={{ color: '#0f172a' }}>{u.total} encuestas</strong>
+                    <strong style={{ color: '#0c2340' }}>{u.total} encuestas</strong>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginTop: 4 }}>
-                    <span style={{ color: '#64748b' }}>🟢 Votos Seguros logrados:</span>
+                    <span style={{ color: '#64748b' }}>Votos Seguros logrados:</span>
                     <strong style={{ color: '#16a34a' }}>{u.voto_seguro} ({u.efectividad}%)</strong>
                   </div>
 
@@ -2638,7 +2671,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                         borderRadius: 6,
                         padding: '4px 10px',
                         fontSize: '0.72rem',
-                        fontWeight: 700,
+                        fontWeight: 600,
                         cursor: 'pointer',
                       }}
                       title="Eliminar usuario de la base de datos y retirar del mapa"
@@ -2679,19 +2712,19 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 maxWidth: '100%',
                 background: '#ffffff',
                 border: '1px solid #cbd5e1',
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: '24px 28px',
                 boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
-                color: '#0f172a',
+                color: '#0c2340',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 6, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <UserPlus size={18} color="#2563eb" />
                   </div>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Crear Usuario</h3>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Crear Usuario</h3>
                     <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Registro oficial en la base de datos</p>
                   </div>
                 </div>
@@ -2705,7 +2738,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
 
               <form onSubmit={handleCreateUser} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div>
-                  <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: '0.74rem', fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
                     Rol del Usuario
                   </label>
                   <div style={{ display: 'flex', gap: 10 }}>
@@ -2715,16 +2748,16 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       style={{
                         flex: 1,
                         padding: '10px',
-                        borderRadius: 10,
+                        borderRadius: 6,
                         border: `1.5px solid ${newUserRole === 'admin' ? '#dc2626' : '#cbd5e1'}`,
                         background: newUserRole === 'admin' ? '#fef2f2' : '#ffffff',
                         color: newUserRole === 'admin' ? '#dc2626' : '#64748b',
-                        fontWeight: 800,
+                        fontWeight: 600,
                         fontSize: '0.8rem',
                         cursor: 'pointer',
                       }}
                     >
-                      🛡️ Administrador
+                      Administrador
                     </button>
                     <button
                       type="button"
@@ -2732,22 +2765,22 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       style={{
                         flex: 1,
                         padding: '10px',
-                        borderRadius: 10,
+                        borderRadius: 6,
                         border: `1.5px solid ${newUserRole === 'encuestador' ? '#2563eb' : '#cbd5e1'}`,
                         background: newUserRole === 'encuestador' ? '#eff6ff' : '#ffffff',
                         color: newUserRole === 'encuestador' ? '#2563eb' : '#64748b',
-                        fontWeight: 800,
+                        fontWeight: 600,
                         fontSize: '0.8rem',
                         cursor: 'pointer',
                       }}
                     >
-                      📋 Encuestador
+                      Encuestador
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: '0.74rem', fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
                     Nombre Completo
                   </label>
                   <input
@@ -2759,10 +2792,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     style={{
                       width: '100%',
                       padding: '10px 14px',
-                      borderRadius: 10,
+                      borderRadius: 6,
                       border: '1.5px solid #cbd5e1',
                       background: '#f8fafc',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       fontSize: '0.85rem',
                       boxSizing: 'border-box',
                       outline: 'none',
@@ -2771,7 +2804,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: '0.74rem', fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
                     Correo Electrónico
                   </label>
                   <input
@@ -2783,10 +2816,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     style={{
                       width: '100%',
                       padding: '10px 14px',
-                      borderRadius: 10,
+                      borderRadius: 6,
                       border: '1.5px solid #cbd5e1',
                       background: '#f8fafc',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       fontSize: '0.85rem',
                       boxSizing: 'border-box',
                       outline: 'none',
@@ -2795,7 +2828,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: '0.74rem', fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
                     Contraseña de Acceso
                   </label>
                   <input
@@ -2807,10 +2840,10 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     style={{
                       width: '100%',
                       padding: '10px 14px',
-                      borderRadius: 10,
+                      borderRadius: 6,
                       border: '1.5px solid #cbd5e1',
                       background: '#f8fafc',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       fontSize: '0.85rem',
                       boxSizing: 'border-box',
                       outline: 'none',
@@ -2822,12 +2855,12 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   <div
                     style={{
                       padding: '10px 12px',
-                      borderRadius: 10,
+                      borderRadius: 6,
                       background: userModalStatus.ok ? '#ecfdf5' : '#fef2f2',
                       border: `1px solid ${userModalStatus.ok ? '#a7f3d0' : '#fecaca'}`,
                       color: userModalStatus.ok ? '#065f46' : '#991b1b',
                       fontSize: '0.78rem',
-                      fontWeight: 700,
+                      fontWeight: 600,
                     }}
                   >
                     {userModalStatus.msg}
@@ -2839,11 +2872,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   style={{
                     marginTop: 8,
                     padding: '12px',
-                    borderRadius: 10,
+                    borderRadius: 6,
                     border: 'none',
-                    background: '#0f172a',
+                    background: '#0c2340',
                     color: '#ffffff',
-                    fontWeight: 900,
+                    fontWeight: 600,
                     fontSize: '0.88rem',
                     cursor: 'pointer',
                   }}

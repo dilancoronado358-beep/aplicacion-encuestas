@@ -161,7 +161,7 @@ export function AdminPanel({
               style={{
                 width: 40,
                 height: 40,
-                borderRadius: 13,
+                borderRadius: 8,
                 background: 'rgba(99,102,241,0.12)',
                 display: 'flex',
                 alignItems: 'center',
@@ -171,7 +171,7 @@ export function AdminPanel({
               <Settings size={18} color="#6366f1" />
             </div>
             <div>
-              <p style={{ fontWeight: 800, fontSize: '1rem', color: t.text, margin: 0 }}>Panel de Control</p>
+              <p style={{ fontWeight: 600, fontSize: '1rem', color: t.text, margin: 0 }}>Panel de Control</p>
               <p style={{ fontSize: '0.73rem', color: t.textMuted, margin: 0 }}>
                 {config.name} · {dataSource === 'cloud' ? 'Vista Consolidada (Nube)' : 'Vista Local'}
               </p>
@@ -207,11 +207,11 @@ export function AdminPanel({
               justifyContent: 'center',
               gap: 6,
               height: 34,
-              borderRadius: 12,
+              borderRadius: 8,
               border: `1.5px solid ${dataSource === 'local' ? '#ef4444' : t.border}`,
               background: dataSource === 'local' ? 'rgba(239,68,68,0.08)' : t.bgSurface,
               color: dataSource === 'local' ? '#ef4444' : t.textMuted,
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: '0.75rem',
               cursor: 'pointer',
             }}
@@ -227,11 +227,11 @@ export function AdminPanel({
               justifyContent: 'center',
               gap: 6,
               height: 34,
-              borderRadius: 12,
+              borderRadius: 8,
               border: `1.5px solid ${dataSource === 'cloud' ? '#3b82f6' : t.border}`,
               background: dataSource === 'cloud' ? 'rgba(59,130,246,0.08)' : t.bgSurface,
               color: dataSource === 'cloud' ? '#3b82f6' : t.textMuted,
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: '0.75rem',
               cursor: 'pointer',
             }}
@@ -241,7 +241,7 @@ export function AdminPanel({
         </div>
 
         {/* Tab bar */}
-        <div style={{ display: 'flex', gap: 5, padding: 4, background: t.tabBg, borderRadius: 16, marginBottom: 18 }}>
+        <div style={{ display: 'flex', gap: 5, padding: 4, background: t.tabBg, borderRadius: 8, marginBottom: 18 }}>
           {TABS.map(({ id, label, Icon }) => (
             <button
               key={id}
@@ -253,14 +253,14 @@ export function AdminPanel({
                 justifyContent: 'center',
                 gap: 5,
                 height: 36,
-                borderRadius: 12,
+                borderRadius: 8,
                 border: 'none',
                 cursor: 'pointer',
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: '0.76rem',
                 transition: 'all 0.2s',
                 background: tab === id ? '#fff' : 'transparent',
-                color: tab === id ? '#0f172a' : t.textMuted,
+                color: tab === id ? '#0c2340' : t.textMuted,
                 boxShadow: tab === id ? '0 2px 8px rgba(0,0,0,0.09)' : 'none',
               }}
             >
@@ -273,13 +273,13 @@ export function AdminPanel({
         {tab === 'resumen' && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
             {/* Meta bar */}
-            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 18, padding: '16px 18px', marginBottom: 13 }}>
+            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 8, padding: '16px 18px', marginBottom: 13 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                   <Target size={17} color="#ef4444" />
-                  <span style={{ fontWeight: 800, fontSize: '0.9rem', color: t.text }}>Meta del día</span>
+                  <span style={{ fontWeight: 600, fontSize: '0.9rem', color: t.text }}>Meta del día</span>
                 </div>
-                <span style={{ fontWeight: 900, fontSize: '1.05rem', color: pctGoal >= 100 ? '#10b981' : '#ef4444' }}>
+                <span style={{ fontWeight: 600, fontSize: '1.05rem', color: pctGoal >= 100 ? '#10b981' : '#ef4444' }}>
                   {today} / {config.goal}
                 </span>
               </div>
@@ -296,7 +296,7 @@ export function AdminPanel({
                 />
               </div>
               <p style={{ fontSize: '0.7rem', color: t.textMuted, marginTop: 6, textAlign: 'right' }}>
-                {pctGoal >= 100 ? '🎉 ¡Meta alcanzada!' : `Faltan ${Math.max(0, config.goal - today)} encuestas`}
+                {pctGoal >= 100 ? '¡Meta alcanzada!' : `Faltan ${Math.max(0, config.goal - today)} encuestas`}
               </p>
             </div>
 
@@ -312,14 +312,14 @@ export function AdminPanel({
                   style={{
                     background: t.statCardBg,
                     border: `1.5px solid ${t.border}`,
-                    borderRadius: 16,
+                    borderRadius: 8,
                     padding: '12px 10px',
                     textAlign: 'center',
                   }}
                 >
                   <Icon size={18} color={color} style={{ margin: '0 auto 6px' }} />
-                  <div style={{ fontWeight: 900, fontSize: '1.25rem', color: t.text, lineHeight: 1 }}>{val}</div>
-                  <div style={{ fontSize: '0.66rem', fontWeight: 700, color: t.textMuted, marginTop: 4, textTransform: 'uppercase' }}>{lbl}</div>
+                  <div style={{ fontWeight: 600, fontSize: '1.25rem', color: t.text, lineHeight: 1 }}>{val}</div>
+                  <div style={{ fontSize: '0.66rem', fontWeight: 600, color: t.textMuted, marginTop: 4, textTransform: 'uppercase' }}>{lbl}</div>
                 </div>
               ))}
             </div>
@@ -333,14 +333,14 @@ export function AdminPanel({
                 padding: '12px 14px',
                 background: pendingCount > 0 ? 'rgba(239,68,68,0.06)' : 'rgba(16,185,129,0.06)',
                 border: `1.5px solid ${pendingCount > 0 ? '#fca5a5' : '#bbf7d0'}`,
-                borderRadius: 16,
+                borderRadius: 8,
                 marginBottom: 14,
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {pendingCount > 0 ? <AlertCircle size={17} color="#ef4444" /> : <CheckCircle2 size={17} color="#10b981" />}
                 <div>
-                  <p style={{ fontWeight: 700, fontSize: '0.8rem', color: pendingCount > 0 ? '#b91c1c' : '#047857', margin: 0 }}>
+                  <p style={{ fontWeight: 600, fontSize: '0.8rem', color: pendingCount > 0 ? '#b91c1c' : '#047857', margin: 0 }}>
                     {pendingCount > 0 ? `${pendingCount} encuestas pendientes por subir` : 'Todas las encuestas están en la nube'}
                   </p>
                   <p style={{ fontSize: '0.68rem', color: t.textMuted, margin: 0 }}>
@@ -357,7 +357,7 @@ export function AdminPanel({
                     border: 'none',
                     background: '#ef4444',
                     color: '#fff',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     fontSize: '0.72rem',
                     cursor: 'pointer',
                   }}
@@ -379,11 +379,11 @@ export function AdminPanel({
                   gap: 8,
                   width: '100%',
                   height: 44,
-                  borderRadius: 14,
+                  borderRadius: 8,
                   border: `1.5px solid ${t.border}`,
                   background: t.bgSurface,
                   color: t.text,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '0.82rem',
                   cursor: 'pointer',
                   marginBottom: 10,
@@ -401,13 +401,13 @@ export function AdminPanel({
         {tab === 'analisis' && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <p style={{ fontWeight: 800, fontSize: '0.85rem', color: t.text, margin: 0 }}>
+              <p style={{ fontWeight: 600, fontSize: '0.85rem', color: t.text, margin: 0 }}>
                 Intención de Voto ({dataSource === 'cloud' ? 'Nube' : 'Local'})
               </p>
               <span style={{ fontSize: '0.7rem', color: t.textMuted }}>Total: {total}</span>
             </div>
 
-            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 18, padding: '16px 16px 8px', marginBottom: 16 }}>
+            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 8, padding: '16px 16px 8px', marginBottom: 16 }}>
               {candData.map(({ label, val, pct }) => {
                 const candObj = CANDIDATOS.find((c) => c.name === label);
                 const color = candObj ? candObj.color : '#64748b';
@@ -415,8 +415,8 @@ export function AdminPanel({
               })}
             </div>
 
-            <p style={{ fontWeight: 800, fontSize: '0.85rem', color: t.text, marginBottom: 10 }}>Por Parroquia</p>
-            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 18, padding: '16px 16px 8px' }}>
+            <p style={{ fontWeight: 600, fontSize: '0.85rem', color: t.text, marginBottom: 10 }}>Por Parroquia</p>
+            <div style={{ background: t.statCardBg, border: `1.5px solid ${t.border}`, borderRadius: 8, padding: '16px 16px 8px' }}>
               {parqData.map(({ label, val, pct }) => (
                 <HBar key={label} label={label} val={val} pct={pct} color="#3b82f6" total={total} theme={t} />
               ))}
@@ -427,7 +427,7 @@ export function AdminPanel({
         {/* ── CONFIG ───────────────────────────────────────────── */}
         {tab === 'config' && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-            <p style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 6 }}>
+            <p style={{ fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 6 }}>
               Nombre del Encuestador
             </p>
             <input
@@ -435,7 +435,7 @@ export function AdminPanel({
                 width: '100%',
                 height: 48,
                 padding: '0 16px',
-                borderRadius: 14,
+                borderRadius: 8,
                 fontSize: '0.9rem',
                 outline: 'none',
                 background: t.bgSurface,
@@ -448,7 +448,7 @@ export function AdminPanel({
               onChange={(e) => setEName(e.target.value)}
             />
 
-            <p style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 6 }}>
+            <p style={{ fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 6 }}>
               Meta Diaria
             </p>
             <input
@@ -457,7 +457,7 @@ export function AdminPanel({
                 width: '100%',
                 height: 48,
                 padding: '0 16px',
-                borderRadius: 14,
+                borderRadius: 8,
                 fontSize: '0.9rem',
                 outline: 'none',
                 background: t.bgSurface,
@@ -475,11 +475,11 @@ export function AdminPanel({
               style={{
                 width: '100%',
                 height: 44,
-                borderRadius: 12,
+                borderRadius: 8,
                 border: 'none',
-                background: '#0f172a',
+                background: '#0c2340',
                 color: '#fff',
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
                 marginBottom: 18,
@@ -519,11 +519,11 @@ export function AdminPanel({
                 gap: 8,
                 width: '100%',
                 height: 46,
-                borderRadius: 14,
+                borderRadius: 8,
                 border: `1.5px solid ${t.border}`,
                 background: t.bgSurface,
                 color: t.text,
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: '0.84rem',
                 cursor: 'pointer',
                 marginBottom: 12,
@@ -547,11 +547,11 @@ export function AdminPanel({
                 gap: 8,
                 width: '100%',
                 height: 46,
-                borderRadius: 14,
+                borderRadius: 8,
                 border: 'none',
                 background: confirmClear ? '#ef4444' : 'rgba(239,68,68,0.08)',
                 color: confirmClear ? '#fff' : '#ef4444',
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: '0.84rem',
                 cursor: 'pointer',
               }}
@@ -592,11 +592,11 @@ export function AdminPanel({
                 gap: 8,
                 width: '100%',
                 height: 44,
-                borderRadius: 14,
+                borderRadius: 8,
                 border: `1.5px solid ${t.border}`,
                 background: 'transparent',
                 color: t.textSec,
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: '0.82rem',
                 cursor: 'pointer',
               }}

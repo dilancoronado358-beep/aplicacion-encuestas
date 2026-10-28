@@ -634,13 +634,13 @@ export default function App() {
                 border: '1px solid #cbd5e1',
                 color: '#475569',
                 fontSize: '0.75rem',
-                fontWeight: 700,
+                fontWeight: 600,
               }}
             >
               <Settings size={13} color="#475569" />
               <span>Configuración</span>
               {total > 0 && (
-                <span style={{ background: '#0f172a', color: '#fff', borderRadius: 4, padding: '1px 5px', fontSize: 10, fontWeight: 800 }}>
+                <span style={{ background: '#0c2340', color: '#fff', borderRadius: 4, padding: '1px 5px', fontSize: 10, fontWeight: 600 }}>
                   {total}
                 </span>
               )}
@@ -652,7 +652,7 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 14,
+                borderRadius: 8,
                 padding: '20px 18px',
                 marginBottom: 14,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
@@ -680,7 +680,7 @@ export default function App() {
                 />
               </div>
 
-              <h1 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+              <h1 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#0c2340', margin: '0 0 4px 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
                 BRIGADA RENOVACIÓN (pap)
               </h1>
               <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0, fontWeight: 600 }}>
@@ -694,7 +694,7 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: '12px 16px',
                 marginBottom: 12,
                 boxSizing: 'border-box',
@@ -702,15 +702,15 @@ export default function App() {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
                   BRIGADISTA ASIGNADO:
                 </span>
-                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#0f172a' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#0c2340' }}>
                   Montúfar / San Gabriel
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#0f172a', fontWeight: 800, fontSize: '0.92rem' }}>
-                <User size={16} color="#0f172a" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#0c2340', fontWeight: 600, fontSize: '0.92rem' }}>
+                <User size={16} color="#0c2340" />
                 <span>{config?.name || 'Encuestador Oficial'}</span>
               </div>
               <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 2 }}>
@@ -740,14 +740,14 @@ export default function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: liveTrackingActive ? '#15803d' : '#94a3b8' }} />
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#334155' }}>
+                <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#334155' }}>
                   {liveTrackingActive ? 'Señal Satelital GPS: Conectado en Tiempo Real' : 'Señal Satelital GPS: Inactiva'}
                 </span>
               </div>
               <span
                 style={{
                   fontSize: '0.64rem',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   color: liveTrackingActive ? '#15803d' : '#475569',
                   background: liveTrackingActive ? '#f0fdf4' : '#f1f5f9',
                   border: `1px solid ${liveTrackingActive ? '#bbf7d0' : '#cbd5e1'}`,
@@ -766,18 +766,18 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: '12px 16px',
                 marginBottom: 16,
                 boxSizing: 'border-box',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 700, marginBottom: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 600, marginBottom: 6 }}>
                 <span style={{ color: '#64748b' }}>Meta diaria en territorio:</span>
-                <span style={{ color: '#0f172a', fontWeight: 800 }}>{todayCt} de {config?.goal || 20} encuestas ({pctGoal}%)</span>
+                <span style={{ color: '#0c2340', fontWeight: 600 }}>{todayCt} de {config?.goal || 20} encuestas ({pctGoal}%)</span>
               </div>
               <div style={{ height: 6, background: '#f1f5f9', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${pctGoal}%`, background: '#0f172a', borderRadius: 4 }} />
+                <div style={{ height: '100%', width: `${pctGoal}%`, background: '#0c2340', borderRadius: 4 }} />
               </div>
             </div>
 
@@ -787,11 +787,11 @@ export default function App() {
               style={{
                 width: '100%',
                 height: 48,
-                borderRadius: 10,
+                borderRadius: 6,
                 border: 'none',
-                background: '#0f172a',
+                background: '#0c2340',
                 color: '#ffffff',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: '0.92rem',
                 cursor: 'pointer',
                 display: 'flex',
@@ -813,10 +813,10 @@ export default function App() {
           <motion.div key="s1" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{ ...S.page, background: '#f8fafc' }}>
             <div style={S.pageHeader}>
               <div style={S.stepIcon}>
-                <FileText size={18} color="#0f172a" />
+                <FileText size={18} color="#0c2340" />
               </div>
               <div>
-                <h2 style={{ ...S.pageTitle, color: '#0f172a', margin: 0 }}>Paso 1 · Ubicación y Vivienda</h2>
+                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Paso 1 · Ubicación y Vivienda</h2>
                 <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de registro territorial puerta a puerta</p>
               </div>
             </div>
@@ -834,7 +834,7 @@ export default function App() {
                 marginBottom: 10,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.73rem', fontWeight: 700, color: '#0f172a' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.73rem', fontWeight: 600, color: '#0c2340' }}>
                 <Navigation size={13} color="#2563eb" />
                 <span>
                   {userCoords
@@ -842,7 +842,7 @@ export default function App() {
                     : 'Obteniendo GPS satelital...'}
                 </span>
                 {userCoords?.accuracy && (
-                  <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 800 }}>
+                  <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 600 }}>
                     (±{Math.round(userCoords.accuracy)}m)
                   </span>
                 )}
@@ -856,8 +856,8 @@ export default function App() {
                   borderRadius: 4,
                   padding: '2px 8px',
                   fontSize: '0.66rem',
-                  fontWeight: 800,
-                  color: '#0f172a',
+                  fontWeight: 600,
+                  color: '#0c2340',
                   cursor: 'pointer',
                 }}
               >
@@ -868,7 +868,7 @@ export default function App() {
             <div style={{ flex: 1, overflowY: 'auto', paddingRight: 4, display: 'flex', flexDirection: 'column', gap: 12 }} className="custom-scrollbar">
               {/* CAMPO 1: FECHA Y HORA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                   <Calendar size={13} color="#64748b" />
                   <span>FECHA Y HORA DE VISITA</span>
                 </label>
@@ -876,7 +876,7 @@ export default function App() {
                   <Calendar size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
                     type="datetime-local"
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
                     value={formData.fecha || getLocalDatetimeString()}
                     onChange={(e) => setField('fecha', e.target.value)}
                   />
@@ -886,7 +886,7 @@ export default function App() {
               {/* CAMPO 3: MANZANA (CÓDIGO CENSAL AUTOMÁTICO POR GPS) */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                  <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Hash size={13} color="#64748b" />
                     <span>MANZANA CENSAL (CPV) *</span>
                   </label>
@@ -910,29 +910,29 @@ export default function App() {
                       gap: 4,
                       background: '#f1f5f9',
                       border: '1px solid #cbd5e1',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       borderRadius: 6,
                       padding: '3px 8px',
                       fontSize: '0.68rem',
-                      fontWeight: 800,
+                      fontWeight: 600,
                       cursor: 'pointer',
                     }}
                   >
-                    <Navigation size={11} color="#0f172a" />
+                    <Navigation size={11} color="#0c2340" />
                     <span>Auto-detectar GPS</span>
                   </button>
                 </div>
                 <div style={S.inputWrap}>
                   <Hash size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
                     placeholder="Código de Manzana CPV (ej. 040550001010002)"
                     value={formData.manzana}
                     onChange={(e) => setField('manzana', e.target.value)}
                   />
                 </div>
                 {formData.manzana ? (
-                  <div style={{ marginTop: 4, fontSize: '0.7rem', color: '#15803d', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <div style={{ marginTop: 4, fontSize: '0.7rem', color: '#15803d', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <CheckCircle2 size={12} color="#15803d" />
                     <span>Manzana identificada en territorio: {formData.manzana}</span>
                   </div>
@@ -945,14 +945,14 @@ export default function App() {
 
               {/* CAMPO 4: NÚMERO DE MEDIDOR O CASA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                   <Home size={13} color="#64748b" />
                   <span>NÚMERO DE MEDIDOR O CASA</span>
                 </label>
                 <div style={S.inputWrap}>
                   <Home size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a' }}
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
                     placeholder="Ej. Medidor #04921 / Casa #14B"
                     value={formData.numero_medidor_casa}
                     onChange={(e) => setField('numero_medidor_casa', e.target.value)}
@@ -962,7 +962,7 @@ export default function App() {
 
               {/* CAMPO 5: DESCRIPCIÓN DE LA CASA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 800, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
                   <FileText size={13} color="#64748b" />
                   <span>DESCRIPCIÓN DE LA VIVIENDA</span>
                 </label>
@@ -971,10 +971,10 @@ export default function App() {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: 10,
+                    borderRadius: 6,
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     fontSize: '0.82rem',
                     boxSizing: 'border-box',
                     fontFamily: 'inherit',
@@ -988,10 +988,10 @@ export default function App() {
               </div>
 
               {/* PREGUNTA: PROBLEMAS MUNICIPALES PRIORITARIOS (MÍNIMO 1, MÁXIMO 3) */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '14px 14px' }}>
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '14px 14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6, gap: 8 }}>
-                  <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'flex-start', gap: 6, lineHeight: 1.35 }}>
-                    <AlertCircle size={16} color="#0f172a" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <label style={{ fontSize: '0.78rem', fontWeight: 600, color: '#0c2340', display: 'flex', alignItems: 'flex-start', gap: 6, lineHeight: 1.35 }}>
+                    <AlertCircle size={16} color="#0c2340" style={{ flexShrink: 0, marginTop: 1 }} />
                     <span>¿Cuál cree usted que es el problema más importante que debe atender la próxima administración municipal?</span>
                   </label>
                 </div>
@@ -1003,9 +1003,9 @@ export default function App() {
                   <span
                     style={{
                       fontSize: '0.72rem',
-                      fontWeight: 800,
+                      fontWeight: 600,
                       padding: '2px 8px',
-                      borderRadius: 12,
+                      borderRadius: 8,
                       background: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#f0fdf4' : '#fffbeb',
                       color: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#15803d' : '#b45309',
                       border: `1px solid ${(selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#bbf7d0' : '#fde68a'}`,
@@ -1027,8 +1027,8 @@ export default function App() {
                         style={{
                           padding: '7px 11px',
                           borderRadius: 8,
-                          border: `1.5px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
-                          background: isSelected ? '#0f172a' : (isMaxReached ? '#f8fafc' : '#ffffff'),
+                          border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
+                          background: isSelected ? '#0c2340' : (isMaxReached ? '#f8fafc' : '#ffffff'),
                           color: isSelected ? '#ffffff' : (isMaxReached ? '#94a3b8' : '#334155'),
                           fontSize: '0.74rem',
                           fontWeight: isSelected ? 800 : 600,
@@ -1043,7 +1043,7 @@ export default function App() {
                       >
                         {isSelected ? (
                           <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <Check size={10} color="#0f172a" strokeWidth={3.5} />
+                            <Check size={10} color="#0c2340" strokeWidth={3.5} />
                           </div>
                         ) : (
                           <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid #cbd5e1', flexShrink: 0 }} />
@@ -1054,10 +1054,10 @@ export default function App() {
                   })}
                 </div>
 
-                {selectedPriorities.includes('🏛️ Otro (especificar)') && (
+                {selectedPriorities.includes('Otro (especificar)') && (
                   <div style={{ marginTop: 8 }}>
                     <input
-                      style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', height: 40, fontSize: '0.8rem' }}
+                      style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 40, fontSize: '0.8rem' }}
                       placeholder="Especifique la otra prioridad o necesidad..."
                       value={formData.problema_prioritario_otro || ''}
                       onChange={(e) => setField('problema_prioritario_otro', e.target.value)}
@@ -1068,8 +1068,8 @@ export default function App() {
             </div>
 
             {/* INCIDENCIAS DIRECTAS EN TERRITORIO (ADENTRO DE LA ENCUESTA) */}
-            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px', marginTop: 10 }}>
-              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8, textAlign: 'center' }}>
+            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px', marginTop: 10 }}>
+              <span style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8, textAlign: 'center' }}>
                 ¿Se encuentra alguien en el domicilio?
               </span>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -1086,8 +1086,8 @@ export default function App() {
                     borderRadius: 8,
                     border: '2px solid #94a3b8',
                     background: '#ffffff',
-                    color: '#0f172a',
-                    fontWeight: 800,
+                    color: '#0c2340',
+                    fontWeight: 600,
                     fontSize: '0.8rem',
                     cursor: 'pointer',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
@@ -1111,7 +1111,7 @@ export default function App() {
                     border: '2px solid #334155',
                     background: '#64748b',
                     color: '#ffffff',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     fontSize: '0.8rem',
                     cursor: 'pointer',
                     boxShadow: '0 2px 4px rgba(100,116,139,0.3)',
@@ -1128,7 +1128,7 @@ export default function App() {
               onClick={handleNext}
               style={{
                 ...S.btnPill,
-                background: canSaveStep1 ? '#0f172a' : '#cbd5e1',
+                background: canSaveStep1 ? '#0c2340' : '#cbd5e1',
                 marginTop: 8,
               }}
             >
@@ -1136,8 +1136,8 @@ export default function App() {
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
             {!canSaveStep1 && formData.manzana?.trim() && selectedPriorities.length === 0 && (
-              <p style={{ margin: '6px 0 0', fontSize: '0.72rem', color: '#b45309', textAlign: 'center', fontWeight: 700 }}>
-                ⚠️ Seleccione al menos 1 prioridad municipal (máximo 3) para continuar.
+              <p style={{ margin: '6px 0 0', fontSize: '0.72rem', color: '#b45309', textAlign: 'center', fontWeight: 600 }}>
+                Seleccione al menos 1 prioridad municipal (máximo 3) para continuar.
               </p>
             )}
           </motion.div>
@@ -1149,21 +1149,21 @@ export default function App() {
           <motion.div key="s2" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{ ...S.page, background: '#f8fafc' }}>
             <div style={S.pageHeader}>
               <div style={S.stepIcon}>
-                <Award size={18} color="#0f172a" />
+                <Award size={18} color="#0c2340" />
               </div>
               <div>
-                <h2 style={{ ...S.pageTitle, color: '#0f172a', margin: 0 }}>Paso 2 · Consulta Ciudadana</h2>
+                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Paso 2 · Consulta Ciudadana</h2>
                 <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Intención de respaldo y semaforización oficial</p>
               </div>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 12 }} className="custom-scrollbar">
               {/* PREGUNTA 1: ¿CONTAMOS CON SU APOYO? */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
                   1. INTENCIÓN DE APOYO CIUDADANO
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 900, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
                   ¿Contamos con su apoyo?
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1181,14 +1181,14 @@ export default function App() {
                           gap: 10,
                           padding: '9px 12px',
                           borderRadius: 8,
-                          border: `1.5px solid ${isSelected ? '#0f172a' : '#e2e8f0'}`,
+                          border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           background: isSelected ? '#f8fafc' : '#ffffff',
                           cursor: 'pointer',
                           textAlign: 'left',
                         }}
                       >
                         <div style={{ width: 8, height: 8, borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
-                        <span style={{ flex: 1, fontSize: '0.82rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#0f172a' : '#334155' }}>
+                        <span style={{ flex: 1, fontSize: '0.82rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#0c2340' : '#334155' }}>
                           {op.label}
                         </span>
                         <div
@@ -1196,8 +1196,8 @@ export default function App() {
                             width: 18,
                             height: 18,
                             borderRadius: '50%',
-                            border: `1.5px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
-                            background: isSelected ? '#0f172a' : 'transparent',
+                            border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
+                            background: isSelected ? '#0c2340' : 'transparent',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1213,11 +1213,11 @@ export default function App() {
               </div>
 
               {/* PREGUNTA 2: ¿PODEMOS REGRESAR? */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
                   2. PROTOCOLO DE REVISITA EN TERRITORIO
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 900, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
                   ¿Podemos regresar a seguirle contando la propuesta del Dr. Fabián Robles?
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1235,14 +1235,14 @@ export default function App() {
                           gap: 10,
                           padding: '9px 12px',
                           borderRadius: 8,
-                          border: `1.5px solid ${isSelected ? '#0f172a' : '#e2e8f0'}`,
+                          border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           background: isSelected ? '#f8fafc' : '#ffffff',
                           cursor: 'pointer',
                           textAlign: 'left',
                         }}
                       >
                         <div style={{ width: 8, height: 8, borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
-                        <span style={{ flex: 1, fontSize: '0.82rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#0f172a' : '#334155' }}>
+                        <span style={{ flex: 1, fontSize: '0.82rem', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#0c2340' : '#334155' }}>
                           {op.label}
                         </span>
                         <div
@@ -1250,8 +1250,8 @@ export default function App() {
                             width: 18,
                             height: 18,
                             borderRadius: '50%',
-                            border: `1.5px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
-                            background: isSelected ? '#0f172a' : 'transparent',
+                            border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
+                            background: isSelected ? '#0c2340' : 'transparent',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1267,11 +1267,11 @@ export default function App() {
               </div>
 
               {/* PREGUNTA 3: SEMAFORIZACIÓN FORMAL */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
                   3. EVALUACIÓN Y SEMAFORIZACIÓN OFICIAL
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 900, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
                   ¿Votaría usted por el Dr. Fabián Robles?
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1289,23 +1289,23 @@ export default function App() {
                           padding: '10px 12px',
                           borderRadius: 8,
                           background: isSelected ? '#f8fafc' : '#ffffff',
-                          border: `1.5px solid ${isSelected ? '#0f172a' : '#e2e8f0'}`,
+                          border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           cursor: 'pointer',
                         }}
                       >
                         <div style={{ width: 12, height: 12, borderRadius: '50%', background: statusDot, border: op.id === 'nadie_en_casa' ? '2px solid #334155' : 'none', flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontWeight: 800, fontSize: '0.84rem', color: '#0f172a' }}>
+                            <span style={{ fontWeight: 600, fontSize: '0.84rem', color: '#0c2340' }}>
                               {op.label}
                             </span>
                             <span
                               style={{
                                 fontSize: '0.6rem',
-                                fontWeight: 800,
+                                fontWeight: 600,
                                 padding: '1px 5px',
                                 borderRadius: 4,
-                                background: isSelected ? '#0f172a' : '#f1f5f9',
+                                background: isSelected ? '#0c2340' : '#f1f5f9',
                                 color: isSelected ? '#ffffff' : '#64748b',
                                 textTransform: 'uppercase',
                               }}
@@ -1323,8 +1323,8 @@ export default function App() {
                             width: 18,
                             height: 18,
                             borderRadius: '50%',
-                            border: `1.5px solid ${isSelected ? '#0f172a' : '#cbd5e1'}`,
-                            background: isSelected ? '#0f172a' : 'transparent',
+                            border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
+                            background: isSelected ? '#0c2340' : 'transparent',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1342,7 +1342,7 @@ export default function App() {
               {/* Observaciones adicionales */}
               <div>
                 <input
-                  style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', height: 42, fontSize: '0.78rem' }}
+                  style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 42, fontSize: '0.78rem' }}
                   placeholder="Observaciones formales de la visita (Opcional)"
                   value={formData.observaciones || ''}
                   onChange={(e) => setField('observaciones', e.target.value)}
@@ -1380,9 +1380,9 @@ export default function App() {
                     height: 48,
                     borderRadius: 8,
                     border: 'none',
-                    background: canSave ? '#0f172a' : '#cbd5e1',
+                    background: canSave ? '#0c2340' : '#cbd5e1',
                     color: '#ffffff',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     fontSize: '0.9rem',
                     cursor: canSave && !saving ? 'pointer' : 'not-allowed',
                     display: 'flex',
@@ -1414,7 +1414,7 @@ export default function App() {
               style={{
                 width: 58,
                 height: 58,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: '#f1f5f9',
                 border: '1px solid #cbd5e1',
                 display: 'flex',
@@ -1423,10 +1423,10 @@ export default function App() {
                 margin: '20px auto 14px',
               }}
             >
-              <CheckCircle2 size={32} color="#0f172a" strokeWidth={2} />
+              <CheckCircle2 size={32} color="#0c2340" strokeWidth={2} />
             </div>
 
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '0 0 4px 0', letterSpacing: '-0.02em' }}>
               Encuesta Registrada Exitosamente
             </h1>
             <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 16px 0', maxWidth: 300, textAlign: 'center' }}>
@@ -1439,37 +1439,37 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #cbd5e1',
-                borderRadius: 10,
+                borderRadius: 6,
                 padding: '14px 16px',
                 marginBottom: 16,
                 textAlign: 'left',
                 boxSizing: 'border-box',
               }}
             >
-              <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid #f1f5f9' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid #f1f5f9' }}>
                 COMPROBANTE DE REGISTRO TERRITORIAL
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
                 <span style={{ color: '#64748b' }}>Predio / Vivienda:</span>
-                <strong style={{ color: '#0f172a' }}>{formData.numero_medidor_casa ? `Casa / Medidor: ${formData.numero_medidor_casa}` : (formData.manzana ? `Manzana ${formData.manzana}` : 'Vivienda')}</strong>
+                <strong style={{ color: '#0c2340' }}>{formData.numero_medidor_casa ? `Casa / Medidor: ${formData.numero_medidor_casa}` : (formData.manzana ? `Manzana ${formData.manzana}` : 'Vivienda')}</strong>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
                 <span style={{ color: '#64748b' }}>Manzana CPV:</span>
-                <strong style={{ color: '#0f172a' }}>{formData.manzana || 'No registrada'}</strong>
+                <strong style={{ color: '#0c2340' }}>{formData.manzana || 'No registrada'}</strong>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
                 <span style={{ color: '#64748b' }}>Semaforización Oficial:</span>
-                <span style={{ fontWeight: 800, color: '#0f172a' }}>
+                <span style={{ fontWeight: 600, color: '#0c2340' }}>
                   {formData.votaria_robles === 'voto_seguro' ? 'VERDE · Voto Seguro' : formData.votaria_robles === 'no_vota' ? 'ROJO · No Vota / Rechazo' : formData.votaria_robles === 'nadie_en_casa' ? 'GRIS · Nadie en Casa' : formData.votaria_robles === 'no_trabajable' ? 'PIZARRA · No Trabajable' : 'AMARILLO · Indeciso'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem' }}>
                 <span style={{ color: '#64748b' }}>Brigadista:</span>
-                <span style={{ color: '#475569', fontWeight: 700 }}>{config?.name || 'Encuestador Oficial'}</span>
+                <span style={{ color: '#475569', fontWeight: 600 }}>{config?.name || 'Encuestador Oficial'}</span>
               </div>
             </div>
 
@@ -1482,9 +1482,9 @@ export default function App() {
                   height: 46,
                   borderRadius: 8,
                   border: 'none',
-                  background: '#0f172a',
+                  background: '#0c2340',
                   color: '#ffffff',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: '0.88rem',
                   cursor: 'pointer',
                   display: 'flex',
@@ -1506,7 +1506,7 @@ export default function App() {
                   border: '1px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#475569',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '0.8rem',
                   cursor: 'pointer',
                   display: 'flex',
@@ -1558,30 +1558,30 @@ export default function App() {
             style={{
               background: '#ffffff',
               borderBottom: '1px solid #e2e8f0',
-              color: '#0f172a',
+              color: '#0c2340',
               padding: '10px 16px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               fontSize: '0.78rem',
-              fontWeight: 800,
+              fontWeight: 600,
               zIndex: 1000,
               boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#16a34a' }} />
-              <span style={{ color: '#0f172a' }}>Vista de Encuestador en Territorio (Administrador)</span>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#1f4d3a' }} />
+              <span style={{ color: '#0c2340' }}>Vista de Encuestador en Territorio (Administrador)</span>
             </div>
             <button
               onClick={() => setAdminInFieldMode(false)}
               style={{
                 background: '#f8fafc',
-                color: '#0f172a',
+                color: '#0c2340',
                 border: '1px solid #cbd5e1',
                 borderRadius: 6,
                 padding: '5px 12px',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: '0.74rem',
                 cursor: 'pointer',
               }}
@@ -1626,7 +1626,7 @@ export default function App() {
                 style={{
                   background: '#ffffff',
                   border: '1px solid #cbd5e1',
-                  borderRadius: 14,
+                  borderRadius: 8,
                   padding: '24px 22px',
                   maxWidth: 390,
                   width: '100%',
@@ -1638,20 +1638,20 @@ export default function App() {
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 10,
+                    borderRadius: 6,
                     background: '#f1f5f9',
                     border: '1px solid #cbd5e1',
-                    color: '#0f172a',
+                    color: '#0c2340',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 14px',
                   }}
                 >
-                  <Navigation size={22} color="#0f172a" />
+                  <Navigation size={22} color="#0c2340" />
                 </div>
 
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#0f172a', marginBottom: 6, letterSpacing: '-0.02em' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#0c2340', marginBottom: 6, letterSpacing: '-0.02em' }}>
                   Activación de Ubicación Satelital GPS
                 </h3>
 
@@ -1663,7 +1663,7 @@ export default function App() {
                   <div
                     style={{
                       background: '#fef2f2',
-                      border: '1px solid #fecaca',
+                      border: '1px solid #d9b3b3',
                       borderRadius: 8,
                       padding: '8px 12px',
                       fontSize: '0.76rem',
@@ -1683,10 +1683,10 @@ export default function App() {
                       padding: '12px 16px',
                       borderRadius: 8,
                       border: 'none',
-                      background: '#0f172a',
+                      background: '#0c2340',
                       color: '#ffffff',
                       fontSize: '0.88rem',
-                      fontWeight: 800,
+                      fontWeight: 600,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -1723,7 +1723,7 @@ export default function App() {
         {isOnline && (
           <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={S.badge}>
             <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#15803d', flexShrink: 0 }} />
-            <span style={{ color: '#334155', fontWeight: 800 }}>EN LÍNEA</span>
+            <span style={{ color: '#334155', fontWeight: 600 }}>EN LÍNEA</span>
             {total > 0 && <span style={S.badgePill}>{total}</span>}
           </motion.div>
         )}
@@ -1779,47 +1779,47 @@ export default function App() {
 ════════════════════════════════════════════════════════════════════ */
 const S = {
   app: { display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', height: '100%', overflow: 'hidden', background: '#f8fafc' },
-  offlineBanner: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: '0.78rem', fontWeight: 700, padding: '9px 16px', overflow: 'hidden', background: '#334155', color: '#ffffff' },
-  badge: { position: 'absolute', top: 14, right: 14, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8, fontSize: 10, fontWeight: 800, letterSpacing: '0.04em', zIndex: 50, background: '#ffffff', border: '1px solid #cbd5e1', color: '#334155', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' },
-  badgePill: { background: '#0f172a', color: '#fff', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontWeight: 800 },
-  adminBtn: { position: 'absolute', top: 14, left: 14, display: 'flex', alignItems: 'center', gap: 5, borderRadius: 8, padding: '6px 12px', cursor: 'pointer', zIndex: 50, background: '#ffffff', border: '1px solid #cbd5e1', color: '#475569', fontSize: '0.75rem', fontWeight: 700 },
-  adminCount: { background: '#0f172a', color: '#fff', borderRadius: 4, padding: '1px 5px', fontSize: 10, fontWeight: 800 },
-  metaStrip: { display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, marginBottom: 10, width: '100%', zIndex: 1, background: '#ffffff', border: '1px solid #e2e8f0' },
+  offlineBanner: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: '0.78rem', fontWeight: 600, padding: '9px 16px', overflow: 'hidden', background: '#334155', color: '#ffffff' },
+  badge: { position: 'absolute', top: 14, right: 14, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8, fontSize: 10, fontWeight: 600, letterSpacing: '0.04em', zIndex: 50, background: '#ffffff', border: '1px solid #cbd5e1', color: '#334155', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' },
+  badgePill: { background: '#0c2340', color: '#fff', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontWeight: 600 },
+  adminBtn: { position: 'absolute', top: 14, left: 14, display: 'flex', alignItems: 'center', gap: 5, borderRadius: 8, padding: '6px 12px', cursor: 'pointer', zIndex: 50, background: '#ffffff', border: '1px solid #cbd5e1', color: '#475569', fontSize: '0.75rem', fontWeight: 600 },
+  adminCount: { background: '#0c2340', color: '#fff', borderRadius: 4, padding: '1px 5px', fontSize: 10, fontWeight: 600 },
+  metaStrip: { display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 6, marginBottom: 10, width: '100%', zIndex: 1, background: '#ffffff', border: '1px solid #e2e8f0' },
   hero: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '16px 20px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden', background: '#f8fafc' },
   orbRed: { display: 'none' },
   orbBlue: { display: 'none' },
   photoWrap: { position: 'relative', marginBottom: 14, zIndex: 1 },
   photoGlow: { display: 'none' },
-  photoBadge: { position: 'absolute', bottom: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 5, background: '#ffffff', borderRadius: 6, padding: '3px 10px', fontSize: 10, fontWeight: 800, color: '#334155', letterSpacing: '0.04em', border: '1px solid #cbd5e1', whiteSpace: 'nowrap', zIndex: 2 },
-  nameTag: { marginTop: 12, marginBottom: 4, fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#64748b', zIndex: 1 },
-  heroTitle: { fontWeight: 900, fontSize: '1.35rem', letterSpacing: '-0.02em', lineHeight: 1.25, marginBottom: 6, zIndex: 1, color: '#0f172a' },
-  gradientRed: { color: '#0f172a' },
+  photoBadge: { position: 'absolute', bottom: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 5, background: '#ffffff', borderRadius: 6, padding: '3px 10px', fontSize: 10, fontWeight: 600, color: '#334155', letterSpacing: '0.04em', border: '1px solid #cbd5e1', whiteSpace: 'nowrap', zIndex: 2 },
+  nameTag: { marginTop: 12, marginBottom: 4, fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#64748b', zIndex: 1 },
+  heroTitle: { fontWeight: 600, fontSize: '1.35rem', letterSpacing: '-0.02em', lineHeight: 1.25, marginBottom: 6, zIndex: 1, color: '#0c2340' },
+  gradientRed: { color: '#0c2340' },
   heroSub: { fontSize: '0.82rem', lineHeight: 1.5, marginBottom: 16, maxWidth: 300, zIndex: 1, color: '#475569' },
-  statsRow: { display: 'flex', width: '100%', marginTop: 12, borderRadius: 10, overflow: 'hidden', zIndex: 1, background: '#ffffff', border: '1px solid #e2e8f0' },
+  statsRow: { display: 'flex', width: '100%', marginTop: 12, borderRadius: 6, overflow: 'hidden', zIndex: 1, background: '#ffffff', border: '1px solid #e2e8f0' },
   statItem: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '10px 6px', borderRight: '1px solid #f1f5f9' },
-  statVal: { fontSize: '0.92rem', fontWeight: 800, color: '#0f172a' },
-  statLabel: { fontSize: '0.62rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' },
-  btnCTA: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, borderRadius: 10, border: 'none', background: '#0f172a', color: '#ffffff', fontWeight: 800, fontSize: '0.92rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,23,42,0.15)' },
+  statVal: { fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' },
+  statLabel: { fontSize: '0.62rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' },
+  btnCTA: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, borderRadius: 6, border: 'none', background: '#0c2340', color: '#ffffff', fontWeight: 600, fontSize: '0.92rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,23,42,0.15)' },
   btnIconWrap: { width: 28, height: 28, borderRadius: 6, background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   page: { display: 'flex', flexDirection: 'column', flex: 1, padding: '56px 20px 14px', overflowY: 'auto', background: '#f8fafc' },
   pageHeader: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 },
-  stepIcon: { width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#0f172a' },
-  pageTitle: { fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', margin: 0, color: '#0f172a' },
-  label: { fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', marginBottom: 6 },
+  stepIcon: { width: 38, height: 38, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#0c2340' },
+  pageTitle: { fontWeight: 600, fontSize: '1.25rem', letterSpacing: '-0.02em', margin: 0, color: '#0c2340' },
+  label: { fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', marginBottom: 6 },
   scrollList: { overflowY: 'auto', maxHeight: 244, paddingRight: 4, marginBottom: 6, display: 'flex', flexDirection: 'column', gap: 6 },
-  option: { display: 'flex', alignItems: 'center', gap: 10, borderRadius: 10, padding: '11px 14px', cursor: 'pointer', fontWeight: 600, fontSize: '0.86rem', border: '1px solid #e2e8f0', background: '#ffffff', color: '#1e293b' },
-  optionProb: { display: 'flex', alignItems: 'center', gap: 10, borderRadius: 10, padding: '11px 14px', cursor: 'pointer', fontWeight: 600, fontSize: '0.86rem', border: '1px solid #e2e8f0', background: '#ffffff', color: '#1e293b' },
+  option: { display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6, padding: '11px 14px', cursor: 'pointer', fontWeight: 600, fontSize: '0.86rem', border: '1px solid #e2e8f0', background: '#ffffff', color: '#1e293b' },
+  optionProb: { display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6, padding: '11px 14px', cursor: 'pointer', fontWeight: 600, fontSize: '0.86rem', border: '1px solid #e2e8f0', background: '#ffffff', color: '#1e293b' },
   probIcon: { width: 32, height: 32, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: '#f1f5f9' },
   inputWrap: { position: 'relative', width: '100%' },
   inputIcon: { position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' },
-  input: { width: '100%', height: 46, padding: '0 16px 0 42px', borderRadius: 10, fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', display: 'block', border: '1.5px solid #cbd5e1', background: '#ffffff', color: '#0f172a' },
-  btnPill: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, marginTop: 8, borderRadius: 10, border: 'none', background: '#0f172a', color: '#fff', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,23,42,0.15)' },
-  btnSecondary: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 42, borderRadius: 10, border: '1px solid #cbd5e1', background: '#ffffff', color: '#475569', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' },
-  successCircle: { width: 72, height: 72, borderRadius: 16, background: '#f1f5f9', border: '1.5px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, zIndex: 1 },
+  input: { width: '100%', height: 46, padding: '0 16px 0 42px', borderRadius: 6, fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', display: 'block', border: '1.5px solid #cbd5e1', background: '#ffffff', color: '#0c2340' },
+  btnPill: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, marginTop: 8, borderRadius: 6, border: 'none', background: '#0c2340', color: '#fff', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,23,42,0.15)' },
+  btnSecondary: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 42, borderRadius: 6, border: '1px solid #cbd5e1', background: '#ffffff', color: '#475569', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' },
+  successCircle: { width: 72, height: 72, borderRadius: 8, background: '#f1f5f9', border: '1.5px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, zIndex: 1 },
   footer: { padding: '10px 20px calc(14px + env(safe-area-inset-bottom, 0px))', background: '#ffffff', borderTop: '1px solid #e2e8f0' },
   progressTrack: { height: 4, borderRadius: 4, overflow: 'hidden', marginBottom: 10, background: '#e2e8f0' },
-  progressFill: { height: '100%', background: '#0f172a', borderRadius: 4 },
+  progressFill: { height: '100%', background: '#0c2340', borderRadius: 4 },
   footerRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  btnBack: { display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', padding: '6px 0', color: '#475569' },
-  footerBrand: { fontSize: 9, fontWeight: 800, letterSpacing: '0.12em', color: '#94a3b8' },
+  btnBack: { display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', padding: '6px 0', color: '#475569' },
+  footerBrand: { fontSize: 9, fontWeight: 600, letterSpacing: '0.12em', color: '#94a3b8' },
 };

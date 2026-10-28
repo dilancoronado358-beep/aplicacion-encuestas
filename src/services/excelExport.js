@@ -34,7 +34,7 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
     const fechaReporte = formatLocalTime(new Date());
 
     // ════════════════════════════════════════════════════════════════════
-    // HOJA 1: 📊 RESUMEN EJECUTIVO Y TOTALES
+    // HOJA 1: RESUMEN EJECUTIVO Y TOTALES
     // ════════════════════════════════════════════════════════════════════
     const pct = (val) => (total > 0 ? ((val / total) * 100).toFixed(1) : '0.0');
     const totalEfectivas = (statsCounts.voto_seguro || 0) + (statsCounts.indeciso || 0) + (statsCounts.no_vota || 0);
@@ -46,11 +46,11 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
       { 'REPORTE TERRITORIAL OFICIAL': `Fecha de Emisión: ${fechaReporte}`, 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
       { 'REPORTE TERRITORIAL OFICIAL': '', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
       { 'REPORTE TERRITORIAL OFICIAL': '1. BALANCE GENERAL DE SEMAFORIZACIÓN', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
-      { 'REPORTE TERRITORIAL OFICIAL': '🟢 VOTO SEGURO (Respaldo Firme)', 'VALOR / TOTAL': statsCounts.voto_seguro || 0, 'PORCENTAJE': `${pct(statsCounts.voto_seguro || 0)}%`, 'OBSERVACIÓN': 'Voto consolidado y favorable' },
-      { 'REPORTE TERRITORIAL OFICIAL': '🟡 INDECISO / POR DEFINIR', 'VALOR / TOTAL': statsCounts.indeciso || 0, 'PORCENTAJE': `${pct(statsCounts.indeciso || 0)}%`, 'OBSERVACIÓN': 'Requiere revisita y entrega de propuestas' },
-      { 'REPORTE TERRITORIAL OFICIAL': '🔴 NO VOTA / NO REGRESAR', 'VALOR / TOTAL': statsCounts.no_vota || 0, 'PORCENTAJE': `${pct(statsCounts.no_vota || 0)}%`, 'OBSERVACIÓN': 'Oposición o rechazo a la visita' },
-      { 'REPORTE TERRITORIAL OFICIAL': '⚪ NADIE EN DOMICILIO', 'VALOR / TOTAL': statsCounts.nadie_en_casa || 0, 'PORCENTAJE': `${pct(statsCounts.nadie_en_casa || 0)}%`, 'OBSERVACIÓN': 'Viviendas cerradas sin respuesta' },
-      { 'REPORTE TERRITORIAL OFICIAL': '🔘 ZONA NO TRABAJABLE', 'VALOR / TOTAL': statsCounts.no_trabajable || 0, 'PORCENTAJE': `${pct(statsCounts.no_trabajable || 0)}%`, 'OBSERVACIÓN': 'Predios baldíos, comercios o deshabitados' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'VOTO SEGURO (Respaldo Firme)', 'VALOR / TOTAL': statsCounts.voto_seguro || 0, 'PORCENTAJE': `${pct(statsCounts.voto_seguro || 0)}%`, 'OBSERVACIÓN': 'Voto consolidado y favorable' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'INDECISO / POR DEFINIR', 'VALOR / TOTAL': statsCounts.indeciso || 0, 'PORCENTAJE': `${pct(statsCounts.indeciso || 0)}%`, 'OBSERVACIÓN': 'Requiere revisita y entrega de propuestas' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'NO VOTA / NO REGRESAR', 'VALOR / TOTAL': statsCounts.no_vota || 0, 'PORCENTAJE': `${pct(statsCounts.no_vota || 0)}%`, 'OBSERVACIÓN': 'Oposición o rechazo a la visita' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'NADIE EN DOMICILIO', 'VALOR / TOTAL': statsCounts.nadie_en_casa || 0, 'PORCENTAJE': `${pct(statsCounts.nadie_en_casa || 0)}%`, 'OBSERVACIÓN': 'Viviendas cerradas sin respuesta' },
+      { 'REPORTE TERRITORIAL OFICIAL': 'ZONA NO TRABAJABLE', 'VALOR / TOTAL': statsCounts.no_trabajable || 0, 'PORCENTAJE': `${pct(statsCounts.no_trabajable || 0)}%`, 'OBSERVACIÓN': 'Predios baldíos, comercios o deshabitados' },
       { 'REPORTE TERRITORIAL OFICIAL': 'TOTAL GENERAL DE VISITAS EN TERRITORIO', 'VALOR / TOTAL': total, 'PORCENTAJE': '100.0%', 'OBSERVACIÓN': '100% registros georreferenciados' },
       { 'REPORTE TERRITORIAL OFICIAL': '', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
       { 'REPORTE TERRITORIAL OFICIAL': '2. EFECTIVIDAD SOBRE CONTACTOS CIUDADANOS', 'VALOR / TOTAL': '', 'PORCENTAJE': '', 'OBSERVACIÓN': '' },
@@ -65,20 +65,20 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
       { wch: 18 }, // Porcentaje
       { wch: 45 }, // Observación
     ];
-    XLSX.utils.book_append_sheet(wb, wsResumen, '📊 Resumen Ejecutivo');
+    XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen Ejecutivo');
 
     // ════════════════════════════════════════════════════════════════════
-    // HOJA 2: 📋 BASE COMPLETA DE ENCUESTAS (DETALLE VIVIENDA A VIVIENDA)
+    // HOJA 2: BASE COMPLETA DE ENCUESTAS (DETALLE VIVIENDA A VIVIENDA)
     // ════════════════════════════════════════════════════════════════════
     const encuestasRows = (surveys && surveys.length > 0)
       ? surveys.map((s, idx) => {
           const rawVoto = s.votaria_robles || s.resultado_voto || '';
           const semaforoTexto = (
-            rawVoto === 'voto_seguro' ? '🟢 Voto Seguro' :
-            rawVoto === 'indeciso' ? '🟡 Indeciso' :
-            rawVoto === 'no_vota' ? '🔴 No Vota' :
-            rawVoto === 'nadie_en_casa' ? '⚪ Nadie en Domicilio' :
-            rawVoto === 'no_trabajable' ? '🔘 Zona No Trabajable' : 'Sin definir'
+            rawVoto === 'voto_seguro' ? 'Voto Seguro' :
+            rawVoto === 'indeciso' ? 'Indeciso' :
+            rawVoto === 'no_vota' ? 'No Vota' :
+            rawVoto === 'nadie_en_casa' ? 'Nadie en Domicilio' :
+            rawVoto === 'no_trabajable' ? 'Zona No Trabajable' : 'Sin definir'
           );
 
           const apoyoStr = s.apoyo_robles === 'si' ? 'Sí, contamos con su apoyo'
@@ -86,7 +86,7 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
             : s.apoyo_robles === 'tal_vez' ? 'Tal vez / Por definir'
             : (s.tipo_visita === 'nadie_en_casa' ? 'Nadie en domicilio' : s.tipo_visita === 'no_trabajable' ? 'Zona no trabajable' : 'No consultado');
 
-          const prioridadStr = s.problema_prioritario === '🏛️ Otro (especificar)'
+          const prioridadStr = s.problema_prioritario === 'Otro (especificar)'
             ? (s.problema_prioritario_otro ? `Otro: ${s.problema_prioritario_otro}` : 'Otro')
             : (s.problema_prioritario || 'No especificado');
 
@@ -168,10 +168,10 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
       { wch: 44 }, // Google Maps Link
       { wch: 36 }, // ID Registro
     ];
-    XLSX.utils.book_append_sheet(wb, wsEncuestas, '📋 Base Completa Encuestas');
+    XLSX.utils.book_append_sheet(wb, wsEncuestas, 'Base Completa Encuestas');
 
     // ════════════════════════════════════════════════════════════════════
-    // HOJA 3: 👥 RENDIMIENTO POR ENCUESTADOR
+    // HOJA 3: RENDIMIENTO POR ENCUESTADOR
     // ════════════════════════════════════════════════════════════════════
     const encRows = (encuestadoresStats && encuestadoresStats.length > 0)
       ? encuestadoresStats.map((e, idx) => ({
@@ -179,15 +179,15 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
           'Encuestador': e.nombre || 'N/A',
           'Correo Institucional': e.email || 'N/A',
           'Total Visitas': e.total || 0,
-          '🟢 Voto Seguro': e.voto_seguro || 0,
-          '🟡 Indeciso': e.indeciso || 0,
-          '🔴 No Vota': e.no_vota || 0,
-          '⚪ Nadie en Domicilio': e.nadie_en_casa || 0,
-          '🔘 Zona No Trabajable': e.no_trabajable || 0,
+          'Voto Seguro': e.voto_seguro || 0,
+          'Indeciso': e.indeciso || 0,
+          'No Vota': e.no_vota || 0,
+          'Nadie en Domicilio': e.nadie_en_casa || 0,
+          'Zona No Trabajable': e.no_trabajable || 0,
           '% Efectividad Voto Seguro': `${e.efectividad || 0}%`,
           'Manzanas Cubiertas': e.manzanasCount || 0,
           'Detalle Manzanas Visitadas': e.manzanasPreview || 'S/N',
-          'Estado GPS en Vivo': e.isOnline ? '🟢 En Línea (Activo)' : '⚪ Inactivo',
+          'Estado GPS en Vivo': e.isOnline ? 'En Línea (Activo)' : 'Inactivo',
         }))
       : [{ 'Aviso': 'No hay encuestadores con visitas registradas aún' }];
 
@@ -207,10 +207,10 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
       { wch: 34 }, // Detalle Manzanas
       { wch: 20 }, // Estado GPS
     ];
-    XLSX.utils.book_append_sheet(wb, wsEnc, '👥 Rendimiento Encuestadores');
+    XLSX.utils.book_append_sheet(wb, wsEnc, 'Rendimiento Encuestadores');
 
     // ════════════════════════════════════════════════════════════════════
-    // HOJA 4: 🏛️ PRIORIDADES CIUDADANAS (RANKING DE NECESIDADES)
+    // HOJA 4: PRIORIDADES CIUDADANAS (RANKING DE NECESIDADES)
     // ════════════════════════════════════════════════════════════════════
     const prioridadesMap = {};
     surveys.forEach((s) => {
@@ -244,7 +244,7 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
       { wch: 28 }, // Votos
       { wch: 26 }, // %
     ];
-    XLSX.utils.book_append_sheet(wb, wsPrioridades, '🏛️ Prioridades Ciudadanas');
+    XLSX.utils.book_append_sheet(wb, wsPrioridades, 'Prioridades Ciudadanas');
 
     // ════════════════════════════════════════════════════════════════════
     // DESCARGA DEL ARCHIVO EXCEL (.XLSX) GARANTIZANDO EXTENSIÓN Y NOMBRE

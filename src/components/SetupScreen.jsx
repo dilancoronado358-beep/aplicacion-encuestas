@@ -21,9 +21,9 @@ export function SetupScreen({ onDone, theme: t }) {
           transition={{ duration: 1.2, delay: 0.5 }}
           style={{ fontSize: 52, marginBottom: 14, display: 'inline-block' }}
         >
-          👋
+          
         </motion.div>
-        <h1 style={{ fontWeight: 900, fontSize: '1.85rem', color: t.text, letterSpacing: '-0.03em', marginBottom: 10 }}>
+        <h1 style={{ fontWeight: 600, fontSize: '1.85rem', color: t.text, letterSpacing: '-0.03em', marginBottom: 10 }}>
           ¡Hola, Encuestador!
         </h1>
         <p style={{ fontSize: '0.9rem', color: t.textSec, lineHeight: 1.65, maxWidth: 290, margin: '0 auto' }}>
@@ -31,7 +31,7 @@ export function SetupScreen({ onDone, theme: t }) {
         </p>
       </div>
 
-      <p style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 10 }}>
+      <p style={{ fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 10 }}>
         Tu nombre completo
       </p>
       <div style={{ position: 'relative', width: '100%', marginBottom: 20 }}>
@@ -42,7 +42,7 @@ export function SetupScreen({ onDone, theme: t }) {
             width: '100%',
             height: 54,
             padding: '0 20px 0 44px',
-            borderRadius: 17,
+            borderRadius: 8,
             fontSize: '0.92rem',
             outline: 'none',
             fontFamily: 'inherit',
@@ -58,7 +58,7 @@ export function SetupScreen({ onDone, theme: t }) {
         />
       </div>
 
-      <p style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 10 }}>
+      <p style={{ fontWeight: 600, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: t.textMuted, marginBottom: 10 }}>
         Meta diaria de encuestas
       </p>
       <div style={{ position: 'relative', width: '100%', marginBottom: 20 }}>
@@ -71,7 +71,7 @@ export function SetupScreen({ onDone, theme: t }) {
             width: '100%',
             height: 54,
             padding: '0 20px 0 44px',
-            borderRadius: 17,
+            borderRadius: 8,
             fontSize: '0.92rem',
             outline: 'none',
             fontFamily: 'inherit',
@@ -112,9 +112,9 @@ export function SetupScreen({ onDone, theme: t }) {
           marginTop: 6,
           borderRadius: 99,
           border: 'none',
-          background: '#0f172a',
+          background: '#0c2340',
           color: '#fff',
-          fontWeight: 700,
+          fontWeight: 600,
           fontSize: '0.97rem',
           cursor: 'pointer',
           boxShadow: '0 10px 28px -8px rgba(15,23,42,0.33)',

@@ -170,7 +170,7 @@ export function AuthScreen({ onLogin, theme: t }) {
             justifyContent: 'space-between',
             alignItems: 'center',
             fontSize: '0.82rem',
-            fontWeight: 700,
+            fontWeight: 600,
             color: '#ffffff',
             marginBottom: 20,
             opacity: 0.9,
@@ -200,7 +200,7 @@ export function AuthScreen({ onLogin, theme: t }) {
           <div
             style={{
               background: '#ffffff',
-              borderRadius: 16,
+              borderRadius: 8,
               padding: '8px 16px',
               boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
               display: 'inline-flex',
@@ -223,11 +223,11 @@ export function AuthScreen({ onLogin, theme: t }) {
             style={{
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: 20,
+              borderRadius: 8,
               padding: '5px 12px',
               color: '#38bdf8',
               fontSize: '0.72rem',
-              fontWeight: 800,
+              fontWeight: 600,
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
             }}
@@ -249,7 +249,7 @@ export function AuthScreen({ onLogin, theme: t }) {
               <h1
                 style={{
                   fontSize: '2.1rem',
-                  fontWeight: 900,
+                  fontWeight: 600,
                   letterSpacing: '-0.035em',
                   lineHeight: 1.15,
                   margin: '0 0 8px',
@@ -283,7 +283,7 @@ export function AuthScreen({ onLogin, theme: t }) {
               <h1
                 style={{
                   fontSize: '2.1rem',
-                  fontWeight: 900,
+                  fontWeight: 600,
                   letterSpacing: '-0.035em',
                   lineHeight: 1.15,
                   margin: '0 0 8px',
@@ -317,7 +317,7 @@ export function AuthScreen({ onLogin, theme: t }) {
               <h1
                 style={{
                   fontSize: '2.1rem',
-                  fontWeight: 900,
+                  fontWeight: 600,
                   letterSpacing: '-0.035em',
                   lineHeight: 1.15,
                   margin: '0 0 8px',
@@ -393,7 +393,7 @@ export function AuthScreen({ onLogin, theme: t }) {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#0f172a',
+                      color: '#0c2340',
                       fontSize: '0.78rem',
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -445,7 +445,7 @@ export function AuthScreen({ onLogin, theme: t }) {
                     style={{
                       width: 18,
                       height: 18,
-                      accentColor: '#0f172a',
+                      accentColor: '#0c2340',
                       borderRadius: 4,
                       cursor: 'pointer',
                     }}
@@ -481,8 +481,8 @@ export function AuthScreen({ onLogin, theme: t }) {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#0f172a',
-                    fontWeight: 800,
+                    color: '#0c2340',
+                    fontWeight: 600,
                     cursor: 'pointer',
                     padding: 0,
                     fontSize: '0.86rem',
@@ -575,14 +575,14 @@ export function AuthScreen({ onLogin, theme: t }) {
                   style={{
                     width: 18,
                     height: 18,
-                    accentColor: '#0f172a',
+                    accentColor: '#0c2340',
                     borderRadius: 4,
                     marginTop: 2,
                     cursor: 'pointer',
                   }}
                 />
                 <label htmlFor="agreeTerms" style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.4, cursor: 'pointer' }}>
-                  Acepto la <strong style={{ color: '#0f172a' }}>política de privacidad</strong> y los términos de recolección de datos.
+                  Acepto la <strong style={{ color: '#0c2340' }}>política de privacidad</strong> y los términos de recolección de datos.
                 </label>
               </div>
 
@@ -613,8 +613,8 @@ export function AuthScreen({ onLogin, theme: t }) {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#0f172a',
-                    fontWeight: 800,
+                    color: '#0c2340',
+                    fontWeight: 600,
                     cursor: 'pointer',
                     padding: 0,
                     fontSize: '0.86rem',
@@ -674,7 +674,7 @@ export function AuthScreen({ onLogin, theme: t }) {
                   background: 'none',
                   border: 'none',
                   color: '#64748b',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '0.86rem',
                   cursor: 'pointer',
                   textAlign: 'center',
@@ -694,8 +694,8 @@ const S = {
   fieldLabel: {
     display: 'block',
     fontSize: '0.84rem',
-    fontWeight: 700,
-    color: '#0f172a',
+    fontWeight: 600,
+    color: '#0c2340',
     marginBottom: 8,
   },
   pillInput: {
@@ -706,7 +706,7 @@ const S = {
     border: '1.5px solid #e2e8f0',
     background: '#ffffff',
     fontSize: '0.92rem',
-    color: '#0f172a',
+    color: '#0c2340',
     outline: 'none',
     boxSizing: 'border-box',
     display: 'block',
@@ -722,7 +722,7 @@ const S = {
     border: 'none',
     background: '#000000',
     color: '#ffffff',
-    fontWeight: 800,
+    fontWeight: 600,
     fontSize: '0.96rem',
     cursor: 'pointer',
     boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)',
@@ -743,7 +743,7 @@ const S = {
   },
   errorBox: {
     padding: '10px 14px',
-    borderRadius: 12,
+    borderRadius: 8,
     background: 'rgba(239,68,68,0.08)',
     color: '#ef4444',
     fontSize: '0.8rem',

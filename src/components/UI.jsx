@@ -34,7 +34,7 @@ export function StepDots({ current, total }) {
           key={i}
           animate={{
             width: i + 1 === current ? 20 : 6,
-            background: i + 1 === current ? '#0f172a' : i + 1 < current ? '#64748b' : '#e2e8f0',
+            background: i + 1 === current ? '#0c2340' : i + 1 < current ? '#64748b' : '#e2e8f0',
           }}
           transition={{ duration: 0.25 }}
           style={{ height: 5, borderRadius: 3 }}
@@ -78,7 +78,7 @@ export function StarRating({ value, onChange, theme: t }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.18 }}
-            style={{ fontSize: '0.8rem', fontWeight: 700, color: '#f59e0b', margin: 0 }}
+            style={{ fontSize: '0.8rem', fontWeight: 600, color: '#f59e0b', margin: 0 }}
           >
             {labels[hov || value]}
           </motion.p>
@@ -107,7 +107,7 @@ export function Toggle({ on, onToggle, label, sub, icon: Icon, activeColor = '#1
         padding: '14px 16px',
         background: t.bgSurface,
         border: `1.5px solid ${t.border}`,
-        borderRadius: 16,
+        borderRadius: 8,
         cursor: 'pointer',
         marginBottom: 10,
       }}
@@ -115,7 +115,7 @@ export function Toggle({ on, onToggle, label, sub, icon: Icon, activeColor = '#1
     >
       <Icon size={20} color={on ? activeColor : t.textMuted} />
       <div style={{ flex: 1 }}>
-        <p style={{ fontWeight: 700, fontSize: '0.87rem', color: t.text, margin: 0 }}>{label}</p>
+        <p style={{ fontWeight: 600, fontSize: '0.87rem', color: t.text, margin: 0 }}>{label}</p>
         {sub && <p style={{ fontSize: '0.72rem', color: t.textMuted, margin: 0 }}>{sub}</p>}
       </div>
       <div
@@ -151,7 +151,7 @@ export function HBar({ label, val, pct, color, total, hideCount, theme: t }) {
     <div style={{ marginBottom: 11 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
         <span style={{ fontSize: '0.77rem', fontWeight: 600, color: t.text }}>{label}</span>
-        <span style={{ fontSize: '0.77rem', fontWeight: 700, color }}>
+        <span style={{ fontSize: '0.77rem', fontWeight: 600, color }}>
           {!hideCount && `${val} `}
           <span style={{ color: hideCount ? color : t.textMuted, fontWeight: hideCount ? 700 : 500 }}>
             {hideCount ? `${pOf}%` : `(${pOf}%)`}

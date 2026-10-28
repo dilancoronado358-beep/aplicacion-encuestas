@@ -1,26 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+:root {
+  --navy: #0c2340;
+  --navy-soft: #16365f;
+  --ink: #0c2340;
+  --ink-muted: #5b6b80;
+  --rule: #dfe4ea;
+  --paper: #f6f7f9;
+  --accent: #8a6d3b;
+}
 
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter Variable', 'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  font-feature-settings: 'cv11', 'ss01', 'tnum';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Titulares con tipografía serif institucional */
+h1, h2, h3 {
+  font-family: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  letter-spacing: 0;
+  font-feature-settings: normal;
 }
 
 body {
-  background: #f8fafc;
+  background: var(--paper);
   min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  color: #0f172a;
+  color: var(--ink);
 }
 
 body.dark-mode {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 #root {
@@ -33,14 +51,12 @@ body.dark-mode {
   z-index: 1;
 }
 
-/* Glass card wrapper */
+/* Contenedor principal sobrio (escritorio) */
 #root > div:first-child {
-  border-radius: 42px;
+  border-radius: 6px;
   margin: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    0 30px 80px -20px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255,255,255,0.12) inset;
+  border: 1px solid var(--rule);
+  box-shadow: 0 1px 2px rgba(12, 35, 64, 0.06), 0 8px 24px -12px rgba(12, 35, 64, 0.18);
 }
 
 /* ── Vista Especial para Centro de Mando Admin (Pantalla Completa) ─────── */
@@ -59,74 +75,71 @@ body.admin-view #root > div:first-child {
   height: 100% !important;
 }
 
-/* ── Button hover states ───────────────────────────────────────────────── */
+/* ── Estados de interacción (discretos, sin saltos ni rebotes) ─────────── */
+button { transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease; }
+
 .btn-cta-hover:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 18px 38px -8px rgba(15, 23, 42, 0.48) !important;
+  background: var(--navy-soft) !important;
+  box-shadow: 0 4px 14px -4px rgba(12, 35, 64, 0.35) !important;
 }
 .btn-cta-hover:active {
-  transform: scale(0.97) !important;
+  background: var(--navy) !important;
 }
 
 .btn-pill-hover:hover {
-  background: #1e293b !important;
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.45) !important;
+  background: var(--navy-soft) !important;
+  box-shadow: 0 4px 14px -4px rgba(12, 35, 64, 0.35) !important;
 }
 .btn-pill-hover:active {
-  transform: scale(0.97) !important;
+  background: var(--navy) !important;
 }
 .btn-pill-hover:disabled {
-  background: #e2e8f0 !important;
-  color: #94a3b8 !important;
+  background: #e4e8ee !important;
+  color: #9aa6b5 !important;
   cursor: not-allowed;
-  transform: none !important;
   box-shadow: none !important;
 }
 
 .btn-secondary-hover:hover {
-  border-color: #0f172a !important;
-  color: #0f172a !important;
-  background: #f8fafc !important;
-  transform: translateY(-1px);
+  border-color: var(--navy) !important;
+  color: var(--navy) !important;
+  background: #f6f7f9 !important;
 }
 
 .btn-back-hover:hover {
-  color: #475569 !important;
+  color: var(--navy) !important;
 }
 
 .admin-btn-hover:hover {
-  background: rgba(255,255,255,0.98) !important;
-  border-color: #e2e8f0 !important;
-  transform: scale(1.05);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1) !important;
+  background: #ffffff !important;
+  border-color: #b8c1cd !important;
+  box-shadow: 0 2px 8px rgba(12, 35, 64, 0.10) !important;
 }
 
 .option-card-hover:hover {
-  border-color: #94a3b8 !important;
-  background: rgba(15, 23, 42, 0.02) !important;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.08) !important;
+  border-color: #8794a6 !important;
+  background: #fafbfc !important;
 }
 
-/* ── Option hover states ──────────────────────────────────────────────── */
 .option-hover:hover {
-  border-color: #94a3b8 !important;
-  background: rgba(15, 23, 42, 0.02) !important;
-  transform: translateX(3px);
+  border-color: #8794a6 !important;
+  background: #fafbfc !important;
 }
 
 .age-chip-hover:hover {
-  border-color: #94a3b8 !important;
-  transform: translateY(-2px);
+  border-color: #8794a6 !important;
 }
 
 /* ── Focus states ─────────────────────────────────────────────────────── */
-input:focus, textarea:focus {
-  border-color: #0f172a !important;
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--navy) !important;
   background: #fff !important;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 0 0 3px rgba(12, 35, 64, 0.10) !important;
 }
+
+/* Tablas: números tabulares y filas con separación fina */
+table { font-variant-numeric: tabular-nums; }
 
 /* ── Custom scrollbar ─────────────────────────────────────────────────── */
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
