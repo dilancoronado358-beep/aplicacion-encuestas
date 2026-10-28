@@ -107,7 +107,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
     ]);
 
     if (Array.isArray(cloudSurveys)) {
-      const mapped = cloudSurveys.map((s, idx) => {
+      const seen = new Set();
+      const uniqueSurveys = [];
+      cloudSurveys.forEach((s, idx) => {
+        const key = s.id ? String(s.id) : `${s.encuestador}_${s.ts || s.created_at}_${s.manzana}_${s.numero_medidor_casa || s.nombre}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+
         let lat = parseFloat(s.lat);
         let lng = parseFloat(s.lng);
         if (isNaN(lat) || isNaN(lng)) {
@@ -115,9 +121,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           lng = MONTUFAR_CENTER[1] + (Math.cos(idx) * 0.0035);
         }
         const resultado = s.votaria_robles || s.resultado_voto || calculateResultadoVoto(s);
-        return { ...s, lat, lng, resultado_voto: resultado };
+        uniqueSurveys.push({ ...s, lat, lng, resultado_voto: resultado });
       });
-      setSurveys(mapped);
+      setSurveys(uniqueSurveys);
     } else {
       setSurveys([]);
     }

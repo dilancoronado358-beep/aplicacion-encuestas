@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import {
   ChevronRight, MapPin, User, CheckCircle2, Send, BarChart3,
   ArrowLeft, Award, Settings, WifiOff, Users, TrendingUp,
@@ -240,14 +240,21 @@ export default function App() {
     localStorage.setItem('dark_mode', n);
   };
 
-  // Sincronización en lote con Supabase
+  // Sincronización en lote con Supabase (exclusivo para cuando se recupera conexión a internet)
+  const isSyncingRef = useRef(false);
   const syncPending = async () => {
-    const pending = surveys.filter((s) => !s.uploaded);
+    if (isSyncingRef.current) return;
+    const pending = surveys.filter((s) => !s.uploaded && !s._isUploading);
     if (!pending.length) return;
-    const isSuccess = await uploadSurveysBatch(pending);
-    if (isSuccess) {
-      const updated = surveys.map((s) => ({ ...s, uploaded: true }));
-      persistSurveys(updated);
+    isSyncingRef.current = true;
+    try {
+      const isSuccess = await uploadSurveysBatch(pending);
+      if (isSuccess) {
+        const updated = surveys.map((s) => ({ ...s, uploaded: true, _isUploading: false }));
+        persistSurveys(updated);
+      }
+    } finally {
+      isSyncingRef.current = false;
     }
   };
 
@@ -255,7 +262,7 @@ export default function App() {
     if (isOnline) {
       syncPending();
     }
-  }, [isOnline, surveys.length]);
+  }, [isOnline]);
 
   // Alternar selección de problemas del sector
   const toggleProblem = (prob) => {
@@ -377,6 +384,7 @@ export default function App() {
         ...(coords || {}),
         ts: timestamp,
         uploaded: false,
+        _isUploading: true,
       };
       delete newSurvey.parroquiaInput;
 
@@ -388,13 +396,14 @@ export default function App() {
 
       // 3. Sincronización transparente en segundo plano con Supabase
       uploadSurvey(newSurvey).then((isSuccess) => {
-        if (isSuccess) {
-          setSurveys((prev) =>
-            prev.map((s) => (s.ts === newSurvey.ts ? { ...s, uploaded: true } : s))
-          );
-        }
+        setSurveys((prev) =>
+          prev.map((s) => (s.ts === newSurvey.ts ? { ...s, uploaded: !!isSuccess, _isUploading: false } : s))
+        );
       }).catch((errUpload) => {
         console.warn('Subida en background pendiente:', errUpload);
+        setSurveys((prev) =>
+          prev.map((s) => (s.ts === newSurvey.ts ? { ...s, _isUploading: false } : s))
+        );
       });
 
     } catch (err) {
@@ -449,6 +458,7 @@ export default function App() {
         ...(coords || {}),
         ts: timestamp,
         uploaded: false,
+        _isUploading: true,
       };
       delete incidentRecord.parroquiaInput;
 
@@ -460,13 +470,14 @@ export default function App() {
 
       // 3. Sincronización en segundo plano con Supabase
       uploadSurvey(incidentRecord).then((isSuccess) => {
-        if (isSuccess) {
-          setSurveys((prev) =>
-            prev.map((s) => (s.ts === incidentRecord.ts ? { ...s, uploaded: true } : s))
-          );
-        }
+        setSurveys((prev) =>
+          prev.map((s) => (s.ts === incidentRecord.ts ? { ...s, uploaded: !!isSuccess, _isUploading: false } : s))
+        );
       }).catch((errUpload) => {
         console.warn('Subida en background incidencia pendiente:', errUpload);
+        setSurveys((prev) =>
+          prev.map((s) => (s.ts === incidentRecord.ts ? { ...s, _isUploading: false } : s))
+        );
       });
 
     } catch (err) {

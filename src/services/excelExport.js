@@ -253,25 +253,22 @@ export const exportSurveysToExcel = (surveys = [], statsCounts = {}, encuestador
     const fileName = `Reporte_Oficial_Brigada_Renovacion_Montufar_${dateStamp}.xlsx`;
 
     try {
-      // Método principal de SheetJS: genera la descarga directamente con nombre y extensión .xlsx
-      XLSX.writeFile(wb, fileName, { bookType: 'xlsx', compression: true });
+      // Usar Data URI con Base64 para que Chrome/Windows jamás use un ID temporal y fuerce el nombre .xlsx
+      const b64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+      const dataUri = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + b64;
+      const link = document.createElement('a');
+      link.href = dataUri;
+      link.download = fileName;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 800);
       return true;
     } catch (writeErr) {
-      console.warn('Fallo XLSX.writeFile, utilizando fallback con Blob:', writeErr);
-      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([wbout], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
-      });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 1500);
+      console.warn('Fallback a XLSX.writeFile:', writeErr);
+      XLSX.writeFile(wb, fileName);
       return true;
     }
   } catch (error) {
