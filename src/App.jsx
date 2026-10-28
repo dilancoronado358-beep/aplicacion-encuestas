@@ -680,21 +680,21 @@ export default function App() {
                 />
               </div>
 
-              <h1 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#0c2340', margin: '0 0 4px 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
-                BRIGADA RENOVACIÓN (pap)
+              <h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '0 0 4px 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+                BRIGADA RENOVACIÓN · MONTÚFAR
               </h1>
               <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0, fontWeight: 600 }}>
-                Despliegue Territorial Puerta a Puerta
+                Sistema Oficial de Empadronamiento y Consulta Territorial
               </p>
             </div>
 
-            {/* Ficha Oficial de Identificación del Brigadista */}
+            {/* Ficha Oficial de Acreditación del Brigadista */}
             <div
               style={{
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '12px 16px',
                 marginBottom: 12,
                 boxSizing: 'border-box',
@@ -702,23 +702,22 @@ export default function App() {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
-                  BRIGADISTA ASIGNADO:
+                <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  ACREDITACIÓN OPERATIVA DEL BRIGADISTA
                 </span>
-                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#0c2340' }}>
-                  Montúfar / San Gabriel
+                <span style={{ fontSize: '0.68rem', fontWeight: 600, color: '#0c2340' }}>
+                  Cantón Montúfar · Carchi
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#0c2340', fontWeight: 600, fontSize: '0.92rem' }}>
                 <User size={16} color="#0c2340" />
-                <span>{config?.name || 'Encuestador Oficial'}</span>
+                <span>{config?.name || 'Brigadista Acreditado'}</span>
               </div>
               <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 2 }}>
-                ID Operativo: {config?.email || 'brigada@montufar.gob.ec'}
+                Credencial Oficial: {config?.email || 'brigada@montufar.gob.ec'}
               </div>
             </div>
 
-            {/* Estado GPS Discreto y Profesional */}
             {/* Estado GPS Discreto y Profesional */}
             <div
               onClick={() => {
@@ -730,7 +729,7 @@ export default function App() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '9px 14px',
-                borderRadius: 8,
+                borderRadius: 4,
                 background: '#ffffff',
                 border: '1px solid #cbd5e1',
                 marginBottom: 14,
@@ -739,9 +738,9 @@ export default function App() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: liveTrackingActive ? '#15803d' : '#94a3b8' }} />
-                <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#334155' }}>
-                  {liveTrackingActive ? 'Señal Satelital GPS: Conectado en Tiempo Real' : 'Señal Satelital GPS: Inactiva'}
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: liveTrackingActive ? '#15803d' : '#94a3b8' }} />
+                <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#334155' }}>
+                  {liveTrackingActive ? 'Geolocalización GNSS: Enlace Satelital Activo' : 'Geolocalización GNSS: Inactiva'}
                 </span>
               </div>
               <span
@@ -752,11 +751,12 @@ export default function App() {
                   background: liveTrackingActive ? '#f0fdf4' : '#f1f5f9',
                   border: `1px solid ${liveTrackingActive ? '#bbf7d0' : '#cbd5e1'}`,
                   padding: '2px 8px',
-                  borderRadius: 4,
+                  borderRadius: 3,
                   textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
                 }}
               >
-                {liveTrackingActive ? 'ACTIVO' : 'ACTIVAR'}
+                {liveTrackingActive ? 'ENLACE ACTIVO' : 'ACTIVAR'}
               </span>
             </div>
 
@@ -766,43 +766,43 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '12px 16px',
                 marginBottom: 16,
                 boxSizing: 'border-box',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 600, marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Meta diaria en territorio:</span>
-                <span style={{ color: '#0c2340', fontWeight: 600 }}>{todayCt} de {config?.goal || 20} encuestas ({pctGoal}%)</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', fontWeight: 600, marginBottom: 6 }}>
+                <span style={{ color: '#64748b' }}>Cobertura Nominal del Despliegue:</span>
+                <span style={{ color: '#0c2340', fontWeight: 600 }}>{todayCt} de {config?.goal || 20} predios ({pctGoal}%)</span>
               </div>
-              <div style={{ height: 6, background: '#f1f5f9', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${pctGoal}%`, background: '#0c2340', borderRadius: 4 }} />
+              <div style={{ height: 5, background: '#f1f5f9', borderRadius: 3, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${pctGoal}%`, background: '#0c2340', borderRadius: 3 }} />
               </div>
             </div>
 
-            {/* Botón Principal de Acción (Súper Formal y Serio) */}
+            {/* Botón Principal de Acción */}
             <button
               onClick={handleStartSurvey}
               style={{
                 width: '100%',
                 height: 48,
-                borderRadius: 6,
+                borderRadius: 4,
                 border: 'none',
                 background: '#0c2340',
                 color: '#ffffff',
                 fontWeight: 600,
-                fontSize: '0.92rem',
+                fontSize: '0.9rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                boxShadow: '0 2px 6px rgba(15,23,42,0.15)',
+                boxShadow: '0 1px 3px rgba(15,23,42,0.15)',
               }}
             >
               <FileText size={16} />
-              <span>INICIAR REGISTRO DE ENCUESTA</span>
+              <span>INICIAR LEVANTAMIENTO TERRITORIAL</span>
             </button>
           </motion.div>
         );
@@ -816,8 +816,8 @@ export default function App() {
                 <FileText size={18} color="#0c2340" />
               </div>
               <div>
-                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Paso 1 · Ubicación y Vivienda</h2>
-                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de registro territorial puerta a puerta</p>
+                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Sección 1 · Georreferenciación e Inmueble</h2>
+                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Ficha técnica de empadronamiento territorial · Cantón Montúfar</p>
               </div>
             </div>
 
@@ -829,7 +829,7 @@ export default function App() {
                 justifyContent: 'space-between',
                 background: '#ffffff',
                 border: '1px solid #cbd5e1',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '7px 12px',
                 marginBottom: 10,
               }}
@@ -838,8 +838,8 @@ export default function App() {
                 <Navigation size={13} color="#2563eb" />
                 <span>
                   {userCoords
-                    ? `GPS Exacto: ${Number(userCoords.lat).toFixed(5)}, ${Number(userCoords.lng).toFixed(5)}`
-                    : 'Obteniendo GPS satelital...'}
+                    ? `Coordenadas GNSS: ${Number(userCoords.lat).toFixed(5)}, ${Number(userCoords.lng).toFixed(5)}`
+                    : 'Sincronizando señal GNSS...'}
                 </span>
                 {userCoords?.accuracy && (
                   <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 600 }}>
@@ -853,7 +853,7 @@ export default function App() {
                 style={{
                   background: '#f1f5f9',
                   border: '1px solid #cbd5e1',
-                  borderRadius: 4,
+                  borderRadius: 3,
                   padding: '2px 8px',
                   fontSize: '0.66rem',
                   fontWeight: 600,
@@ -861,22 +861,22 @@ export default function App() {
                   cursor: 'pointer',
                 }}
               >
-                Refrescar GPS
+                Actualizar GNSS
               </button>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', paddingRight: 4, display: 'flex', flexDirection: 'column', gap: 12 }} className="custom-scrollbar">
               {/* CAMPO 1: FECHA Y HORA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.7rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   <Calendar size={13} color="#64748b" />
-                  <span>FECHA Y HORA DE VISITA</span>
+                  <span>FECHA Y HORA DE INTERVENCIÓN</span>
                 </label>
                 <div style={S.inputWrap}>
                   <Calendar size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
                     type="datetime-local"
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', borderRadius: 4 }}
                     value={formData.fecha || getLocalDatetimeString()}
                     onChange={(e) => setField('fecha', e.target.value)}
                   />
@@ -886,9 +886,9 @@ export default function App() {
               {/* CAMPO 3: MANZANA (CÓDIGO CENSAL AUTOMÁTICO POR GPS) */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                  <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <label style={{ fontSize: '0.7rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     <Hash size={13} color="#64748b" />
-                    <span>MANZANA CENSAL (CPV) *</span>
+                    <span>CÓDIGO CENSAL DE MANZANA (INEC / CPV) *</span>
                   </label>
                   <button
                     type="button"
@@ -898,7 +898,7 @@ export default function App() {
                         if (code) {
                           setField('manzana', code);
                         } else {
-                          alert('Estás fuera del perímetro censal de San Gabriel o el GPS aún está calibrando.');
+                          alert('Ubicación fuera del perímetro urbano censal de San Gabriel o señal en calibración.');
                         }
                       } else {
                         requestLocationPermission();
@@ -911,7 +911,7 @@ export default function App() {
                       background: '#f1f5f9',
                       border: '1px solid #cbd5e1',
                       color: '#0c2340',
-                      borderRadius: 6,
+                      borderRadius: 3,
                       padding: '3px 8px',
                       fontSize: '0.68rem',
                       fontWeight: 600,
@@ -919,14 +919,14 @@ export default function App() {
                     }}
                   >
                     <Navigation size={11} color="#0c2340" />
-                    <span>Auto-detectar GPS</span>
+                    <span>Auto-detectar CPV</span>
                   </button>
                 </div>
                 <div style={S.inputWrap}>
                   <Hash size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
-                    placeholder="Código de Manzana CPV (ej. 040550001010002)"
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', borderRadius: 4 }}
+                    placeholder="Código Oficial INEC (ej. 040550001010002)"
                     value={formData.manzana}
                     onChange={(e) => setField('manzana', e.target.value)}
                   />
@@ -934,26 +934,26 @@ export default function App() {
                 {formData.manzana ? (
                   <div style={{ marginTop: 4, fontSize: '0.7rem', color: '#15803d', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <CheckCircle2 size={12} color="#15803d" />
-                    <span>Manzana identificada en territorio: {formData.manzana}</span>
+                    <span>Polígono censal asignado: {formData.manzana}</span>
                   </div>
                 ) : (
                   <div style={{ marginTop: 4, fontSize: '0.68rem', color: '#64748b' }}>
-                    Se detecta automáticamente por GPS al posicionarse en la manzana.
+                    Identificación automática del código censal a partir de coordenadas satelitales.
                   </div>
                 )}
               </div>
 
               {/* CAMPO 4: NÚMERO DE MEDIDOR O CASA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.7rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   <Home size={13} color="#64748b" />
-                  <span>NÚMERO DE MEDIDOR O CASA</span>
+                  <span>NÚMERO DE MEDIDOR / NOMENCLATURA PREDIAL</span>
                 </label>
                 <div style={S.inputWrap}>
                   <Home size={15} color="#94a3b8" style={S.inputIcon} />
                   <input
-                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340' }}
-                    placeholder="Ej. Medidor #04921 / Casa #14B"
+                    style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', borderRadius: 4 }}
+                    placeholder="Identificador oficial de medidor o numeración física..."
                     value={formData.numero_medidor_casa}
                     onChange={(e) => setField('numero_medidor_casa', e.target.value)}
                   />
@@ -962,16 +962,16 @@ export default function App() {
 
               {/* CAMPO 5: DESCRIPCIÓN DE LA CASA */}
               <div>
-                <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <label style={{ fontSize: '0.7rem', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   <FileText size={13} color="#64748b" />
-                  <span>DESCRIPCIÓN DE LA VIVIENDA</span>
+                  <span>CARACTERÍSTICAS FÍSICAS Y FACHADA DEL INMUEBLE</span>
                 </label>
                 <textarea
                   rows={2}
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: 6,
+                    borderRadius: 4,
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     color: '#0c2340',
@@ -981,37 +981,37 @@ export default function App() {
                     outline: 'none',
                     resize: 'none',
                   }}
-                  placeholder="Color de la fachada, número de pisos, rejas, portón o señas de la vivienda..."
+                  placeholder="Color de fachada, plantas, cerramiento, portón o características físicas particulares..."
                   value={formData.descripcion_casa}
                   onChange={(e) => setField('descripcion_casa', e.target.value)}
                 />
               </div>
 
               {/* PREGUNTA: PROBLEMAS MUNICIPALES PRIORITARIOS (MÍNIMO 1, MÁXIMO 3) */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '14px 14px' }}>
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, padding: '14px 14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6, gap: 8 }}>
                   <label style={{ fontSize: '0.78rem', fontWeight: 600, color: '#0c2340', display: 'flex', alignItems: 'flex-start', gap: 6, lineHeight: 1.35 }}>
                     <AlertCircle size={16} color="#0c2340" style={{ flexShrink: 0, marginTop: 1 }} />
-                    <span>¿Cuál cree usted que es el problema más importante que debe atender la próxima administración municipal?</span>
+                    <span>Demanda o prioridad sectorial de mayor urgencia para la administración municipal:</span>
                   </label>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                   <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600 }}>
-                    Escoja mínimo 1 y máximo 3 prioridades
+                    Seleccione entre 1 y 3 demandas prioritarias
                   </span>
                   <span
                     style={{
-                      fontSize: '0.72rem',
+                      fontSize: '0.7rem',
                       fontWeight: 600,
                       padding: '2px 8px',
-                      borderRadius: 8,
+                      borderRadius: 3,
                       background: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#f0fdf4' : '#fffbeb',
                       color: (selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#15803d' : '#b45309',
                       border: `1px solid ${(selectedPriorities.length >= 1 && selectedPriorities.length <= 3) ? '#bbf7d0' : '#fde68a'}`,
                     }}
                   >
-                    {selectedPriorities.length} / 3 seleccionados
+                    {selectedPriorities.length} / 3 registradas
                   </span>
                 </div>
 
@@ -1026,7 +1026,7 @@ export default function App() {
                         onClick={() => togglePriorityProblem(prob)}
                         style={{
                           padding: '7px 11px',
-                          borderRadius: 8,
+                          borderRadius: 4,
                           border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
                           background: isSelected ? '#0c2340' : (isMaxReached ? '#f8fafc' : '#ffffff'),
                           color: isSelected ? '#ffffff' : (isMaxReached ? '#94a3b8' : '#334155'),
@@ -1042,11 +1042,11 @@ export default function App() {
                         }}
                       >
                         {isSelected ? (
-                          <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <Check size={10} color="#0c2340" strokeWidth={3.5} />
+                          <div style={{ width: 13, height: 13, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <Check size={9} color="#0c2340" strokeWidth={3.5} />
                           </div>
                         ) : (
-                          <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1.5px solid #cbd5e1', flexShrink: 0 }} />
+                          <div style={{ width: 13, height: 13, borderRadius: '50%', border: '1.5px solid #cbd5e1', flexShrink: 0 }} />
                         )}
                         <span>{prob}</span>
                       </button>
@@ -1057,8 +1057,8 @@ export default function App() {
                 {selectedPriorities.includes('Otro (especificar)') && (
                   <div style={{ marginTop: 8 }}>
                     <input
-                      style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 40, fontSize: '0.8rem' }}
-                      placeholder="Especifique la otra prioridad o necesidad..."
+                      style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 40, fontSize: '0.8rem', borderRadius: 4 }}
+                      placeholder="Especifique la demanda sectorial no listada..."
                       value={formData.problema_prioritario_otro || ''}
                       onChange={(e) => setField('problema_prioritario_otro', e.target.value)}
                     />
@@ -1067,10 +1067,10 @@ export default function App() {
               </div>
             </div>
 
-            {/* INCIDENCIAS DIRECTAS EN TERRITORIO (ADENTRO DE LA ENCUESTA) */}
-            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px', marginTop: 10 }}>
-              <span style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8, textAlign: 'center' }}>
-                ¿Se encuentra alguien en el domicilio?
+            {/* INCIDENCIAS DIRECTAS EN TERRITORIO (NOVEDADES OPERATIVAS) */}
+            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, padding: '12px 14px', marginTop: 10 }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8, textAlign: 'center' }}>
+                NOVEDADES OPERATIVAS DE VISITA IN SITU:
               </span>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <button
@@ -1082,19 +1082,19 @@ export default function App() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 8,
-                    height: 46,
-                    borderRadius: 8,
-                    border: '2px solid #94a3b8',
+                    height: 44,
+                    borderRadius: 4,
+                    border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     color: '#0c2340',
                     fontWeight: 600,
-                    fontSize: '0.8rem',
+                    fontSize: '0.78rem',
                     cursor: 'pointer',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
                   }}
                 >
-                  <span style={{ width: 13, height: 13, borderRadius: '50%', background: '#ffffff', border: '2.5px solid #334155', display: 'inline-block', flexShrink: 0 }} />
-                  <span>Nadie en Domicilio</span>
+                  <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffffff', border: '2px solid #0c2340', display: 'inline-block', flexShrink: 0 }} />
+                  <span>Sin Respuesta en Domicilio</span>
                 </button>
 
                 <button
@@ -1106,19 +1106,19 @@ export default function App() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 8,
-                    height: 46,
-                    borderRadius: 8,
-                    border: '2px solid #334155',
-                    background: '#64748b',
+                    height: 44,
+                    borderRadius: 4,
+                    border: '1px solid #475569',
+                    background: '#475569',
                     color: '#ffffff',
                     fontWeight: 600,
-                    fontSize: '0.8rem',
+                    fontSize: '0.78rem',
                     cursor: 'pointer',
-                    boxShadow: '0 2px 4px rgba(100,116,139,0.3)',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
                   }}
                 >
-                  <span style={{ width: 13, height: 13, borderRadius: '50%', background: '#64748b', border: '2.5px solid #ffffff', display: 'inline-block', flexShrink: 0 }} />
-                  <span>Zona No Trabajable</span>
+                  <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#475569', border: '2px solid #ffffff', display: 'inline-block', flexShrink: 0 }} />
+                  <span>Predio No Trabajable</span>
                 </button>
               </div>
             </div>
@@ -1127,13 +1127,24 @@ export default function App() {
               disabled={!canSaveStep1}
               onClick={handleNext}
               style={{
-                ...S.btnPill,
+                width: '100%',
+                height: 46,
+                borderRadius: 4,
+                border: 'none',
                 background: canSaveStep1 ? '#0c2340' : '#cbd5e1',
+                color: '#ffffff',
+                fontWeight: 600,
+                fontSize: '0.86rem',
+                cursor: canSaveStep1 ? 'pointer' : 'not-allowed',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
                 marginTop: 8,
               }}
             >
-              <span>CONTINUAR A CONSULTA CIUDADANA</span>
-              <ChevronRight size={16} strokeWidth={2.5} />
+              <span>CONTINUAR A CONSULTA ELECTORAL</span>
+              <ChevronRight size={16} strokeWidth={2.2} />
             </button>
             {!canSaveStep1 && formData.manzana?.trim() && selectedPriorities.length === 0 && (
               <p style={{ margin: '6px 0 0', fontSize: '0.72rem', color: '#b45309', textAlign: 'center', fontWeight: 600 }}>
@@ -1152,19 +1163,19 @@ export default function App() {
                 <Award size={18} color="#0c2340" />
               </div>
               <div>
-                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Paso 2 · Consulta Ciudadana</h2>
-                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Intención de respaldo y semaforización oficial</p>
+                <h2 style={{ ...S.pageTitle, color: '#0c2340', margin: 0 }}>Sección 2 · Consulta y Posicionamiento Electoral</h2>
+                <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>Evaluación técnica de tendencia de voto y receptividad territorial</p>
               </div>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 12 }} className="custom-scrollbar">
-              {/* PREGUNTA 1: ¿CONTAMOS CON SU APOYO? */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
-                  1. INTENCIÓN DE APOYO CIUDADANO
+              {/* PREGUNTA 1: COMPROMISO EXPRESO DE RESPALDO CIUDADANO */}
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 2 }}>
+                  1. COMPROMISO EXPRESO DE RESPALDO CIUDADANO
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
-                  ¿Contamos con su apoyo?
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.9rem', fontWeight: 600, color: '#0c2340' }}>
+                  ¿Manifiesta el ciudadano su respaldo a la candidatura del Dr. Fabián Robles?
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {OPCIONES_APOYO.map((op) => {
@@ -1180,7 +1191,7 @@ export default function App() {
                           alignItems: 'center',
                           gap: 10,
                           padding: '9px 12px',
-                          borderRadius: 8,
+                          borderRadius: 4,
                           border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           background: isSelected ? '#f8fafc' : '#ffffff',
                           cursor: 'pointer',
@@ -1193,8 +1204,8 @@ export default function App() {
                         </span>
                         <div
                           style={{
-                            width: 18,
-                            height: 18,
+                            width: 16,
+                            height: 16,
                             borderRadius: '50%',
                             border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
                             background: isSelected ? '#0c2340' : 'transparent',
@@ -1204,7 +1215,7 @@ export default function App() {
                             flexShrink: 0,
                           }}
                         >
-                          {isSelected && <Check size={11} color="#ffffff" strokeWidth={3} />}
+                          {isSelected && <Check size={10} color="#ffffff" strokeWidth={3} />}
                         </div>
                       </button>
                     );
@@ -1212,13 +1223,13 @@ export default function App() {
                 </div>
               </div>
 
-              {/* PREGUNTA 2: ¿PODEMOS REGRESAR? */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
-                  2. PROTOCOLO DE REVISITA EN TERRITORIO
+              {/* PREGUNTA 2: PROTOCOLO DE REVISITA Y SEGUIMIENTO */}
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 2 }}>
+                  2. PROTOCOLO DE REVISITA Y SEGUIMIENTO TERRITORIAL
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
-                  ¿Podemos regresar a seguirle contando la propuesta del Dr. Fabián Robles?
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.9rem', fontWeight: 600, color: '#0c2340' }}>
+                  ¿Autoriza el ciudadano una visita de seguimiento para entrega de propuestas?
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {OPCIONES_REGRESAR.map((op) => {
@@ -1234,7 +1245,7 @@ export default function App() {
                           alignItems: 'center',
                           gap: 10,
                           padding: '9px 12px',
-                          borderRadius: 8,
+                          borderRadius: 4,
                           border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           background: isSelected ? '#f8fafc' : '#ffffff',
                           cursor: 'pointer',
@@ -1247,8 +1258,8 @@ export default function App() {
                         </span>
                         <div
                           style={{
-                            width: 18,
-                            height: 18,
+                            width: 16,
+                            height: 16,
                             borderRadius: '50%',
                             border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
                             background: isSelected ? '#0c2340' : 'transparent',
@@ -1258,7 +1269,7 @@ export default function App() {
                             flexShrink: 0,
                           }}
                         >
-                          {isSelected && <Check size={11} color="#ffffff" strokeWidth={3} />}
+                          {isSelected && <Check size={10} color="#ffffff" strokeWidth={3} />}
                         </div>
                       </button>
                     );
@@ -1266,13 +1277,13 @@ export default function App() {
                 </div>
               </div>
 
-              {/* PREGUNTA 3: SEMAFORIZACIÓN FORMAL */}
-              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 6, padding: '12px 14px' }}>
-                <span style={{ fontSize: '0.66rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 2 }}>
-                  3. EVALUACIÓN Y SEMAFORIZACIÓN OFICIAL
+              {/* PREGUNTA 3: CLASIFICACIÓN DE SEMAFORIZACIÓN OFICIAL */}
+              <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 2 }}>
+                  3. CLASIFICACIÓN DE SEMAFORIZACIÓN ELECTORAL OFICIAL
                 </span>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 600, color: '#0c2340' }}>
-                  ¿Votaría usted por el Dr. Fabián Robles?
+                <h3 style={{ margin: '0 0 10px 0', fontSize: '0.9rem', fontWeight: 600, color: '#0c2340' }}>
+                  Criterio técnico de intención de voto asignado al predio:
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {OPCIONES_VOTO_ROBLES.map((op) => {
@@ -1287,13 +1298,13 @@ export default function App() {
                           alignItems: 'center',
                           gap: 10,
                           padding: '10px 12px',
-                          borderRadius: 8,
+                          borderRadius: 4,
                           background: isSelected ? '#f8fafc' : '#ffffff',
                           border: `1.5px solid ${isSelected ? '#0c2340' : '#e2e8f0'}`,
                           cursor: 'pointer',
                         }}
                       >
-                        <div style={{ width: 12, height: 12, borderRadius: '50%', background: statusDot, border: op.id === 'nadie_en_casa' ? '2px solid #334155' : 'none', flexShrink: 0 }} />
+                        <div style={{ width: 11, height: 11, borderRadius: '50%', background: statusDot, border: op.id === 'nadie_en_casa' ? '2px solid #334155' : 'none', flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <span style={{ fontWeight: 600, fontSize: '0.84rem', color: '#0c2340' }}>
@@ -1304,10 +1315,11 @@ export default function App() {
                                 fontSize: '0.6rem',
                                 fontWeight: 600,
                                 padding: '1px 5px',
-                                borderRadius: 4,
+                                borderRadius: 3,
                                 background: isSelected ? '#0c2340' : '#f1f5f9',
                                 color: isSelected ? '#ffffff' : '#64748b',
                                 textTransform: 'uppercase',
+                                letterSpacing: '0.04em',
                               }}
                             >
                               {op.badgeText}
@@ -1320,8 +1332,8 @@ export default function App() {
 
                         <div
                           style={{
-                            width: 18,
-                            height: 18,
+                            width: 16,
+                            height: 16,
                             borderRadius: '50%',
                             border: `1.5px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
                             background: isSelected ? '#0c2340' : 'transparent',
@@ -1331,7 +1343,7 @@ export default function App() {
                             flexShrink: 0,
                           }}
                         >
-                          {isSelected && <Check size={11} color="#ffffff" strokeWidth={3} />}
+                          {isSelected && <Check size={10} color="#ffffff" strokeWidth={3} />}
                         </div>
                       </div>
                     );
@@ -1342,8 +1354,8 @@ export default function App() {
               {/* Observaciones adicionales */}
               <div>
                 <input
-                  style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 42, fontSize: '0.78rem' }}
-                  placeholder="Observaciones formales de la visita (Opcional)"
+                  style={{ ...S.input, background: '#ffffff', border: '1px solid #cbd5e1', color: '#0c2340', height: 42, fontSize: '0.78rem', borderRadius: 4 }}
+                  placeholder="Observaciones técnicas y novedades territoriales (Opcional)"
                   value={formData.observaciones || ''}
                   onChange={(e) => setField('observaciones', e.target.value)}
                 />
@@ -1358,7 +1370,7 @@ export default function App() {
                     padding: '8px 12px',
                     background: '#ffffff',
                     border: '1px solid #cbd5e1',
-                    borderRadius: 8,
+                    borderRadius: 4,
                   }}
                 >
                   <Navigation size={13} color="#475569" />
@@ -1378,12 +1390,12 @@ export default function App() {
                   style={{
                     width: '100%',
                     height: 48,
-                    borderRadius: 8,
+                    borderRadius: 4,
                     border: 'none',
                     background: canSave ? '#0c2340' : '#cbd5e1',
                     color: '#ffffff',
                     fontWeight: 600,
-                    fontSize: '0.9rem',
+                    fontSize: '0.88rem',
                     cursor: canSave && !saving ? 'pointer' : 'not-allowed',
                     display: 'flex',
                     alignItems: 'center',
@@ -1393,11 +1405,11 @@ export default function App() {
                 >
                   {saving ? (
                     <>
-                      <Zap size={16} /> Guardando en Base Central…
+                      <Zap size={16} /> Transmitiendo a Sala Situacional…
                     </>
                   ) : (
                     <>
-                      <Send size={16} strokeWidth={2.2} /> GUARDAR REGISTRO DE ENCUESTA
+                      <Send size={16} strokeWidth={2.2} /> ASENTAR REGISTRO EN BASE CENTRAL
                     </>
                   )}
                 </button>
@@ -1412,9 +1424,9 @@ export default function App() {
           <motion.div key="s3" variants={pageVar} initial="hidden" animate="visible" exit="exit" style={{ ...S.hero, padding: '24px 20px', background: '#f8fafc' }}>
             <div
               style={{
-                width: 58,
-                height: 58,
-                borderRadius: 8,
+                width: 54,
+                height: 54,
+                borderRadius: 4,
                 background: '#f1f5f9',
                 border: '1px solid #cbd5e1',
                 display: 'flex',
@@ -1423,14 +1435,14 @@ export default function App() {
                 margin: '20px auto 14px',
               }}
             >
-              <CheckCircle2 size={32} color="#0c2340" strokeWidth={2} />
+              <CheckCircle2 size={30} color="#0c2340" strokeWidth={2} />
             </div>
 
             <h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '0 0 4px 0', letterSpacing: '-0.02em' }}>
-              Encuesta Registrada Exitosamente
+              Registro Territorial Asentado en Base Central
             </h1>
-            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 16px 0', maxWidth: 300, textAlign: 'center' }}>
-              La información georreferenciada ha sido incorporada al Centro de Mando Territorial.
+            <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 16px 0', maxWidth: 320, textAlign: 'center' }}>
+              El registro censal y su georreferenciación han sido transmitidos a la Sala Situacional.
             </p>
 
             {/* Ficha Resumen de Comprobante */}
@@ -1439,37 +1451,37 @@ export default function App() {
                 width: '100%',
                 background: '#ffffff',
                 border: '1px solid #cbd5e1',
-                borderRadius: 6,
+                borderRadius: 4,
                 padding: '14px 16px',
                 marginBottom: 16,
                 textAlign: 'left',
                 boxSizing: 'border-box',
               }}
             >
-              <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid #f1f5f9' }}>
-                COMPROBANTE DE REGISTRO TERRITORIAL
+              <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid #f1f5f9' }}>
+                FOLIO DE REGISTRO TERRITORIAL OFICIAL
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Predio / Vivienda:</span>
-                <strong style={{ color: '#0c2340' }}>{formData.numero_medidor_casa ? `Casa / Medidor: ${formData.numero_medidor_casa}` : (formData.manzana ? `Manzana ${formData.manzana}` : 'Vivienda')}</strong>
+                <span style={{ color: '#64748b' }}>Predio / Inmueble:</span>
+                <strong style={{ color: '#0c2340' }}>{formData.numero_medidor_casa ? `Medidor: ${formData.numero_medidor_casa}` : (formData.manzana ? `Manzana ${formData.manzana}` : 'Inmueble')}</strong>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Manzana CPV:</span>
+                <span style={{ color: '#64748b' }}>Polígono CPV:</span>
                 <strong style={{ color: '#0c2340' }}>{formData.manzana || 'No registrada'}</strong>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Semaforización Oficial:</span>
+                <span style={{ color: '#64748b' }}>Clasificación Electoral:</span>
                 <span style={{ fontWeight: 600, color: '#0c2340' }}>
-                  {formData.votaria_robles === 'voto_seguro' ? 'VERDE · Voto Seguro' : formData.votaria_robles === 'no_vota' ? 'ROJO · No Vota / Rechazo' : formData.votaria_robles === 'nadie_en_casa' ? 'GRIS · Nadie en Casa' : formData.votaria_robles === 'no_trabajable' ? 'PIZARRA · No Trabajable' : 'AMARILLO · Indeciso'}
+                  {formData.votaria_robles === 'voto_seguro' ? 'VERDE · Voto Seguro' : formData.votaria_robles === 'no_vota' ? 'ROJO · No Vota / Rechazo' : formData.votaria_robles === 'nadie_en_casa' ? 'BLANCO · Sin Respuesta' : formData.votaria_robles === 'no_trabajable' ? 'PLOMO · No Trabajable' : 'AMARILLO · Indeciso'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem' }}>
                 <span style={{ color: '#64748b' }}>Brigadista:</span>
-                <span style={{ color: '#475569', fontWeight: 600 }}>{config?.name || 'Encuestador Oficial'}</span>
+                <span style={{ color: '#475569', fontWeight: 600 }}>{config?.name || 'Brigadista Oficial'}</span>
               </div>
             </div>
 
@@ -1480,12 +1492,12 @@ export default function App() {
                 style={{
                   width: '100%',
                   height: 46,
-                  borderRadius: 8,
+                  borderRadius: 4,
                   border: 'none',
                   background: '#0c2340',
                   color: '#ffffff',
                   fontWeight: 600,
-                  fontSize: '0.88rem',
+                  fontSize: '0.86rem',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -1494,7 +1506,7 @@ export default function App() {
                 }}
               >
                 <FileText size={15} />
-                <span>REGISTRAR SIGUIENTE VIVIENDA</span>
+                <span>REGISTRAR SIGUIENTE PREDIO</span>
               </button>
 
               <button
@@ -1502,12 +1514,12 @@ export default function App() {
                 style={{
                   width: '100%',
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 4,
                   border: '1px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#475569',
                   fontWeight: 600,
-                  fontSize: '0.8rem',
+                  fontSize: '0.78rem',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -1516,7 +1528,7 @@ export default function App() {
                 }}
               >
                 <RefreshCw size={13} />
-                <span>Volver al Menú Principal</span>
+                <span>Retornar a Portada Operativa</span>
               </button>
 
               <button
@@ -1524,12 +1536,12 @@ export default function App() {
                 style={{
                   width: '100%',
                   height: 36,
-                  borderRadius: 8,
+                  borderRadius: 4,
                   border: '1px solid #e2e8f0',
                   background: '#f8fafc',
                   color: '#64748b',
                   fontWeight: 600,
-                  fontSize: '0.75rem',
+                  fontSize: '0.74rem',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',

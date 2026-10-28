@@ -878,7 +878,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <h1 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em', color: '#0c2340' }}>
-                BRIGADA RENOVACIÓN (pap)
+                BRIGADA RENOVACIÓN · MONTÚFAR
               </h1>
               <span
                 style={{
@@ -888,70 +888,45 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   fontSize: '0.65rem',
                   fontWeight: 600,
                   padding: '2px 8px',
-                  borderRadius: 6,
+                  borderRadius: 4,
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em',
                 }}
               >
-                CENTRO DE MANDO
+                SALA SITUACIONAL
               </span>
             </div>
             <p style={{ fontSize: '0.72rem', color: '#64748b', margin: 0, fontWeight: 500 }}>
-              Monitoreo Territorial Puerta a Puerta · San Gabriel, Montúfar
+              Sistema Oficial de Monitoreo Territorial y Control Electoral · Cantón Montúfar
             </p>
           </div>
         </div>
 
         {/* Acciones principales del Admin */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* BOTÓN PURGAR TODOS LOS DATOS (RESTABLECER EN 0) */}
-          <button
-            onClick={handlePurgeAllData}
-            disabled={purging}
-            title="Eliminar todos los datos de prueba y restablecer el sistema a 0"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              height: 38,
-              padding: '0 12px',
-              borderRadius: 6,
-              border: '1px solid #d9b3b3',
-              background: '#ffffff',
-              color: '#b91c1c',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              cursor: purging ? 'not-allowed' : 'pointer',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <Trash2 size={14} color="#b91c1c" />
-            <span className="hide-mobile">{purging ? 'Purgando…' : 'Limpiar Todo (0)'}</span>
-          </button>
-
           {/* BOTÓN DESCARGAR EXCEL ESTRUCTURADO */}
           <button
             onClick={handleExportExcel}
-            title="Descargar base estructurada en formato Excel con hojas de datos y analíticas"
+            title="Descargar base estructurada oficial en formato Excel con hojas de datos y analíticas"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: 7,
-              height: 38,
+              height: 36,
               padding: '0 14px',
-              borderRadius: 6,
+              borderRadius: 4,
               border: 'none',
-              background: '#1f4d3a',
+              background: '#0c2340',
               color: '#ffffff',
-              fontSize: '0.8rem',
+              fontSize: '0.78rem',
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(31, 77, 58, 0.22)',
+              boxShadow: '0 1px 3px rgba(12,35,64,0.2)',
               transition: 'background 0.15s ease',
             }}
           >
-            <FileSpreadsheet size={16} />
-            <span>Descargar Excel (.xlsx)</span>
+            <FileSpreadsheet size={15} />
+            <span>Exportar Base Oficial (.xlsx)</span>
           </button>
 
           <button
@@ -961,9 +936,9 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              height: 38,
+              height: 36,
               padding: '0 12px',
-              borderRadius: 6,
+              borderRadius: 4,
               border: '1px solid #cbd5e1',
               background: '#ffffff',
               color: '#334155',
@@ -973,7 +948,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               transition: 'all 0.15s ease',
             }}
           >
-            <RefreshCw size={14} className={loading ? 'spin' : ''} />
+            <RefreshCw size={13} className={loading ? 'spin' : ''} />
             <span className="hide-mobile">Actualizar</span>
           </button>
 
@@ -983,31 +958,31 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              height: 38,
+              height: 36,
               padding: '0 12px',
-              borderRadius: 6,
-              border: '1px solid #0c2340',
-              background: '#0c2340',
-              color: '#ffffff',
+              borderRadius: 4,
+              border: '1px solid #cbd5e1',
+              background: '#f8fafc',
+              color: '#0c2340',
               fontSize: '0.78rem',
               fontWeight: 600,
               cursor: 'pointer',
             }}
           >
-            <UserPlus size={14} color="#c3d0e2" />
-            <span className="hide-mobile">Nuevo Usuario</span>
+            <UserPlus size={14} color="#0c2340" />
+            <span className="hide-mobile">Acreditar Usuario</span>
           </button>
 
           <button
             onClick={onSwitchToFieldView}
-            title="Ver la interfaz móvil de encuestador"
+            title="Ver la interfaz móvil del brigadista en territorio"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              height: 38,
+              height: 36,
               padding: '0 10px',
-              borderRadius: 6,
+              borderRadius: 4,
               border: '1px solid #cbd5e1',
               background: '#ffffff',
               color: '#475569',
@@ -1016,8 +991,32 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               cursor: 'pointer',
             }}
           >
-            <Eye size={14} />
-            <span className="hide-mobile">Modo Campo</span>
+            <Eye size={13} />
+            <span className="hide-mobile">Ficha de Campo</span>
+          </button>
+
+          {/* BOTÓN RESTABLECER BASE (DISCRETO Y SEGURO) */}
+          <button
+            onClick={handlePurgeAllData}
+            disabled={purging}
+            title="Restablecer base de datos a 0 (Acción administrativa controlada)"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              height: 36,
+              padding: '0 10px',
+              borderRadius: 4,
+              border: '1px solid #e2e8f0',
+              background: '#ffffff',
+              color: '#64748b',
+              fontSize: '0.72rem',
+              fontWeight: 500,
+              cursor: purging ? 'not-allowed' : 'pointer',
+            }}
+          >
+            <Trash2 size={12} color="#94a3b8" />
+            <span className="hide-mobile">{purging ? 'Restableciendo…' : 'Restablecer Base'}</span>
           </button>
 
           <button
@@ -1042,7 +1041,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
         </div>
       </header>
 
-      {/* ── BARRA RESUMEN DE SEMAFORIZACIÓN Y LÍDER ACTUAL (¿CUÁL VA GANANDO?) ── */}
+      {/* ── BARRA RESUMEN DE SEMAFORIZACIÓN Y CONTROL DE INDICADORES ── */}
       <div
         style={{
           background: '#ffffff',
@@ -1057,150 +1056,88 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
         className="custom-scrollbar"
       >
         {/* TOTAL PUNTOS */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
-            Total Puntos:
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', paddingRight: 8, borderRight: '1px solid #e2e8f0' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Total Registros:
           </span>
-          <strong style={{ color: '#0c2340', fontSize: '0.95rem', fontWeight: 600 }}>
+          <strong style={{ color: '#0c2340', fontSize: '0.92rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
             {surveys.length}
           </strong>
         </div>
 
-        <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
-
-        {/* WIDGET PROMINENTE: ¿CUÁL VA GANANDO? */}
+        {/* TENDENCIA PREDOMINANTE */}
         {winningCategory && totalSurveys > 0 ? (
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              padding: '4px 12px',
-              borderRadius: 8,
-              background: winningCategory.conf.bgLight,
-              border: `1.5px solid ${winningCategory.conf.border}`,
+              padding: '4px 10px',
+              borderRadius: 4,
+              background: '#f8fafc',
+              border: '1px solid #cbd5e1',
               whiteSpace: 'nowrap',
             }}
           >
-            <Trophy size={14} color={winningCategory.conf.color} />
-            <span style={{ fontSize: '0.72rem', fontWeight: 600, color: winningCategory.conf.text, textTransform: 'uppercase' }}>
-              Va Ganando:
+            <TrendingUp size={14} color="#0c2340" />
+            <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Tendencia Predominante:
             </span>
-            <strong style={{ fontSize: '0.8rem', fontWeight: 600, color: winningCategory.conf.text }}>
+            <strong style={{ fontSize: '0.78rem', fontWeight: 700, color: '#0c2340' }}>
               {winningCategory.label} ({winningPct}%)
             </strong>
           </div>
-        ) : (
-          <div style={{ fontSize: '0.74rem', color: '#94a3b8' }}>Sin datos aún</div>
-        )}
+        ) : null}
 
         <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
 
-        {/* CHIPS DE SEMAFORIZACIÓN CON FILTROS */}
-        <button
-          onClick={() => setFilterStatus(filterStatus === 'voto_seguro' ? 'all' : 'voto_seguro')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            borderRadius: 8,
-            background: filterStatus === 'voto_seguro' ? '#10b981' : '#ecfdf5',
-            border: `1.5px solid ${COLOR_CONFIG.voto_seguro.border}`,
-            color: filterStatus === 'voto_seguro' ? '#ffffff' : '#065f46',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'voto_seguro' ? '#ffffff' : '#10b981' }} />
-          Seguro: {statsCounts.voto_seguro}
-        </button>
-
-        <button
-          onClick={() => setFilterStatus(filterStatus === 'indeciso' ? 'all' : 'indeciso')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            borderRadius: 8,
-            background: filterStatus === 'indeciso' ? '#f59e0b' : '#fffbeb',
-            border: `1.5px solid ${COLOR_CONFIG.indeciso.border}`,
-            color: filterStatus === 'indeciso' ? '#ffffff' : '#92400e',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'indeciso' ? '#ffffff' : '#f59e0b' }} />
-          Indeciso: {statsCounts.indeciso}
-        </button>
-
-        <button
-          onClick={() => setFilterStatus(filterStatus === 'no_vota' ? 'all' : 'no_vota')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            borderRadius: 8,
-            background: filterStatus === 'no_vota' ? '#ef4444' : '#fef2f2',
-            border: `1.5px solid ${COLOR_CONFIG.no_vota.border}`,
-            color: filterStatus === 'no_vota' ? '#ffffff' : '#991b1b',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'no_vota' ? '#ffffff' : '#ef4444' }} />
-          No Vota: {statsCounts.no_vota}
-        </button>
-
-        <button
-          onClick={() => setFilterStatus(filterStatus === 'nadie_en_casa' ? 'all' : 'nadie_en_casa')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            borderRadius: 8,
-            background: filterStatus === 'nadie_en_casa' ? '#0c2340' : '#ffffff',
-            border: '1.5px solid #64748b',
-            color: filterStatus === 'nadie_en_casa' ? '#ffffff' : '#0c2340',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffffff', border: '1.5px solid #0c2340' }} />
-          Nadie en Domicilio: {statsCounts.nadie_en_casa}
-        </button>
-
-        <button
-          onClick={() => setFilterStatus(filterStatus === 'no_trabajable' ? 'all' : 'no_trabajable')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            borderRadius: 8,
-            background: filterStatus === 'no_trabajable' ? '#475569' : '#f1f5f9',
-            border: '1.5px solid #475569',
-            color: filterStatus === 'no_trabajable' ? '#ffffff' : '#1e293b',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: filterStatus === 'no_trabajable' ? '#ffffff' : '#64748b' }} />
-          Zona No Trabajable: {statsCounts.no_trabajable}
-        </button>
+        {/* CHIPS DE FILTRO DE SEMAFORIZACIÓN (ESTILO EJECUTIVO) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {[
+            { key: 'voto_seguro', label: 'Voto Seguro', count: statsCounts.voto_seguro, conf: COLOR_CONFIG.voto_seguro },
+            { key: 'indeciso', label: 'Indeciso', count: statsCounts.indeciso, conf: COLOR_CONFIG.indeciso },
+            { key: 'no_vota', label: 'Sin Afinidad', count: statsCounts.no_vota, conf: COLOR_CONFIG.no_vota },
+            { key: 'nadie_en_casa', label: 'Sin Respuesta', count: statsCounts.nadie_en_casa, conf: COLOR_CONFIG.nadie_en_casa },
+            { key: 'no_trabajable', label: 'No Trabajable', count: statsCounts.no_trabajable, conf: COLOR_CONFIG.no_trabajable },
+          ].map((item) => {
+            const isSelected = filterStatus === item.key;
+            return (
+              <button
+                key={item.key}
+                onClick={() => setFilterStatus(isSelected ? 'all' : item.key)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '4px 9px',
+                  borderRadius: 4,
+                  background: isSelected ? '#0c2340' : '#ffffff',
+                  border: `1px solid ${isSelected ? '#0c2340' : '#cbd5e1'}`,
+                  color: isSelected ? '#ffffff' : '#334155',
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  fontVariantNumeric: 'tabular-nums',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <span
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    background: item.conf.color,
+                    border: `1px solid ${item.conf.border}`,
+                    flexShrink: 0,
+                  }}
+                />
+                <span>{item.label}:</span>
+                <strong style={{ fontWeight: 700 }}>{item.count}</strong>
+              </button>
+            );
+          })}
+        </div>
 
         {filterStatus !== 'all' && (
           <button
@@ -1208,39 +1145,40 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             style={{
               background: 'none',
               border: 'none',
-              color: '#2563eb',
-              fontSize: '0.74rem',
+              color: '#0c2340',
+              fontSize: '0.72rem',
               fontWeight: 600,
+              textDecoration: 'underline',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
             }}
           >
-            Quitar filtro
+            Restablecer Filtro
           </button>
         )}
       </div>
 
       {/* ── SELECTOR DE PESTAÑAS (FORMAL Y CLARO) ── */}
-      <div style={{ display: 'flex', background: '#f8fafc', padding: '6px 20px', borderBottom: '1px solid #e2e8f0', gap: 8 }}>
+      <div style={{ display: 'flex', background: '#f8fafc', padding: '6px 20px', borderBottom: '1px solid #e2e8f0', gap: 6 }}>
         <button
           onClick={() => setActiveTab('map')}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 7,
-            padding: '8px 16px',
-            borderRadius: 8,
+            padding: '7px 14px',
+            borderRadius: 4,
             border: activeTab === 'map' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             background: activeTab === 'map' ? '#ffffff' : 'transparent',
             color: activeTab === 'map' ? '#0c2340' : '#64748b',
-            boxShadow: activeTab === 'map' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+            boxShadow: activeTab === 'map' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
           }}
         >
-          <Compass size={16} color={activeTab === 'map' ? '#0c2340' : '#94a3b8'} />
-          <span>Mapa en Tiempo Real</span>
+          <Compass size={15} color={activeTab === 'map' ? '#0c2340' : '#94a3b8'} />
+          <span>Cartografía y Despliegue en Vivo</span>
         </button>
 
         <button
@@ -1249,19 +1187,19 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             display: 'flex',
             alignItems: 'center',
             gap: 7,
-            padding: '8px 16px',
-            borderRadius: 8,
+            padding: '7px 14px',
+            borderRadius: 4,
             border: activeTab === 'stats' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             background: activeTab === 'stats' ? '#ffffff' : 'transparent',
             color: activeTab === 'stats' ? '#0c2340' : '#64748b',
-            boxShadow: activeTab === 'stats' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+            boxShadow: activeTab === 'stats' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
           }}
         >
-          <BarChart3 size={16} color={activeTab === 'stats' ? '#0c2340' : '#94a3b8'} />
-          <span>Analíticas & Base Territorial</span>
+          <BarChart3 size={15} color={activeTab === 'stats' ? '#0c2340' : '#94a3b8'} />
+          <span>Balance Electoral y Base de Datos</span>
         </button>
 
         <button
@@ -1270,19 +1208,19 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
             display: 'flex',
             alignItems: 'center',
             gap: 7,
-            padding: '8px 16px',
-            borderRadius: 8,
+            padding: '7px 14px',
+            borderRadius: 4,
             border: activeTab === 'users' ? '1px solid #cbd5e1' : '1px solid transparent',
             cursor: 'pointer',
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             background: activeTab === 'users' ? '#ffffff' : 'transparent',
             color: activeTab === 'users' ? '#0c2340' : '#64748b',
-            boxShadow: activeTab === 'users' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+            boxShadow: activeTab === 'users' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
           }}
         >
-          <Users size={16} color={activeTab === 'users' ? '#0c2340' : '#94a3b8'} />
-          <span>Equipo & Roles ({encuestadores.length})</span>
+          <Users size={15} color={activeTab === 'users' ? '#0c2340' : '#94a3b8'} />
+          <span>Personal Operativo y Accesos ({encuestadores.length})</span>
         </button>
       </div>
 
@@ -1833,28 +1771,28 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               </div>
             </div>
 
-            {/* ── CARD PRINCIPAL: ¿CUÁL VA GANANDO? (SEMAFORIZACIÓN) ── */}
+            {/* ── CARD PRINCIPAL: BALANCE GENERAL DE INTENCIÓN DE VOTO ── */}
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '20px 24px',
                 marginBottom: 20,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 6, background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Trophy size={20} color="#d97706" />
+                  <div style={{ width: 36, height: 36, borderRadius: 4, background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <TrendingUp size={18} color="#0c2340" />
                   </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: '#0c2340' }}>
-                      Estado de la Semaforización: ¿Cuál va ganando?
+                      Balance General de Intención de Voto (Semaforización Territorial)
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
-                      Tendencia predominante entre todos los ciudadanos visitados en Montúfar
+                      Distribución oficial de posicionamiento electoral en el Cantón Montúfar
                     </p>
                   </div>
                 </div>
@@ -1863,20 +1801,20 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   <div
                     style={{
                       padding: '6px 14px',
-                      borderRadius: 8,
+                      borderRadius: 4,
                       background: winningCategory.conf.bgLight,
-                      border: `1.5px solid ${winningCategory.conf.border}`,
+                      border: `1px solid ${winningCategory.conf.border}`,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
                     }}
                   >
-                    <StatusDot conf={winningCategory.conf} size={12} />
+                    <StatusDot conf={winningCategory.conf} size={10} />
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
-                        Líder en Territorio
+                      <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Tendencia Predominante
                       </div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: 600, color: winningCategory.conf.text }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 600, color: winningCategory.conf.text }}>
                         {winningCategory.label} ({winningPct}%)
                       </div>
                     </div>
@@ -1896,8 +1834,8 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                           <StatusDot conf={cat.conf} />
                           <span>{cat.label}</span>
                           {isWinner && (
-                            <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.65rem', fontWeight: 600, padding: '1px 6px', borderRadius: 4 }}>
-                              LÍDER
+                            <span style={{ background: '#f1f5f9', color: '#0c2340', border: '1px solid #cbd5e1', fontSize: '0.62rem', fontWeight: 600, padding: '1px 6px', borderRadius: 3, letterSpacing: '0.04em' }}>
+                              PREDOMINANTE
                             </span>
                           )}
                         </span>
@@ -1922,108 +1860,106 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               </div>
             </div>
 
-            {/* ── DOS CARDS DE DESGLOSE: ¿CONTAMOS CON SU APOYO? & ¿PODEMOS REGRESAR? ── */}
+            {/* ── DOS CARDS DE DESGLOSE: RESPALDO Y REVISITA ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20, marginBottom: 20 }}>
-              {/* WIDGET 1: ¿CONTAMOS CON SU APOYO? */}
+              {/* WIDGET 1: ÍNDICE DE RESPALDO CIUDADANO */}
               <div
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  borderRadius: 8,
+                  borderRadius: 4,
                   padding: '20px 22px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 20 }}></span>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 600, color: '#0c2340' }}>
-                      ¿Contamos con su apoyo?
+                      Índice de Respaldo Ciudadano (Dr. Fabián Robles)
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>
-                      Respaldo ciudadano explícito a la candidatura del Dr. Fabián Robles
+                      Nivel de compromiso electoral manifestado en visitas domiciliarias
                     </p>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase' }}>Sí Apoya</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#166534', margin: '2px 0' }}>{apoyoCounts.si}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sí Respalda</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{apoyoCounts.si}</div>
                     <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.si / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase' }}>Tal vez</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#92400e', margin: '2px 0' }}>{apoyoCounts.tal_vez}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Por Definir</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{apoyoCounts.tal_vez}</div>
                     <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.tal_vez / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fef2f2', border: '1px solid #d9b3b3', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase' }}>No Apoya</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#991b1b', margin: '2px 0' }}>{apoyoCounts.no}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase', letterSpacing: '0.04em' }}>No Respalda</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{apoyoCounts.no}</div>
                     <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 600 }}>
                       {totalApoyoRespuestas > 0 ? Math.round((apoyoCounts.no / totalApoyoRespuestas) * 100) : 0}%
                     </div>
                   </div>
                 </div>
 
-                <div style={{ height: 8, borderRadius: 99, background: '#f1f5f9', overflow: 'hidden', display: 'flex' }}>
+                <div style={{ height: 6, borderRadius: 3, background: '#f1f5f9', overflow: 'hidden', display: 'flex' }}>
                   <div style={{ height: '100%', width: `${totalApoyoRespuestas > 0 ? (apoyoCounts.si / totalApoyoRespuestas) * 100 : 0}%`, background: '#10b981' }} />
                   <div style={{ height: '100%', width: `${totalApoyoRespuestas > 0 ? (apoyoCounts.tal_vez / totalApoyoRespuestas) * 100 : 0}%`, background: '#f59e0b' }} />
                   <div style={{ height: '100%', width: `${totalApoyoRespuestas > 0 ? (apoyoCounts.no / totalApoyoRespuestas) * 100 : 0}%`, background: '#ef4444' }} />
                 </div>
               </div>
 
-              {/* WIDGET 2: ¿PODEMOS REGRESAR A SEGUIRLE CONTANDO LA PROPUESTA? */}
+              {/* WIDGET 2: RECEPTIVIDAD CIUDADANA PARA SEGUIMIENTO TERRITORIAL */}
               <div
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  borderRadius: 8,
+                  borderRadius: 4,
                   padding: '20px 22px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 20 }}></span>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 600, color: '#0c2340' }}>
-                      Disposición a Revisita Territorial
+                      Receptividad Ciudadana para Seguimiento Territorial
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b' }}>
-                      ¿Podemos regresar a seguirle contando la propuesta del Dr. Fabián Robles?
+                      Consentimiento para visitas de seguimiento y entrega de propuestas
                     </p>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase' }}>Sí con gusto</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#166534', margin: '2px 0' }}>{regresarCounts.si}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Autoriza Visita</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{regresarCounts.si}</div>
                     <div style={{ fontSize: '0.7rem', color: '#15803d', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.si / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase' }}>Quizás</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#92400e', margin: '2px 0' }}>{regresarCounts.quizas}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Eventual</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{regresarCounts.quizas}</div>
                     <div style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.quizas / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
-                  <div style={{ background: '#fef2f2', border: '1px solid #d9b3b3', borderRadius: 6, padding: '10px 8px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase' }}>No Regresar</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#991b1b', margin: '2px 0' }}>{regresarCounts.no}</div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 4, padding: '10px 8px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#b91c1c', textTransform: 'uppercase', letterSpacing: '0.04em' }}>No Autoriza</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#0c2340', margin: '2px 0' }}>{regresarCounts.no}</div>
                     <div style={{ fontSize: '0.7rem', color: '#b91c1c', fontWeight: 600 }}>
                       {totalRegresarRespuestas > 0 ? Math.round((regresarCounts.no / totalRegresarRespuestas) * 100) : 0}%
                     </div>
                   </div>
                 </div>
 
-                <div style={{ height: 8, borderRadius: 99, background: '#f1f5f9', overflow: 'hidden', display: 'flex' }}>
+                <div style={{ height: 6, borderRadius: 3, background: '#f1f5f9', overflow: 'hidden', display: 'flex' }}>
                   <div style={{ height: '100%', width: `${totalRegresarRespuestas > 0 ? (regresarCounts.si / totalRegresarRespuestas) * 100 : 0}%`, background: '#10b981' }} />
                   <div style={{ height: '100%', width: `${totalRegresarRespuestas > 0 ? (regresarCounts.quizas / totalRegresarRespuestas) * 100 : 0}%`, background: '#f59e0b' }} />
                   <div style={{ height: '100%', width: `${totalRegresarRespuestas > 0 ? (regresarCounts.no / totalRegresarRespuestas) * 100 : 0}%`, background: '#ef4444' }} />
@@ -2031,34 +1967,34 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               </div>
             </div>
 
-            {/* ── CARD: RANKING DE PROBLEMAS PRIORITARIOS DEL MUNICIPIO ── */}
+            {/* ── CARD: MATRIZ SECTORIAL DE DEMANDAS Y PRIORIDADES CANTONALES ── */}
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '20px 24px',
                 marginBottom: 20,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <div>
                   <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
-                    Problema Más Importante a Atender por la Próxima Administración Municipal
+                    Matriz Sectorial de Demandas y Prioridades Cantonales
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '3px 0 0' }}>
-                    Prioridades directas identificadas por los ciudadanos de San Gabriel y Montúfar
+                    Consolidado de necesidades identificadas por los habitantes del Cantón
                   </p>
                 </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', padding: '4px 10px', borderRadius: 8 }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: 4 }}>
                   {problemasPrioritariosStats.reduce((a, b) => a + b.count, 0)} menciones registradas
                 </span>
               </div>
 
               {problemasPrioritariosStats.length === 0 ? (
                 <div style={{ padding: '16px 0', textAlign: 'center', color: '#94a3b8', fontSize: '0.82rem' }}>
-                  No se han registrado respuestas sobre problemas prioritarios aún.
+                  No se han registrado respuestas sobre prioridades cantonales aún.
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -2066,7 +2002,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                     <div key={item.problema}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, marginBottom: 4 }}>
                         <span style={{ color: '#0c2340', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: 6, background: idx === 0 ? '#0c2340' : '#f1f5f9', color: idx === 0 ? '#fff' : '#64748b', fontSize: 10, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ width: 18, height: 18, borderRadius: 3, background: idx === 0 ? '#0c2340' : '#f1f5f9', color: idx === 0 ? '#fff' : '#64748b', fontSize: 10, fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                             {idx + 1}
                           </span>
                           <span>{item.problema}</span>
@@ -2075,13 +2011,13 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                           {item.count} {item.count === 1 ? 'mención' : 'menciones'} ({item.pct}%)
                         </span>
                       </div>
-                      <div style={{ height: 8, borderRadius: 99, background: '#f1f5f9', overflow: 'hidden' }}>
+                      <div style={{ height: 6, borderRadius: 3, background: '#f1f5f9', overflow: 'hidden' }}>
                         <div
                           style={{
                             height: '100%',
                             width: `${item.pct}%`,
                             background: idx === 0 ? '#0c2340' : '#64748b',
-                            borderRadius: 99,
+                            borderRadius: 3,
                             transition: 'width 0.5s ease',
                           }}
                         />
@@ -2092,24 +2028,24 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               )}
             </div>
 
-            {/* ── PARTE ESTADÍSTICO POR ENCUESTADOR (TABLA DETALLADA) ── */}
+            {/* ── DESEMPEÑO OPERATIVO POR BRIGADISTA Y COBERTURA TERRITORIAL ── */}
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '20px 24px',
                 marginBottom: 20,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div>
                   <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
-                    Parte Estadístico por Encuestador (Rendimiento Individual)
+                    Desempeño Operativo por Brigadista y Cobertura Territorial
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '4px 0 0' }}>
-                    Desglose de visitas efectivas, votos seguros, indecisos, cobertura de manzanas y efectividad
+                    Auditoría de visitas efectivas, balance de intención, manzanas censales y estado de conectividad
                   </p>
                 </div>
               </div>
@@ -2118,7 +2054,7 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', color: '#475569' }}>
-                      <th style={{ padding: '12px 14px', fontWeight: 600 }}>Encuestador</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600 }}>Brigadista</th>
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Total</th>
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Voto Seguro</th>
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Indeciso</th>
@@ -2127,14 +2063,14 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>No Trab.</th>
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Manzanas</th>
                       <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>% Respaldo</th>
-                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>GPS Vivo</th>
+                      <th style={{ padding: '12px 14px', fontWeight: 600, textAlign: 'center' }}>Conectividad</th>
                     </tr>
                   </thead>
                   <tbody>
                     {encuestadoresStats.length === 0 ? (
                       <tr>
                         <td colSpan={10} style={{ padding: 20, textAlign: 'center', color: '#94a3b8' }}>
-                          No hay registros de encuestadores aún.
+                          No hay registros de brigadistas aún.
                         </td>
                       </tr>
                     ) : (
@@ -2169,19 +2105,20 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                             {e.no_trabajable}
                           </td>
                           <td style={{ padding: '12px 14px', textAlign: 'center' }}>
-                            <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', padding: '2px 8px', borderRadius: 6 }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0c2340', background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '2px 8px', borderRadius: 4 }}>
                               {e.manzanasCount || 0} mz
                             </span>
                           </td>
                           <td style={{ padding: '12px 14px', textAlign: 'center' }}>
                             <span
                               style={{
-                                padding: '3px 8px',
-                                borderRadius: 6,
-                                background: e.efectividad >= 50 ? '#ecfdf5' : '#fef2f2',
-                                color: e.efectividad >= 50 ? '#059669' : '#dc2626',
+                                padding: '2px 8px',
+                                borderRadius: 4,
+                                background: e.efectividad >= 50 ? '#f0fdf4' : '#fef2f2',
+                                color: e.efectividad >= 50 ? '#15803d' : '#b91c1c',
+                                border: `1px solid ${e.efectividad >= 50 ? '#bbf7d0' : '#fecaca'}`,
                                 fontWeight: 600,
-                                fontSize: '0.78rem',
+                                fontSize: '0.76rem',
                               }}
                             >
                               {e.efectividad}%
@@ -2195,18 +2132,18 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                                 gap: 5,
                                 fontSize: '0.72rem',
                                 fontWeight: 600,
-                                color: e.isOnline ? '#2563eb' : '#94a3b8',
+                                color: e.isOnline ? '#0c2340' : '#94a3b8',
                               }}
                             >
                               <span
                                 style={{
-                                  width: 8,
-                                  height: 8,
+                                  width: 7,
+                                  height: 7,
                                   borderRadius: '50%',
-                                  background: e.isOnline ? '#2563eb' : '#cbd5e1',
+                                  background: e.isOnline ? '#15803d' : '#cbd5e1',
                                 }}
                               />
-                              {e.isOnline ? 'En vivo' : 'Inactivo'}
+                              {e.isOnline ? 'En línea' : 'Inactivo'}
                             </span>
                           </td>
                         </tr>
@@ -2217,69 +2154,48 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
               </div>
             </div>
 
-            {/* ── BASE DE DATOS TERRITORIAL & REGISTROS DE ENCUESTAS (TABLA EXHAUSTIVA PARA ADMIN) ── */}
+            {/* ── PADRÓN GENERAL DE REGISTROS Y CONTROL TERRITORIAL ── */}
             <div
               style={{
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
-                borderRadius: 8,
+                borderRadius: 4,
                 padding: '20px 24px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
-                    Base de Datos Territorial & Registros de Encuestas (Vista Admin Completa)
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', margin: 0 }}>
+                    Padrón General de Registros y Control Territorial
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '3px 0 0' }}>
-                    Información detallada de cada ciudadano: encuestador, manzana censal CPV, vivienda, apoyo y prioridades
+                    Auditoría nominal y técnica de cada predio censado: georreferencia, brigadista, postura y demandas
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>
-                    Mostrando <strong>{filteredTableSurveys.length}</strong> de {surveys.length} visitas
+                    Registros mostrados: <strong>{filteredTableSurveys.length}</strong> de {surveys.length}
                   </span>
-                  <button
-                    onClick={handlePurgeAllData}
-                    disabled={purging}
-                    title="Eliminar todos los datos de prueba y restablecer a 0"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      padding: '6px 12px',
-                      borderRadius: 8,
-                      border: '1px solid #d9b3b3',
-                      background: '#ffffff',
-                      color: '#b91c1c',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      cursor: purging ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    <Trash2 size={13} color="#b91c1c" />
-                    <span>{purging ? 'Purgando…' : 'Limpiar Todo (0)'}</span>
-                  </button>
                   <button
                     onClick={handleExportExcel}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: 6,
-                      padding: '6px 12px',
-                      borderRadius: 8,
-                      border: '1px solid #16a34a',
-                      background: '#ecfdf5',
-                      color: '#15803d',
-                      fontSize: '0.75rem',
+                      padding: '7px 14px',
+                      borderRadius: 4,
+                      border: '1px solid #1f4d3a',
+                      background: '#1f4d3a',
+                      color: '#ffffff',
+                      fontSize: '0.78rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                     }}
                   >
-                    <Download size={13} />
-                    <span>Exportar Excel</span>
+                    <FileSpreadsheet size={14} />
+                    <span>Exportar Base Oficial (.xlsx)</span>
                   </button>
                 </div>
               </div>
@@ -2584,11 +2500,11 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
           <div style={{ flex: 1, padding: 24, overflowY: 'auto', background: '#f8fafc' }} className="custom-scrollbar">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h2 style={{ fontSize: '1.35rem', fontWeight: 600, margin: 0, color: '#0c2340' }}>
-                  Equipo de Trabajo (Roles & Usuarios)
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0, color: '#0c2340' }}>
+                  Registro Oficial de Personal Operativo y Accesos
                 </h2>
-                <p style={{ fontSize: '0.84rem', color: '#64748b', margin: '4px 0 0' }}>
-                  Gestión centralizada de cuentas para Administradores y Brigadistas Encuestadores
+                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '4px 0 0' }}>
+                  Control de credenciales, roles asignados y acreditación de brigadistas territoriales
                 </p>
               </div>
 
@@ -2598,18 +2514,18 @@ export function AdminDashboard({ user, onLogout, onSwitchToFieldView }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  padding: '10px 18px',
-                  borderRadius: 6,
+                  padding: '9px 16px',
+                  borderRadius: 4,
                   border: 'none',
                   background: '#0c2340',
                   color: '#ffffff',
                   fontWeight: 600,
-                  fontSize: '0.84rem',
+                  fontSize: '0.82rem',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(15,23,42,0.2)',
+                  boxShadow: '0 1px 3px rgba(15,23,42,0.15)',
                 }}
               >
-                <UserPlus size={16} /> Crear Administrador / Encuestador
+                <UserPlus size={15} /> Acreditar Nuevo Personal Operativo
               </button>
             </div>
 
